@@ -1,0 +1,142 @@
+package ru.kvaga.rss.feedaggrwebserver;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import ru.kvaga.rss.feedaggr.FeedAggrException.GetFeedsListByUser;
+import ru.kvaga.rss.feedaggr.objects.Feed;
+
+/**
+ * Servlet implementation class showFeed
+ */
+@WebServlet("/showFeed")
+public class showFeedServlet extends HttpServlet {
+	final static Logger log = LogManager.getLogger(showFeedServlet.class);
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public showFeedServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String user =null;
+		Cookie[] cookies = request.getCookies();
+		
+		response.setContentType("text/xml; charset=UTF-8");
+		PrintWriter writer = response.getWriter();
+//		writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+//		writer.append("<sales_description>descriptin</sales_description>");
+		
+		StringBuilder feedXML = new StringBuilder();
+//		PrintWriter out = response.getWriter();
+//		out.append("q");
+//		out.println("Hello!");
+
+		/*
+		if(cookies!=null) {
+			for(Cookie cookie : cookies) {
+				if(cookie.getName().equals("user")) {
+					user=cookie.getValue();
+				}
+				break;
+			}
+			if(user==null) {
+				
+				RequestDispatcher rd = getServletContext().getRequestDispatcher("/Login.html");
+				PrintWriter out = response.getWriter();
+				out.print("<font color=red>Unkown user. Please log in</font>");
+				rd.include(request, response);
+				
+			}
+		}else {
+			
+			RequestDispatcher rd = getServletContext().getRequestDispatcher("/Login.html");
+			PrintWriter out = response.getWriter();
+			out.print("<font color=red>Unkown user. Please log in</font>");
+			rd.include(request, response);
+			
+		}
+		*/
+		String feedId = request.getParameter("feedId");
+		BufferedReader br = null;
+//		String realPath=getServletContext().getRealPath("data/feeds/");
+//		String realPath=getServletContext().getRealPath(ConfigMap.dataPath+"/feeds/");
+
+//		log.debug("realPath: "+realPath);
+		try {
+
+			for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
+//				System.out.println("feedOnServer.getId(): "+ feedOnServer.getId());
+//				System.out.println("feedId: "+ feedId);
+//				System.out.println("------------------------------");
+
+				if(feedOnServer.getId().equals(feedId)) {
+//					System.out.println("==========================");
+					br = new BufferedReader(new InputStreamReader(new FileInputStream(feedOnServer.getXmlFile()),StandardCharsets.UTF_8));
+					String s;
+//					out.println(feedOnServer.getId());
+					while((s=br.readLine())!=null) {
+//						System.out.println("InFile: " + s);
+						feedXML.append(s);
+						
+
+					}
+					break;
+				}
+				 
+//				    OutputStream output = response.getOutputStream();
+//				    output.write(feedXML.toString().getBytes());
+//				response.setContentType("text/xml;charset=UTF-8");
+//			    response.setCharacterEncoding("UTF-8");
+				
+//			ObjectsUtills.printXMLObject(rssFeed);
+			}
+//			System.out.println("XML:"+feedXML.toString());
+			 writer.write(feedXML.toString());
+//			 System.out.print("feedXML:"+feedXML);
+		} catch (GetFeedsListByUser e) {
+			
+log.error("GetFeedsListByUser", e);
+} catch (JAXBException e) {
+	log.error("JAXBException", e);
+		}finally {
+			if(br!=null) {
+				br.close();
+			}
+		}
+//		doGet(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		doGet(request, response);
+	}
+
+}

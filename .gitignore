@@ -1,1 +1,9 @@
 /build/
+.project
+.classpath
+.class
+.settings
+bin/
+*.env
+data/
+*.log

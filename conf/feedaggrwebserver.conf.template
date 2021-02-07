@@ -1,0 +1,10 @@
+# This configuration file should be located in the $catalona.base/conf path
+#
+# The path must contain only forward slashes. This folder must contain two subfolders: feeds and users
+data.path=C:/FeedAggrWebServer/data
+
+# Credential of the admin user
+admin.login=your_user
+admin.password=password_of_user
+
+
