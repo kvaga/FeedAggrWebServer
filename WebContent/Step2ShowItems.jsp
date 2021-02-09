@@ -115,6 +115,7 @@
 										  <div class="myClippedData"> 
 										<!--  <div id="raw_data" class="textarea"> 
 										<textarea cols="120" rows="20"> добавил недавно -->
+										
 												<%
 													int k = 0;
 													for (Item item : items) {
@@ -131,7 +132,11 @@
 																*/
 															}
 															if(i==3){
-																out.println("<nobr><span class=\"param\">{%" + i + "}</span> = <![CDATA[" + item.get(i) + "]]></nobr><br>");
+																//out.println("<nobr><span class=\"param\">{%" + i + "}</span> = <![CDATA[" + item.get(i) + "]]></nobr><br>");
+																
+																out.println("<nobr><span class=\"param\">{%" + i + "}</span> = " +ServerUtils.escapeHTML(item.get(i)) + "</nobr><br>");
+
+
 															}else{
 																out.println("<nobr><span class=\"param\">{%" + i + "}</span> = " + item.get(i) + "</nobr><br>");
 															}
@@ -145,6 +150,7 @@
 														out.println("</p>");
 													}
 												%>
+												
 										<!--  		</textarea> -->
 												</div>
 										</div>
