@@ -149,6 +149,7 @@ public class FeedsUpdateJob implements Runnable {
 							log.debug("itemFromWeb [" + itemFromWeb.getTitle() + "] с guid ["+itemFromWeb.getGuid().getValue()+"] добавлен в rssFromFile");
 						}
 					}
+					rssFromFile.getChannel().setLastBuildDate(new Date());
 					ObjectsUtils.saveXMLObjectToFile(rssFromFile, rssFromFile.getClass(), new File(rssXmlFile));
 //					System.out.println("Объект rssFromFile сохранен в файл ["+rssXmlFile+"]");
 					log.debug("Объект rssFromFile сохранен в файл ["+rssXmlFile+"]");
