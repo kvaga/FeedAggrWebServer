@@ -16,6 +16,7 @@ import javax.xml.bind.JAXBException;
 import org.apache.logging.log4j.*;
 
 import ru.kvaga.rss.feedaggr.Exec;
+import ru.kvaga.rss.feedaggr.FeedAggrException.CommonException;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetSubstringForHtmlBodySplitException;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetURLContentException;
 import ru.kvaga.rss.feedaggr.FeedAggrException.SplitHTMLContent;
@@ -52,7 +53,7 @@ public class FeedsUpdateJob implements Runnable {
 //			log.error("Incorrect URL", e);
 //		}
 	}
-	void updateFeeds() throws NoSuchAlgorithmException, SplitHTMLContent, GetURLContentException, GetSubstringForHtmlBodySplitException, IOException {
+	void updateFeeds() throws NoSuchAlgorithmException, SplitHTMLContent, GetURLContentException, GetSubstringForHtmlBodySplitException, IOException, CommonException {
 //		URL urlLog = org.apache.logging.log4j.LogManager.class.getResource("/log4j.properties");
 //		System.out.println("==========>>>" + urlLog);
 //		log.info("==========----------------------------------------------------------------------------------------------------------------------------->>>" + urlLog);

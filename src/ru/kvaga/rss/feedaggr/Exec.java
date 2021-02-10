@@ -260,7 +260,7 @@ public class Exec {
 									String itemTitleTemplate,
 									String itemLinkTemplate,
 									String itemContentTemplate
-	) throws NoSuchAlgorithmException, SplitHTMLContent {
+	) throws NoSuchAlgorithmException, SplitHTMLContent, CommonException {
 		int countOfPercentItemsInSearchPattern = Exec.countWordsUsingSplit(repeatableSearchPattern, "{%}");
 		String feedTitle = Exec.getTitleFromHtmlBody(responseHtmlBody);
 		RSS rss = new RSS();
@@ -295,7 +295,7 @@ public class Exec {
 					}
 					
 					_item.setTitle(itemTitle);
-			        _item.setLink(itemLink);
+			        _item.setLink(Exec.checkItemURLForFullness(channel.getLink(), itemLink));
 //			        _item.setDescription("<![CDATA[\""+itemContent+"\"]]>");
 			        _item.setDescription(itemContent);
 			        _item.setPubDate(new Date());
@@ -312,11 +312,13 @@ public class Exec {
 public static String checkItemURLForFullness(String feedURL, String itemURL) throws CommonException {
 	String leftPathPatternText="http[s]{0,1}:\\/\\/.*?\\/";
 	String leftPathOfFeedURL=null;
+	String finalURL=null;
 	
 	if(itemURL.startsWith("http:") || itemURL.startsWith("https:")) {
 		log.error("Item URL doesn't start from any 'http:' or 'https:'");
 		return itemURL;
 	}
+	log.debug("Item URL ["+itemURL+"] doesn't contain http or https prefix and we must to add prefix (left path of URL) using feed URL ["+feedURL+"]");
 	
 	if(itemURL.startsWith("/")) {
 		itemURL=itemURL.replaceFirst("/", "");
@@ -330,6 +332,8 @@ public static String checkItemURLForFullness(String feedURL, String itemURL) thr
 	}else {
 		throw new FeedAggrException.CommonException("checkItemURLForFullness: Can't find left path in the URL ["+feedURL+"] by the regex pattern ["+leftPathPatternText+"]");
 	}
+	finalURL=leftPathOfFeedURL+itemURL;
+	log.debug("Now Item URL ["+itemURL+"] converted to ["+leftPathOfFeedURL+itemURL+"]");
 	return leftPathOfFeedURL+itemURL;
 }
 public static void sleep(long timeInMillis) {
