@@ -1,4 +1,4 @@
-package ru.kvaga.rss.feedaggrwebserver;
+package ru.kvaga.rss.feedaggrwebserver.jobs;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +24,7 @@ import ru.kvaga.rss.feedaggr.objects.Channel;
 import ru.kvaga.rss.feedaggr.objects.GUID;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils;
+import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed;
 
@@ -60,7 +61,7 @@ public class FeedsUpdateJob implements Runnable {
 //		String feedsPath = ConfigMap.feedsPath+"/feeds";
 		String usersPath = ConfigMap.usersPath.getAbsolutePath();
 //		log.debug("feedsPath="+feedsPath);
-		log.debug("============> usersPath="+usersPath);
+		log.debug("usersPath="+usersPath);
 
 		String url = null;
 		String responseHtmlBody = null;

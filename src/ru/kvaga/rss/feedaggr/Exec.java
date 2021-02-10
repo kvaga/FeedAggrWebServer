@@ -38,7 +38,6 @@ import ru.kvaga.rss.feedaggr.FeedAggrException.SplitHTMLContent;
 import ru.kvaga.rss.feedaggr.objects.Channel;
 import ru.kvaga.rss.feedaggr.objects.GUID;
 import ru.kvaga.rss.feedaggr.objects.RSS;
-import ru.kvaga.rss.feedaggrwebserver.FeedsUpdateJob;
 
 public class Exec {
 

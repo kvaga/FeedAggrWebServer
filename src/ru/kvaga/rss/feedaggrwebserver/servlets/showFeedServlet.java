@@ -1,4 +1,4 @@
-package ru.kvaga.rss.feedaggrwebserver;
+package ru.kvaga.rss.feedaggrwebserver.servlets;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -22,6 +22,8 @@ import org.apache.logging.log4j.Logger;
 
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetFeedsListByUser;
 import ru.kvaga.rss.feedaggr.objects.Feed;
+import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
+import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 
 /**
  * Servlet implementation class showFeed

@@ -1,4 +1,4 @@
-package ru.kvaga.rss.feedaggrwebserver;
+package ru.kvaga.rss.feedaggrwebserver.servlets;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +22,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.web.WebLoggerContextUtils;
+
+import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
 
 
 /**
@@ -90,6 +92,7 @@ public class LoginServlet extends HttpServlet {
 		if(userID.equals(user) && password.equals(pwd)) {
 			HttpSession session = request.getSession();
 			session.setAttribute("user", "Alex");
+			session.setAttribute("login", user);
 			session.setMaxInactiveInterval(30*60);
 			
 			Cookie userName = new Cookie("user", user);

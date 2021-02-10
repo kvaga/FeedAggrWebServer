@@ -1,4 +1,4 @@
-package ru.kvaga.rss.feedaggrwebserver;
+package ru.kvaga.rss.feedaggrwebserver.jobs;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,7 +27,7 @@ public class BackgroudJobManager implements ServletContextListener{
 //		}
 		scheduler = Executors.newSingleThreadScheduledExecutor();
 //		scheduler.scheduleAtFixedRate(new FeedsUpdateJob(event.getServletContext()), 0, 15, TimeUnit.SECONDS);
-		scheduler.scheduleAtFixedRate(new FeedsUpdateJob(event.getServletContext()), 0, 4, TimeUnit.HOURS);
+//		scheduler.scheduleAtFixedRate(new FeedsUpdateJob(event.getServletContext()), 0, 4, TimeUnit.HOURS);
 		log.info("BackgroudJobManager started with jobs [FeedsUpdateJob for each 4 hours]");
 		
 //		System.out.println("BackgroudJobManager started: " + event);

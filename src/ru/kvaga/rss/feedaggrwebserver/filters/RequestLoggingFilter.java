@@ -1,4 +1,4 @@
-package ru.kvaga.rss.feedaggrwebserver;
+package ru.kvaga.rss.feedaggrwebserver.filters;
 
 import java.io.IOException;
 import java.util.Enumeration;

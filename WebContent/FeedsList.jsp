@@ -22,7 +22,7 @@ for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
 //	System.out.println(feedOnServer.getXmlFile());
 	out.println("<br>");	 
 	RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
-	out.println("<a href=\"showFeed?feedId="+feedOnServer.getId() +"\">"+rssFeed.getChannel().getTitle()+"</a>");
+	out.println("<a href=\"showFeed?feedId="+feedOnServer.getId() +"\">"+rssFeed.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+feedOnServer.getId()+"\">Delete</a>]");
 	out.println("<br>");	 
 	out.println("Source URL: "+rssFeed.getChannel().getLink());
 	out.println("<br>");	 
