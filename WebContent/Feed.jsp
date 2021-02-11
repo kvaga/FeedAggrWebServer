@@ -8,7 +8,7 @@ ru.kvaga.rss.feedaggr.Exec
 <html>
 <head>
 <meta charset="utf-8">
-<title>Editing feed: null</title>
+<title>Editing feed: <%= request.getSession().getAttribute("feedTitle")==null?"":request.getSession().getAttribute("feedTitle")%></title>
 
 </head>
 <body>
@@ -44,7 +44,9 @@ if(request.getParameter("itemContentTemplate")!=null){
 
 String enableStep4FeedPreview=request.getParameter("enableStep4FeedPreview");
 String feedId=(String)request.getSession().getAttribute("feedId");
-String feedTitle=(String)request.getSession().getAttribute("feedTitle");
+//String feedTitle=(String)request.getSession().getAttribute("feedTitle");
+String feedTitle=request.getSession().getAttribute("feedTitle")==null?null:(String)request.getSession().getAttribute("feedTitle");
+
 String url= (String)request.getSession().getAttribute("url");
 //String responseHtmlBody = request.getParameter("responseHtmlBody");
 String responseHtmlBody = (String)request.getSession().getAttribute("responseHtmlBody");
@@ -57,6 +59,7 @@ String itemContentTemplate	=(String)request.getSession().getAttribute("itemConte
 if(request.getParameter("action")!=null && request.getParameter("action").equals("new")){
 	feedId=ServerUtils.getNewFeedId();
 	request.getSession().setAttribute("feedId",feedId);
+	request.getSession().setAttribute("responseHtmlBody", null);
 	feedTitle="<New Feed>";
 }
 
@@ -132,13 +135,24 @@ repeatableSearchPattern=<%=repeatableSearchPattern %><br>
 	
 	<%if (url != null) {	
 		try{
+			//responseHtmlBody = ServerUtils.convertStringToUTF8(Exec.getURLContent(url));
 			responseHtmlBody = Exec.getURLContent(url);
 		}catch(Exception e){
 			e.printStackTrace();
 			out.print("<font color=red>Couldn't get content from the URL</font>");
 			//response.sendRedirect("Feed.jsp");
 		}
+		try{
+			feedTitle=Exec.getTitleFromHtmlBody(responseHtmlBody);
+		}catch(Exception e){
+			e.printStackTrace();
+			out.print("<font color=red>Couldn't get content from the URL</font>");
+		}
 		request.getSession().setAttribute("responseHtmlBody", responseHtmlBody);
+		//System.out.println("==================>>> feedTitle: " + feedTitle);
+		if(request.getSession().getAttribute("feedTitle")==null && feedTitle!=null){
+			request.getSession().setAttribute("feedTitle", feedTitle);
+		};
 		
 	%>
 				<jsp:include page="Step1ShowRetreivedSourceCodeOfPage.jsp">

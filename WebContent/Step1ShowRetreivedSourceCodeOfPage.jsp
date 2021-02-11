@@ -16,6 +16,7 @@
 		//
 		String responseHtmlBody = request.getParameter("responseHtmlBody");
 		String feedTitle = Exec.getTitleFromHtmlBody(responseHtmlBody);
+		request.getSession().setAttribute("feedTitle", feedTitle);
 		System.out.println("[point 8] feedTitle="+feedTitle);
 		if(feedTitle!=null){
 			request.getSession().setAttribute("feedTitle", feedTitle);

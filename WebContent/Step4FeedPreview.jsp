@@ -112,9 +112,10 @@ String url=request.getParameter("url");
 															for (int i = 1; i <= itemFromHtmlBody.length(); i++) {
 																try{
 																System.out.println("count: " + i + " [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
+																
 																itemTitle=itemTitle.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
 																itemLink=itemLink.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
-																itemLink=Exec.checkItemURLForFullness(url, itemLink);
+																//itemLink=Exec.checkItemURLForFullness(url, itemLink);
 																itemContent=itemContent.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
 																System.out.println("[point 10] itemTitle="+itemTitle +", itemTitleTemplate="+itemTitleTemplate+", [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
 																System.out.println("[point 10] itemLink="+itemLink +", itemLinkTemplate="+itemLinkTemplate+", [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
@@ -136,7 +137,7 @@ String url=request.getParameter("url");
 															_item.setTitle(itemTitle);
 													        _item.setLink(itemLink);
 													       // _item.setLink(Exec.checkItemURLForFullness(url, itemLink));
-													        System.out.println("CDATA: " + _item.getDescription());
+													        //System.out.println("CDATA: " + _item.getDescription());
 
 													        _item.setDescription(itemContent);
 													        //_item.setDescription("<![CDATA["+itemContent+"]]>");

@@ -38,6 +38,7 @@ import ru.kvaga.rss.feedaggr.FeedAggrException.SplitHTMLContent;
 import ru.kvaga.rss.feedaggr.objects.Channel;
 import ru.kvaga.rss.feedaggr.objects.GUID;
 import ru.kvaga.rss.feedaggr.objects.RSS;
+import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 
 public class Exec {
 
@@ -48,12 +49,14 @@ public class Exec {
 		
 		
 //		String urlText = "https://www.drive2.ru/experience/kia/g3688/";
-		String urlText = "https://journal.open-broker.ru/";
+//		String urlText = "https://journal.open-broker.ru/";
+		String urlText = "https://4brain.ru/blog/";
 
 		String repeatableSearchPattern = "<div class=\"c-post-preview__title\">{*}<a class=\"c-link c-link--text\" href=\"{%}\"  rel=\"noopener\" target=\"_blank\" data-ym-target=\"post_title\">{%}</a>{*}<div class=\"c-post-preview__lead\">{%}</div>{*}<div class=\"c-post-preview__comments\">";
 
-		String responseHtmlBody = getURLContent(urlText);
+		String responseHtmlBody = Exec.getTitleFromHtmlBody(getURLContent(urlText));
 
+		System.out.println(responseHtmlBody.length()>150 ? responseHtmlBody.substring(0,150) : responseHtmlBody);
 		if(true) {
 			System.exit(0);
 		}
@@ -108,6 +111,7 @@ public class Exec {
 			Pattern pattern = Pattern.compile(repeatableSearchPattern);
 			Matcher matcher = pattern.matcher(s);
 			if (matcher.find()) {
+				log.debug("Item found");
 //				System.err.println("[0]: " + matcher.group(0));
 				Item item = new Item();
 				for(int j=1;j<=countOfPercentItemsInSearchPattern;j++) {
@@ -117,7 +121,7 @@ public class Exec {
 				
 				ll.add(item);
 			} else {
-				log.warn("Couldn't find item in the piece ["+s+"] of html content by regex expression ["+repeatableSearchPattern+"] and substringForHtmlBodySplit ["+substringForHtmlBodySplit+"]");
+				log.warn("Couldn't find item in the piece ["+(s.length()>=repeatableSearchPattern.length()?s.substring(0,repeatableSearchPattern.length()-1):s)+"] of html content by regex expression ["+repeatableSearchPattern+"] and substringForHtmlBodySplit ["+substringForHtmlBodySplit+"]");
 				
 				
 			}
@@ -315,7 +319,7 @@ public static String checkItemURLForFullness(String feedURL, String itemURL) thr
 	String finalURL=null;
 	
 	if(itemURL.startsWith("http:") || itemURL.startsWith("https:")) {
-		log.error("Item URL doesn't start from any 'http:' or 'https:'");
+		log.debug("Item URL ["+itemURL+"] starts from any 'http:' or 'https:'. Nothing to do");
 		return itemURL;
 	}
 	log.debug("Item URL ["+itemURL+"] doesn't contain http or https prefix and we must to add prefix (left path of URL) using feed URL ["+feedURL+"]");

@@ -27,9 +27,9 @@ if(cookies!=null){
 }
 %>
 	<h3>Hi <%= userName %>, Login successful.</h3>
-	User=<%= user %>
+	<!--  User=<%= user %> -->
 	<br>
-	Your SessionID=<%= sessionID %>
+	<!--  Your SessionID=<%= sessionID %>-->
 	<br>
 	<br>
 	<a href="CheckoutPage.jsp">Checkout Page</a>

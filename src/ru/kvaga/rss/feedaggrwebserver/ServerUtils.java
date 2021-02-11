@@ -2,11 +2,14 @@ package ru.kvaga.rss.feedaggrwebserver;
 
 import java.io.File;
 import java.io.StringWriter;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -280,5 +283,16 @@ public class ServerUtils {
 	            }
 	        }
 	    return sb.toString();
+	}
+	
+	public static Object getSessionAttribute(HttpServletRequest request, String attr) {
+		return request.getAttribute(attr);
+	}
+	
+	public static String convertStringToUTF8(String str) {
+//		ByteBuffer buffer = StandardCharsets.UTF_8.encode(str); 
+//		return StandardCharsets.UTF_8.decode(buffer).toString();
+		byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
+		return new String(bytes, StandardCharsets.UTF_8);
 	}
 }
