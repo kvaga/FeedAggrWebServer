@@ -16,7 +16,9 @@ import ru.kvaga.rss.feedaggr.Exec;
 
 @WebListener
 public class BackgroudJobManager implements ServletContextListener{
-	private ScheduledExecutorService scheduler;
+	private ScheduledExecutorService scheduler1;
+	private ScheduledExecutorService scheduler2;
+
 	final static Logger log = LogManager.getLogger(BackgroudJobManager.class);
 
 	public void contextInitialized (ServletContextEvent event) {
@@ -25,11 +27,17 @@ public class BackgroudJobManager implements ServletContextListener{
 //		for(Object prop : System.getProperties().entrySet()) {
 //			log.debug("===========: "+System.getProperty("CATALINA_BASE"));
 //		}
-		scheduler = Executors.newSingleThreadScheduledExecutor();
+		scheduler1 = Executors.newSingleThreadScheduledExecutor();
+		scheduler2 = Executors.newSingleThreadScheduledExecutor();
+
 //		scheduler.scheduleAtFixedRate(new FeedsUpdateJob(event.getServletContext()), 0, 15, TimeUnit.SECONDS);
-		scheduler.scheduleAtFixedRate(new FeedsUpdateJob(event.getServletContext()), 0, 4, TimeUnit.HOURS);
+/*		
+		scheduler1.scheduleAtFixedRate(new FeedsUpdateJob(event.getServletContext()), 0, 1, TimeUnit.HOURS);
 		log.info("BackgroudJobManager started with jobs [FeedsUpdateJob for each 4 hours]");
 		
+		scheduler2.scheduleAtFixedRate(new CompositeFeedsUpdateJob(), 0, 1, TimeUnit.HOURS);
+		log.info("BackgroudJobManager started with jobs [MergeFeeds for each 4 hours]");
+*/
 //		System.out.println("BackgroudJobManager started: " + event);
 //		Scheduler scheduler = new Scheduler();
 //        scheduler.schedule("7 8-22 * * *", new Task());
@@ -40,5 +48,8 @@ public class BackgroudJobManager implements ServletContextListener{
 
     public void contextDestroyed(ServletContextEvent arg0) {
 		log.info("BackgroudJobManager destroyed: " + arg0);
-		scheduler.shutdownNow();    }
+//		scheduler1.shutdownNow();    
+		scheduler2.shutdownNow();    
+
+		}
 }

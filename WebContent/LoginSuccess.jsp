@@ -26,13 +26,15 @@ if(cookies!=null){
 	}
 }
 %>
-	<h3>Hi <%= userName %>, Login successful.</h3>
+	<h3>Hi <%= userName %>, Login successful. <%= request.getSession().getAttribute("login")%></h3>
 	<!--  User=<%= user %> -->
 	<br>
 	<!--  Your SessionID=<%= sessionID %>-->
 	<br>
 	<br>
 	<a href="CheckoutPage.jsp">Checkout Page</a>
+	<br>
+		<a href="Test">Checkout Page</a>
 	<br>
 	<hr>
 	<jsp:include page="/FeedsList.jsp">

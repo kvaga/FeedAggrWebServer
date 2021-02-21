@@ -15,14 +15,14 @@ import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 @XmlRootElement
 public class User {
 	private String name;
-	private Set<UserFeed> userFeeds;
+	private Set<UserFeed> userFeeds=new HashSet<UserFeed>();
+	private Set<CompositeUserFeed> compositeUserFeeds=new HashSet<CompositeUserFeed>();
 
 	public User() {
 		
 	}
 	public User(String name) {
 		this.name=name;
-		this.userFeeds=new HashSet<UserFeed>();
 	};
 	public User(String name, HashSet<UserFeed> userFeeds) {
 		this.name=name;
@@ -42,6 +42,33 @@ public class User {
 	}
 	public void setUserFeeds(Set<UserFeed> userFeeds) {
 		this.userFeeds = userFeeds;
+	}
+	
+	@XmlElement(name="compositeUserFeed")
+	public Set<CompositeUserFeed> getCompositeUserFeeds() {
+		return compositeUserFeeds;
+	}
+	public void setCompositeUserFeeds(Set<CompositeUserFeed> compositeUserFeeds) {
+		this.compositeUserFeeds = compositeUserFeeds;
+	}
+	
+	
+	public boolean containsFeedId(String feedId) {
+		for(UserFeed userFeed : getUserFeeds()) {
+			if(userFeed.getId().equals(feedId)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean containsCompositeFeedId(String compositeFeedId) {
+		for(CompositeUserFeed userFeed : getCompositeUserFeeds()) {
+			if(userFeed.getId().equals(compositeFeedId)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public static void main(String args[]) throws JAXBException {

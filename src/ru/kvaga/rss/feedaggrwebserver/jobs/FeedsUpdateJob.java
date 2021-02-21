@@ -165,39 +165,24 @@ public class FeedsUpdateJob implements Runnable {
 	
 	
 	public void run() {
-//		System.out.println("=========== FeedsUpdateJob ===========");
 		log.info("Try to start Job ");
-//		log.info("Job started");
-		
-//		test();
 		
 		try {
 			updateFeeds();
 			log.debug("Job finished");
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
 			log.error(e);
 		} catch (SplitHTMLContent e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
 			log.error(e);
 		} catch (GetURLContentException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
 			log.error(e);
 		} catch (GetSubstringForHtmlBodySplitException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			log.error(e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			log.error(e);
 		}catch(Exception e) {
 			log.error("Exception",e);
 		}
-//		System.out.println("------------------");
 	}
 
 }

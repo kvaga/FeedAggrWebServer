@@ -11,8 +11,9 @@
 <title>Feeds List</title>
 </head>
 <body>
-Your feeds are listed below. If you have other feeds, <a href="Feed.jsp?action=new">add</a> them to your account.
+Your feeds are listed below. If you have other feeds, <a href="Feed.jsp?action=new">add</a> them to your account. Or <a href="mergeRSS.jsp">create Composite</a> rss feed
 <br>
+<h3>Common feeds</h3>
 <%
 //final static org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger();
 
@@ -20,6 +21,24 @@ Your feeds are listed below. If you have other feeds, <a href="Feed.jsp?action=n
 
 for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
 //	System.out.println(feedOnServer.getXmlFile());
+	if(feedOnServer.getId().startsWith("composite")) continue;
+	out.println("<br>");	 
+	RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
+	out.println("<a href=\"showFeed?feedId="+feedOnServer.getId() +"\">"+rssFeed.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+feedOnServer.getId()+"\">Delete</a>]");
+	out.println("<br>");	 
+	out.println("Source URL: "+rssFeed.getChannel().getLink());
+	out.println("<br>");	 
+	out.println("Last updated: " + rssFeed.getChannel().getLastBuildDate());
+	out.println("<br><br>");	 
+//	ObjectsUtills.printXMLObject(rssFeed);
+}
+%>
+<br>
+<h3>Composite feeds</h3>
+<%
+for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
+//	System.out.println(feedOnServer.getXmlFile());
+	if(!feedOnServer.getId().startsWith("composite")) continue;
 	out.println("<br>");	 
 	RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
 	out.println("<a href=\"showFeed?feedId="+feedOnServer.getId() +"\">"+rssFeed.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+feedOnServer.getId()+"\">Delete</a>]");
