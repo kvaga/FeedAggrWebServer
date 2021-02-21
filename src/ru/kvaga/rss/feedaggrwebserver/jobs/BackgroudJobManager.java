@@ -31,13 +31,13 @@ public class BackgroudJobManager implements ServletContextListener{
 		scheduler2 = Executors.newSingleThreadScheduledExecutor();
 
 //		scheduler.scheduleAtFixedRate(new FeedsUpdateJob(event.getServletContext()), 0, 15, TimeUnit.SECONDS);
-/*		
+	
 		scheduler1.scheduleAtFixedRate(new FeedsUpdateJob(event.getServletContext()), 0, 1, TimeUnit.HOURS);
 		log.info("BackgroudJobManager started with jobs [FeedsUpdateJob for each 4 hours]");
 		
 		scheduler2.scheduleAtFixedRate(new CompositeFeedsUpdateJob(), 0, 1, TimeUnit.HOURS);
 		log.info("BackgroudJobManager started with jobs [MergeFeeds for each 4 hours]");
-*/
+
 //		System.out.println("BackgroudJobManager started: " + event);
 //		Scheduler scheduler = new Scheduler();
 //        scheduler.schedule("7 8-22 * * *", new Task());
@@ -48,7 +48,7 @@ public class BackgroudJobManager implements ServletContextListener{
 
     public void contextDestroyed(ServletContextEvent arg0) {
 		log.info("BackgroudJobManager destroyed: " + arg0);
-//		scheduler1.shutdownNow();    
+		scheduler1.shutdownNow();    
 		scheduler2.shutdownNow();    
 
 		}
