@@ -264,7 +264,7 @@ public class Exec {
 									String itemTitleTemplate,
 									String itemLinkTemplate,
 									String itemContentTemplate
-	) throws NoSuchAlgorithmException, SplitHTMLContent, CommonException {
+	) throws Exception {
 		int countOfPercentItemsInSearchPattern = Exec.countWordsUsingSplit(repeatableSearchPattern, "{%}");
 		String feedTitle = Exec.getTitleFromHtmlBody(responseHtmlBody);
 		RSS rss = new RSS();
@@ -291,10 +291,14 @@ public class Exec {
 				itemLink=itemLinkTemplate;
 				itemContent=itemContentTemplate;
 
+				int itemLinkNumber = Exec.getNumberFromItemLink(itemLink);
+				
 				//цикл для замены всех {%Х} на значения
 					for (int i = 1; i <= itemFromHtmlBody.length(); i++) {
 						itemTitle=itemTitle.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
 						itemLink=itemLink.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
+						itemLink=Exec.checkItemURLForFullness(url, itemLink);
+						itemContent=itemContent.replaceAll("\\{%"+itemLinkNumber+"}", itemLink);											
 						itemContent=itemContent.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
 					}
 					
@@ -311,7 +315,15 @@ public class Exec {
 	return rss;
 	}
 	
-
+	public static int getNumberFromItemLink(String itemLink) throws Exception {
+		Pattern pattern = Pattern.compile("\\{%(\\d+)}");
+		Matcher m = pattern.matcher(itemLink);
+		if(m.matches()) {
+			log.debug("Found number ["+m.group(1)+"] in the item link ["+itemLink+"]");
+			return Integer.parseInt(m.group(1));
+		}
+		throw new Exception("Can't find number in the item link ["+itemLink+"]");
+	}
 
 public static String checkItemURLForFullness(String feedURL, String itemURL) throws CommonException {
 	String leftPathPatternText="http[s]{0,1}:\\/\\/.*?\\/";

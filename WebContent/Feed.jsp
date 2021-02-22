@@ -47,7 +47,6 @@ String feedId=(String)request.getSession().getAttribute("feedId");
 //String feedTitle=(String)request.getSession().getAttribute("feedTitle");
 String feedTitle=request.getSession().getAttribute("feedTitle")==null?null:(String)request.getSession().getAttribute("feedTitle");
 
-String url= (String)request.getSession().getAttribute("url");
 //String responseHtmlBody = request.getParameter("responseHtmlBody");
 String responseHtmlBody = (String)request.getSession().getAttribute("responseHtmlBody");
 String repeatableSearchPattern=(String)request.getSession().getAttribute("repeatableSearchPattern");
@@ -60,8 +59,20 @@ if(request.getParameter("action")!=null && request.getParameter("action").equals
 	feedId=ServerUtils.getNewFeedId();
 	request.getSession().setAttribute("feedId",feedId);
 	request.getSession().setAttribute("responseHtmlBody", null);
+	
+	request.getSession().setAttribute("url", null);
+	request.getSession().setAttribute("dataClippedBol", null);
+	enableStep4FeedPreview=null;
+	responseHtmlBody=null;
+	repeatableSearchPattern=null;
+	feedDescription=null;
+	itemTitleTemplate=null;
+	itemLinkTemplate=null;
+	itemContentTemplate=null;
+	
 	feedTitle="<New Feed>";
 }
+String url= (String)request.getSession().getAttribute("url");
 
 
 %>

@@ -1,0 +1,5 @@
+#/bin/bash
+# crontab -e 
+#0 * * * 1-7 /opt/tomcat/apache-tomcat-9.0.41/data/backup_data.sh
+path=/opt/tomcat/apache-tomcat-9.0.41/data
+tar -zcvf $path/backup_data.$(date '+%Y-%m-%d_%H-%M-%S').tar.gz $path/users/ $path/feeds/

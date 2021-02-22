@@ -53,7 +53,7 @@ public class FeedsUpdateJob implements Runnable {
 //			log.error("Incorrect URL", e);
 //		}
 	}
-	void updateFeeds() throws NoSuchAlgorithmException, SplitHTMLContent, GetURLContentException, GetSubstringForHtmlBodySplitException, IOException, CommonException {
+	void updateFeeds() throws Exception {
 //		URL urlLog = org.apache.logging.log4j.LogManager.class.getResource("/log4j.properties");
 //		System.out.println("==========>>>" + urlLog);
 //		log.info("==========----------------------------------------------------------------------------------------------------------------------------->>>" + urlLog);
@@ -137,6 +137,7 @@ public class FeedsUpdateJob implements Runnable {
 					// Сравниванием списки item из Web и Файла
 					for(ru.kvaga.rss.feedaggr.objects.Item itemFromWeb : rssFromWeb.getChannel().getItem()) {
 						boolean foundItemBol=false;
+						itemFromWeb.setLink(Exec.checkItemURLForFullness(url, itemFromWeb.getLink()));
 						for(ru.kvaga.rss.feedaggr.objects.Item itemFromFile:rssFromFile.getChannel().getItem()) {
 							if(itemFromWeb.getGuid().getValue().equals(itemFromFile.getGuid().getValue())) {
 								foundItemBol=true;

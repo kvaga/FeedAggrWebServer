@@ -108,6 +108,8 @@ String url=request.getParameter("url");
 														itemTitle=itemTitleTemplate;
 														itemLink=itemLinkTemplate;
 														itemContent=itemContentTemplate;
+														int itemLinkNumber = Exec.getNumberFromItemLink(itemLink);
+														
 														//цикл для замены всех {%Х} на значения
 															for (int i = 1; i <= itemFromHtmlBody.length(); i++) {
 																try{
@@ -115,14 +117,16 @@ String url=request.getParameter("url");
 																
 																itemTitle=itemTitle.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
 																itemLink=itemLink.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
+																itemLink=Exec.checkItemURLForFullness(url, itemLink);
+																itemContent=itemContent.replaceAll("\\{%"+itemLinkNumber+"}", itemLink);											
 																//itemLink=Exec.checkItemURLForFullness(url, itemLink);
 																itemContent=itemContent.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
-																System.out.println("[point 10] itemTitle="+itemTitle +", itemTitleTemplate="+itemTitleTemplate+", [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
-																System.out.println("[point 10] itemLink="+itemLink +", itemLinkTemplate="+itemLinkTemplate+", [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
-																System.out.println("[point 10] itemContent="+itemContent +", itemContentTemplate="+itemContentTemplate+", [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
 																}catch(Exception e){
 																	e.printStackTrace();
 																}
+																System.out.println("[point 10] itemTitle="+itemTitle +", itemTitleTemplate="+itemTitleTemplate+", [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
+																System.out.println("[point 10] itemLink="+itemLink +", itemLinkTemplate="+itemLinkTemplate+", [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
+																System.out.println("[point 10] itemContent="+itemContent +", itemContentTemplate="+itemContentTemplate+", [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
 																
 																//out.println("<nobr><span class=\"param\">{%" + i + "}</span> = " + item.get(i) + "</nobr><br>");
 															}
