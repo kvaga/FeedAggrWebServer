@@ -79,7 +79,10 @@
 &lt;br&gt;
 &lt;center&gt;&lt;font size="36"&gt;&lt;a href="{%1}"&gt;============ Link ============&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;
 &lt;br&gt;
-&lt;center&gt;&lt;font size="36"&gt;&lt;a href="{%1}"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;</textarea></td>
+&lt;center&gt;&lt;font size="36"&gt;&lt;a href="{%1}"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;
+&lt;br&gt;
+<%=request.getSession().getAttribute("feedTitle") %>
+</textarea></td>
 								<td style="padding-left: 5px">
 									<div class="small"
 										style="text-align: center; line-height: 14pt">
