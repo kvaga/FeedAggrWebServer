@@ -79,7 +79,7 @@ public class ObjectsUtils {
 	}
 
 	// Save xml file from Object
-	public static void saveXMLObjectToFile(Object object, Class _class, File file) throws JAXBException {
+	public static synchronized void saveXMLObjectToFile(Object object, Class _class, File file) throws JAXBException {
 //		ObjectsUtils.saveXMLObjectToFile(rss, rss.getClass(), file);
         JAXBContext jc = JAXBContext.newInstance(_class);
         Marshaller m = jc.createMarshaller();
@@ -87,12 +87,12 @@ public class ObjectsUtils {
         m.marshal(object, file);
 	}
 	// Read XML object from file, then print this object
-    public static Object getXMLObjectFromXMLFile(String xmlFile, Object object) throws JAXBException {
+    public static synchronized Object getXMLObjectFromXMLFile(String xmlFile, Object object) throws JAXBException {
 	    return getXMLObjectFromXMLFile(new File(xmlFile), object);
 	}
     
  // Read XML object from file, then print this object
-    public static Object getXMLObjectFromXMLFile(File xmlFile, Object object) throws JAXBException {
+    public static synchronized Object getXMLObjectFromXMLFile(File xmlFile, Object object) throws JAXBException {
     	JAXBContext jaxbContext;
 //		File feedXml = new File(xmlFile);
 	    jaxbContext = JAXBContext.newInstance(object.getClass());              
@@ -101,7 +101,7 @@ public class ObjectsUtils {
 	    return obj;
 	}
     
-	public static void printXMLObject(Object object) throws JAXBException {
+	public static synchronized void printXMLObject(Object object) throws JAXBException {
     	// For printing
 	    StringWriter writer = new StringWriter();
 	    JAXBContext jc = JAXBContext.newInstance(object.getClass());
@@ -112,7 +112,7 @@ public class ObjectsUtils {
     }
     
 	// Read XML object from file, then print this object
-    private static void readXMLObjectFromXMLFileAndPrint(String xmlFile) {
+    private static synchronized void readXMLObjectFromXMLFileAndPrint(String xmlFile) {
     	JAXBContext jaxbContext;
 		try
 		{

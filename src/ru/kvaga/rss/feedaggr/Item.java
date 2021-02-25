@@ -17,4 +17,14 @@ public class Item{
 	public int length() {
 		return percentItemsMassive.size();
 	}
+	
+	public String getContentForPrinting() {
+		StringBuilder sb = new StringBuilder();
+		
+		for(int i=1; i<= percentItemsMassive.size(); i++) {
+			sb.append("Item["+i+"]="+percentItemsMassive.get(i)+"\n");
+		}
+		
+		return sb.toString();
+	}
 }

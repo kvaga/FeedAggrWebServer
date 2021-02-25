@@ -80,7 +80,7 @@ public class Exec {
 		//		System.err.println(repeatableSearchPattern);
 	}
 
-	public static LinkedList<Item> getItems(
+	public static synchronized LinkedList<Item> getItems(
 			String responseHtmlBody, 
 			String substringForHtmlBodySplit, 
 			String repeatableSearchPattern,
@@ -96,7 +96,8 @@ public class Exec {
 		LinkedList<Item> ll = new LinkedList<Item>();
 		log.debug("substringForHtmlBodySplit="+substringForHtmlBodySplit);
 		log.debug("is response html body null? => "+(responseHtmlBody==null?null:"not null"));
-
+		log.debug("countOfPercentItemsInSearchPattern="+countOfPercentItemsInSearchPattern);
+		log.debug("repeatableSearchPattern="+repeatableSearchPattern);
 		for (String s : splitHtmlContent(responseHtmlBody, substringForHtmlBodySplit)) {
 			if (i == 0) {
 				i++;
@@ -111,14 +112,19 @@ public class Exec {
 			Pattern pattern = Pattern.compile(repeatableSearchPattern);
 			Matcher matcher = pattern.matcher(s);
 			if (matcher.find()) {
-				log.debug("Item found");
+//				log.debug("Item found");
 //				System.err.println("[0]: " + matcher.group(0));
 				Item item = new Item();
-				for(int j=1;j<=countOfPercentItemsInSearchPattern;j++) {
-					item.add(j,matcher.group(j));
+				
+				log.debug("GetItems: matcher groups: ");
+
+				for(int j=1;j<=/*countOfPercentItemsInSearchPattern*/ matcher.groupCount();j++) {
+					log.debug("GetItems: matcher group["+j+"]: " + matcher.group(j));
+
+					item.add(j,matcher.group(j).replaceAll("\\$", "(dollar sign)"));
 //					System.err.println("{%"+j+"}: " +item.get(j));
 				}
-				
+				log.debug("GetItems: Added item " + item.getContentForPrinting() + " to a list \n ");
 				ll.add(item);
 			} else {
 				log.warn("Couldn't find item in the piece ["+(s.length()>=repeatableSearchPattern.length()?s.substring(0,repeatableSearchPattern.length()-1):s)+"] of html content by regex expression ["+repeatableSearchPattern+"] and substringForHtmlBodySplit ["+substringForHtmlBodySplit+"]");
@@ -132,7 +138,7 @@ public class Exec {
 	}
 
 	
-	public static int countWordsUsingSplit(String input, String splitItem) { 
+	public static synchronized int countWordsUsingSplit(String input, String splitItem) { 
 		
 		if (input == null || input.isEmpty()) { 
 			return 0; 
@@ -142,7 +148,7 @@ public class Exec {
 	}
 
 
-	public static String getTitleFromHtmlBody(String responseHtmlBody) {
+	public static synchronized String getTitleFromHtmlBody(String responseHtmlBody) {
 		Pattern pattern = Pattern.compile(".*<html.*><head.*>.*<title.*>(?<title>.*)<\\/title>.*<\\/head>");
 		responseHtmlBody = responseHtmlBody.replaceAll("\r\n", "").replaceAll("\n", "");
 		Matcher matcher = pattern.matcher(responseHtmlBody);
@@ -153,7 +159,7 @@ public class Exec {
 		}
 	}
 		
-	public static String getSubstringForHtmlBodySplit(String repeatableSearchPattern) throws FeedAggrException.GetSubstringForHtmlBodySplitException {
+	public static synchronized String getSubstringForHtmlBodySplit(String repeatableSearchPattern) throws FeedAggrException.GetSubstringForHtmlBodySplitException {
 		int index = -1;
 		int indexOfAsterisk = repeatableSearchPattern.indexOf("{*}");
 		int indexOfPercent = repeatableSearchPattern.indexOf("{%}");
@@ -168,7 +174,7 @@ public class Exec {
 		return repeatableSearchPattern.substring(0, index);
 	}
 
-	static String[] splitHtmlContent(String htmlBody, String substringForHtmlBodySplit) throws FeedAggrException.SplitHTMLContent {
+	static synchronized String[] splitHtmlContent(String htmlBody, String substringForHtmlBodySplit) throws FeedAggrException.SplitHTMLContent {
 //		System.err.println("repeatable search: " + substringForHtmlBodySplit);
 		log.debug("Splitting html content [is html content null: " + (htmlBody==null? "null":"not null")+"]");
 		String splittedItems[]=htmlBody.split(substringForHtmlBodySplit);
@@ -180,7 +186,7 @@ public class Exec {
 		return splittedItems;
 	}
 
-	public static String getURLContent(String urlText) throws FeedAggrException.GetURLContentException {
+	public static synchronized String getURLContent(String urlText) throws FeedAggrException.GetURLContentException {
 		String body = null;
 		String charset; // You should determine it based on response header.
 		HttpURLConnection con=null;
@@ -257,7 +263,7 @@ public class Exec {
 		}
 	}
 
-	public static RSS getRSSFromWeb(String url, 
+	public static synchronized RSS getRSSFromWeb(String url, 
 									String responseHtmlBody, 
 									String substringForHtmlBodySplit, 
 									String repeatableSearchPattern,
@@ -293,8 +299,11 @@ public class Exec {
 
 				int itemLinkNumber = Exec.getNumberFromItemLink(itemLink);
 				
+				log.debug(itemFromHtmlBody.getContentForPrinting());
+			log.debug("=====");
 				//цикл для замены всех {%Х} на значения
 					for (int i = 1; i <= itemFromHtmlBody.length(); i++) {
+						log.debug("in cycle: itemFromHtmlBody.get("+i+")="+itemFromHtmlBody.get(i));
 						itemTitle=itemTitle.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
 						itemLink=itemLink.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
 						itemLink=Exec.checkItemURLForFullness(url, itemLink);
@@ -315,7 +324,7 @@ public class Exec {
 	return rss;
 	}
 	
-	public static int getNumberFromItemLink(String itemLink) throws Exception {
+	public static synchronized int getNumberFromItemLink(String itemLink) throws Exception {
 		Pattern pattern = Pattern.compile("\\{%(\\d+)}");
 		Matcher m = pattern.matcher(itemLink);
 		if(m.matches()) {
@@ -325,13 +334,13 @@ public class Exec {
 		throw new Exception("Can't find number in the item link ["+itemLink+"]");
 	}
 
-public static String checkItemURLForFullness(String feedURL, String itemURL) throws CommonException {
+public static synchronized String checkItemURLForFullness(String feedURL, String itemURL) throws CommonException {
 	String leftPathPatternText="http[s]{0,1}:\\/\\/.*?\\/";
 	String leftPathOfFeedURL=null;
 	String finalURL=null;
 	
 	if(itemURL.startsWith("http:") || itemURL.startsWith("https:")) {
-		log.debug("Item URL ["+itemURL+"] starts from any 'http:' or 'https:'. Nothing to do");
+//		log.debug("Item URL ["+itemURL+"] starts from any 'http:' or 'https:'. Nothing to do");
 		return itemURL;
 	}
 	log.debug("Item URL ["+itemURL+"] doesn't contain http or https prefix and we must to add prefix (left path of URL) using feed URL ["+feedURL+"]");

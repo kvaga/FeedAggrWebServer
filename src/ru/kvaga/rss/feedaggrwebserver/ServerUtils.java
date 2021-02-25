@@ -49,7 +49,7 @@ public class ServerUtils {
 		return "" + new Date().getTime();
 	}
 
-	public static void deleteUserFeedByIdFromUser(String feedId, String userName) throws Exception {
+	public static synchronized void deleteUserFeedByIdFromUser(String feedId, String userName) throws Exception {
 		log.debug("Trying to delete feed id [" + feedId + "] for user [" + userName + "]");
 		HashSet<UserFeed> userFeedNew = new HashSet<UserFeed>();
 		File userConfigFile = new File(ConfigMap.usersPath + "/" + userName + ".xml");
@@ -66,7 +66,7 @@ public class ServerUtils {
 		ObjectsUtils.saveXMLObjectToFile(user, user.getClass(), userConfigFile);
 		log.debug("File [" + userConfigFile + "] successfully updated");
 	}
-	public static void deleteCompositeUserFeedByIdFromUser(String compositeFeedId, String userName) throws Exception {
+	public static synchronized void deleteCompositeUserFeedByIdFromUser(String compositeFeedId, String userName) throws Exception {
 		log.debug("Trying to delete composite feed id [" + compositeFeedId + "] for user [" + userName + "]");
 		HashSet<CompositeUserFeed> userFeedNew = new HashSet<CompositeUserFeed>();
 		File userConfigFile = new File(ConfigMap.usersPath + "/" + userName + ".xml");
@@ -84,7 +84,7 @@ public class ServerUtils {
 		log.debug("File [" + userConfigFile + "] successfully updated");
 	}
 
-	public static ArrayList<UserFeed> getUserFeedListByUser(String userName) throws Exception {
+	public static synchronized ArrayList<UserFeed> getUserFeedListByUser(String userName) throws Exception {
 //		String dataDirText="WebContent/data";
 //		System.out.println("CurrentDir: " + userDirPath);
 //		String userDirText=String.format("%s/%s", dataDirText,user);
@@ -101,7 +101,7 @@ public class ServerUtils {
 		return (ArrayList<UserFeed>) user.getUserFeeds();
 	}
 
-	public static ArrayList<Feed> getFeedsList(String realPath) throws GetFeedsListByUser, JAXBException {
+	public static synchronized ArrayList<Feed> getFeedsList(String realPath) throws GetFeedsListByUser, JAXBException {
 		/*
 		 * // String dataDirText="WebContent/data"; // System.out.println("CurrentDir: "
 		 * + userDirPath); // String userDirText=String.format("%s/%s",
@@ -120,7 +120,7 @@ public class ServerUtils {
 		return getFeedsList(new File(realPath));
 	}
 
-	public static ArrayList<Feed> getFeedsList(File dir) throws GetFeedsListByUser, JAXBException {
+	public static synchronized ArrayList<Feed> getFeedsList(File dir) throws GetFeedsListByUser, JAXBException {
 //		String dataDirText="WebContent/data";
 //		System.out.println("CurrentDir: " + userDirPath);
 //		String userDirText=String.format("%s/%s", dataDirText,user);
@@ -144,7 +144,7 @@ public class ServerUtils {
 		return al;
 	}
 
-	public static Feed getFeedById(String feedId) throws GetFeedsListByUser, JAXBException {
+	public static synchronized Feed getFeedById(String feedId) throws GetFeedsListByUser, JAXBException {
 		log.debug("Searching Feed by id [" + feedId + "]");
 		for (Feed feed : getFeedsList(ConfigMap.feedsPath)) {
 			log.debug("f_id: " + feed.getId());
@@ -157,11 +157,11 @@ public class ServerUtils {
 		return null;
 	}
 
-	public static Feed getFeedByUserAndId(String userName, String feedId) throws Exception {
+	public static synchronized Feed getFeedByUserAndId(String userName, String feedId) throws Exception {
 		throw new Exception("Unimplemented method");
 	}
 
-	public static void deleteFeed(String feedId, String userName) throws Exception {
+	public static synchronized void deleteFeed(String feedId, String userName) throws Exception {
 		if(feedId.startsWith("composite_")) {
 			deleteCompositeUserFeedByIdFromUser(feedId, userName);
 		}else {
@@ -195,7 +195,7 @@ public class ServerUtils {
 //		}
 	}
 
-	public static final String escapeHTML(String s) {
+	public static synchronized final String escapeHTML(String s) {
 		StringBuffer sb = new StringBuffer();
 		int n = s.length();
 		for (int i = 0; i < n; i++) {
@@ -340,7 +340,7 @@ public class ServerUtils {
 		return sb.toString();
 	}
 
-	public static String stringToHTMLString(String string) {
+	public static synchronized  String stringToHTMLString(String string) {
 		StringBuffer sb = new StringBuffer(string.length());
 		// true if last char was blank
 		boolean lastWasBlankChar = false;
@@ -393,18 +393,18 @@ public class ServerUtils {
 		return sb.toString();
 	}
 
-	public static Object getSessionAttribute(HttpServletRequest request, String attr) {
+	public static synchronized  Object getSessionAttribute(HttpServletRequest request, String attr) {
 		return request.getAttribute(attr);
 	}
 
-	public static String convertStringToUTF8(String str) {
+	public static synchronized  String convertStringToUTF8(String str) {
 //		ByteBuffer buffer = StandardCharsets.UTF_8.encode(str); 
 //		return StandardCharsets.UTF_8.decode(buffer).toString();
 		byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
 		return new String(bytes, StandardCharsets.UTF_8);
 	}
 
-	public static ArrayList<File> getAllUserFiles() {
+	public static synchronized  ArrayList<File> getAllUserFiles() {
 		ArrayList<File> al = new ArrayList<File>();
 		for (File file : ConfigMap.usersPath.listFiles()) {
 			al.add(file);
@@ -412,7 +412,7 @@ public class ServerUtils {
 		return al;
 	}
 
-	public static void createCompositeRSS(String userName, String compositeRSSTitle, ArrayList<String> feedIdList)
+	public static synchronized void createCompositeRSS(String userName, String compositeRSSTitle, ArrayList<String> feedIdList)
 			throws Exception {
 		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + userName + ".xml");
 		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
@@ -459,7 +459,7 @@ public class ServerUtils {
 		log.debug("User's ["+userName+"] configuration was successfully saved to the file [" + userFile.getAbsolutePath() + "]");
 	}
 
-	public static void updateCompositeRSSFilesOfUser(String userName) throws JAXBException {
+	public static synchronized void updateCompositeRSSFilesOfUser(String userName) throws JAXBException {
 		log.info("Started proccess updateCompositeRSSFilesOfUser for user ["+userName+"]");
 		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + userName + ".xml");
 		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
@@ -492,7 +492,7 @@ public class ServerUtils {
 	}
 
 	// If compositeRSSFile = null then create a new file
-	public static void mergeRSS(String compositeRSSTitle, String userName, ArrayList<String> feedIdList,
+	public static synchronized void mergeRSS(String compositeRSSTitle, String userName, ArrayList<String> feedIdList,
 			File compositeRSSFile) throws Exception {
 		log.debug("Merge RSS request for feed id list: " + feedIdList + " and user [" + userName + "]");
 		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + userName + ".xml");
