@@ -36,7 +36,7 @@
 						Feed Description<span class="bullet">*</span>: <a
 							class="small help" title="Help on this option"
 							href="javascript:help('feed_description')">?</a><br>
-						<textarea id="feed_description" name="feedDescription" cols="120" rows="10" wrap="soft"><%=request.getSession().getAttribute("feedTitle") %></textarea>
+						<textarea id="feed_description" name="feedDescription" cols="120" rows="10" wrap="soft"><%=request.getSession().getAttribute("feedDescription") %></textarea>
 					</p>
 
 					<h3>RSS item properties</h3>

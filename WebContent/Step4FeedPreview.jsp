@@ -14,7 +14,8 @@
     ru.kvaga.rss.feedaggr.objects.GUID,
     ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils,
     ru.kvaga.rss.feedaggrwebserver.objects.user.User,
-    ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed
+    ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed,
+        ru.kvaga.rss.feedaggrwebserver.objects.user.UserRepeatableSearchPattern
     "%>
 <!DOCTYPE html>
 <html>
@@ -34,8 +35,10 @@ String itemTitleTemplate=request.getParameter("itemTitleTemplate");
 String itemLinkTemplate=request.getParameter("itemLinkTemplate");
 String itemContentTemplate=request.getParameter("itemContentTemplate");
 String feedId=request.getParameter("feedId");
-String feedTitle=request.getParameter("feedTitle");
+String feedTitle=(String)request.getSession().getAttribute("feedTitle");
 String feedDescription=request.getParameter("feedDescription");
+//request.getSession().setAttribute("feedDescription", feedDescription);
+
 String url=request.getParameter("url");
 
 
@@ -65,9 +68,9 @@ String url=request.getParameter("url");
 											href="javascript:resize_height('preview',100)">(+)</a>
 									</div>
 									<div class="myClippedData">
-									Title:<%=feedTitle %><br>
-									Url:<%=url %><br>
-									Description:<%=feedDescription %><br>
+									Title: <%=feedTitle %><br>
+									Url: <%=url %><br>
+									Description: <%=feedDescription %><br>
 									<hr>
 												<%
 												RSS rss = new RSS();
@@ -160,7 +163,9 @@ String url=request.getParameter("url");
 													 rss.setChannel(channel);
 												        File xmlFile=new File(ConfigMap.feedsPath.getAbsoluteFile()+"/"+feedId+".xml");
 												        //File userFile=new File(getServletContext().getRealPath("data/users")+"/"+"kvaga"+".xml");
-												        File userFile=new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+"kvaga"+".xml");
+												        //File userFile=new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+"kvaga"+".xml");
+												       	File userFile=new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+request.getSession().getAttribute("login")+".xml");
+
 												        ObjectsUtils.saveXMLObjectToFile(rss, rss.getClass(), xmlFile);
 												        System.out.println("Object rss ["+rss.getChannel().getTitle()+"] successfully saved to the ["+xmlFile+"] file");
 
@@ -170,12 +175,27 @@ String url=request.getParameter("url");
 														//File file = new File("C:\\eclipseWorkspace\\FeedAggrWebServer\\WebContent\\data\\users\\kvaga.xml");
 														
 												        user.getUserFeeds().add(new UserFeed(feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern));
-														
+														user.getRepeatableSearchPatterns().add(
+																new UserRepeatableSearchPattern(
+																		Exec.getDomainFromURL((String)request.getSession().getAttribute("url")), 
+																		//"<entry>{*}<title>{%}</title>{*}<link rel=\"alternate\" href=\"{%}\"/>{*}<author>{*}<media:description>{%}</media:description>{*}</entry>"
+																		(String)request.getSession().getAttribute("repeatableSearchPattern")
+																		));
 														
 												        //----------------------
 														ObjectsUtils.saveXMLObjectToFile(user, user.getClass(), userFile);
 												        System.out.println("Object user ["+user.getName()+"] successfully saved to the ["+userFile+"] file");
+												        request.getSession().setAttribute("url", null);
+												        request.getSession().setAttribute("feedTitle", null);
+												        request.getSession().setAttribute("responseHtmlBody", null);
+												        request.getSession().setAttribute("repeatableSearchPattern", null);
+												        request.getSession().setAttribute("feedId", null);
+												    	request.getSession().setAttribute("dataClippedBol", null);
 
+												        
+												        
+												        
+												        
 												%>
 												</div>
 								</td>

@@ -482,6 +482,7 @@ public class ServerUtils {
 						}
 					}
 				}
+				compositeRSS.getChannel().setLastBuildDate(new Date());
 			} catch (Exception e) {
 				log.error("Exception", e);
 				continue;

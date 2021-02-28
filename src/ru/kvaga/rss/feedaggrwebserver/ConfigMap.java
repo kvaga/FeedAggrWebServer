@@ -14,7 +14,10 @@ public class ConfigMap {
 	
 	/*
 	 regex for drive: https://www.drive2.ru/experience/kia/g3688?sort=Date
-	 	<div class="c-post-preview__title">{*}<a class="c-link c-link--text" href="{%}"  rel="noopener" target="_blank" data-ym-target="post_title">{%}</a>{*}<div class="c-post-preview__lead">{%}<button class="c-post-preview
-	 */
+<div class="c-post-preview__title">{*}<a class="c-link c-link--text" href="{%}"  rel="noopener" target="_blank" data-ym-target="post_title">{%}</a>{*}<div class="c-post-preview__lead">{%}<button class="c-post-preview
+	 regex for drive: youttube
+<entry>{*}<title>{%}</title>{*}<link rel=\"alternate\" href=\"{%}\"/>{*}<author>{*}<media:description>{%}</media:description>{*}</entry>
+
+*/
 
 }

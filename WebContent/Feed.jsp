@@ -62,6 +62,11 @@ if(request.getParameter("action")!=null && request.getParameter("action").equals
 	
 	request.getSession().setAttribute("url", null);
 	request.getSession().setAttribute("dataClippedBol", null);
+	
+	
+    request.getSession().setAttribute("feedTitle", null);
+    request.getSession().setAttribute("repeatableSearchPattern", null);
+    
 	enableStep4FeedPreview=null;
 	responseHtmlBody=null;
 	repeatableSearchPattern=null;
@@ -115,7 +120,7 @@ repeatableSearchPattern=<%=repeatableSearchPattern %><br>
 										href="javascript:openInBrowser();">Open in browser</a>) <a
 										class="small help" title="Help on this option"
 										href="javascript:help('url')">?</a></span><br> 
-										<input id="url" name="url" style="width: 490px" size="64" type="text" class="text" maxlength="2048" value="<%= url==null?"https://4brain.ru/blog/":url %>">
+										<input id="url" name="url" style="width: 490px" size="64" type="text" class="text" maxlength="2048" value="<%= request.getSession().getAttribute("url")==null?"":request.getSession().getAttribute("url")%>">
 								</p>
 							</td>
 							<td style="padding-left: 10px; vertical-align: bottom">
@@ -147,6 +152,10 @@ repeatableSearchPattern=<%=repeatableSearchPattern %><br>
 	<%if (url != null) {	
 		try{
 			//responseHtmlBody = ServerUtils.convertStringToUTF8(Exec.getURLContent(url));
+			url = (url.contains("youtube.com")) ? Exec.getYoutubeFeedURL(url): url;
+			if (url==null){
+				throw new Exception("Can't find feed channel url");
+			}
 			responseHtmlBody = Exec.getURLContent(url);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -155,6 +164,7 @@ repeatableSearchPattern=<%=repeatableSearchPattern %><br>
 		}
 		try{
 			feedTitle=Exec.getTitleFromHtmlBody(responseHtmlBody);
+			request.getSession().setAttribute("feedTitle", feedTitle);
 		}catch(Exception e){
 			e.printStackTrace();
 			out.print("<font color=red>Couldn't get content from the URL</font>");

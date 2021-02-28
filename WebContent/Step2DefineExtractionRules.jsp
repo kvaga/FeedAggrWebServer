@@ -1,9 +1,16 @@
+<%@page import="ru.kvaga.rss.feedaggrwebserver.ConfigMap"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="UTF-8"%>
     <%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtils,
     ru.kvaga.rss.feedaggr.FeedAggrException,ru.kvaga.rss.feedaggr.Exec,
     ru.kvaga.rss.feedaggr.FeedAggrException,ru.kvaga.rss.feedaggr.Item,
-    java.util.LinkedList"%>
+    java.util.LinkedList,
+    ru.kvaga.rss.feedaggrwebserver.objects.user.User,
+    ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed,
+    ru.kvaga.rss.feedaggrwebserver.objects.user.UserRepeatableSearchPattern,
+    ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils,
+    java.io.File
+        "%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -53,8 +60,12 @@ String responseHtmlBody=request.getParameter("responseHtmlBody");
 						<tr valign="top">
 							<td class="w100">
 							<div id="raw_data" class="textarea">
-								<textarea name="repeatableSearchPattern" cols="40" rows="4" wrap="soft">&lt;h2 class="title"&gt;{*}&lt;a href="{%}" title="{%}" rel="bookmark">{%}&lt;/a&gt;{*}&lt;/h2&gt;
-								</textarea>
+							<% 												        
+								User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+request.getSession().getAttribute("login")+".xml"), new User());
+							%>
+								<textarea name="repeatableSearchPattern" cols="40" rows="4" wrap="soft"><%= 
+									user.getRepeatableSearchPatternByDomain(Exec.getDomainFromURL((String)request.getSession().getAttribute("url")))
+								%></textarea>
 							</div>
 							</td>
 							<td style="padding-left: 5px">

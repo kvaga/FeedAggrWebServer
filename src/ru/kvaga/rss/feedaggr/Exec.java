@@ -149,7 +149,8 @@ public class Exec {
 
 
 	public static synchronized String getTitleFromHtmlBody(String responseHtmlBody) {
-		Pattern pattern = Pattern.compile(".*<html.*><head.*>.*<title.*>(?<title>.*)<\\/title>.*<\\/head>");
+//		Pattern pattern = Pattern.compile(".*<html.*><head.*>.*<title.*>(?<title>.*)<\\/title>.*<\\/head>");
+		Pattern pattern = Pattern.compile("<title>(?<title>.*?)<\\/title>");
 		responseHtmlBody = responseHtmlBody.replaceAll("\r\n", "").replaceAll("\n", "");
 		Matcher matcher = pattern.matcher(responseHtmlBody);
 		if(matcher.find()) {
@@ -201,7 +202,9 @@ public class Exec {
 			con.setRequestMethod("GET");
 			con.setRequestProperty("accept",
 					"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
-			con.setRequestProperty("accept-encoding", "gzip, deflate, br");
+//			con.setRequestProperty("accept-encoding", "gzip, deflate, br");
+			con.setRequestProperty("accept-encoding", "gzip");
+
 			con.setRequestProperty("accept-language", "en-GB,en;q=0.9,ru-RU;q=0.8,ru;q=0.7,en-US;q=0.6");
 			con.setRequestProperty("cache-control", "max-age=0");
 			con.setRequestProperty("sec-ch-ua",
@@ -218,12 +221,14 @@ public class Exec {
 			log.debug("Connection response code: " + con.getResponseCode());
 
 			if (con.getContentType().toLowerCase().contains("charset=utf-8")) {
+				
 				charset = "UTF-8";
 			} else {
 				throw new FeedAggrException.GetURLContentException(urlText,
 						String.format("Received unsupported charset: %s. ", con.getContentType()));
 			}
-			if (con.getContentEncoding().equals("gzip")) {
+			String encoding=con.getContentEncoding();
+			if (encoding.equals("gzip")) {
 				try (InputStream gzippedResponse = con.getInputStream();
 						InputStream ungzippedResponse = new GZIPInputStream(gzippedResponse);
 						Reader reader = new InputStreamReader(ungzippedResponse, charset);
@@ -361,6 +366,31 @@ public static synchronized String checkItemURLForFullness(String feedURL, String
 	log.debug("Now Item URL ["+itemURL+"] converted to ["+leftPathOfFeedURL+itemURL+"]");
 	return leftPathOfFeedURL+itemURL;
 }
+
+
+public static synchronized String getYoutubeFeedURL(String url) throws GetURLContentException {
+//	String regex="\"externalId\":\"(([A-Z]*[0-9]*[a-z]*)*)\",";
+	String regex="\"externalId\":\"(.*?)\",";
+	String youtubeChannelPattern="https://www.youtube.com/feeds/videos.xml?channel_id=%s";
+	
+	Pattern p = Pattern.compile(regex);
+	String urlContent=Exec.getURLContent(url);
+	Matcher m = p.matcher(urlContent);
+	if(m.find()) {
+		return String.format(youtubeChannelPattern, m.group(1));
+	}
+	return null;
+}
+
+public synchronized static String getDomainFromURL(String url){
+	Pattern p = Pattern.compile("http(s)?:\\/\\/(?<url>.*(\\.com|\\.ru|\\.org))(\\/)?");
+	Matcher m = p.matcher(url);
+	if(m.find()) {
+		return m.group("url");
+	}
+	return null;
+}
+
 public static void sleep(long timeInMillis) {
 	try {
 		Thread.sleep(timeInMillis);

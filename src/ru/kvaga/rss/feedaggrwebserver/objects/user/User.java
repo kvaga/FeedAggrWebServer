@@ -17,9 +17,9 @@ public class User {
 	private String name;
 	private Set<UserFeed> userFeeds=new HashSet<UserFeed>();
 	private Set<CompositeUserFeed> compositeUserFeeds=new HashSet<CompositeUserFeed>();
-
+	private Set<UserRepeatableSearchPattern> repeatableSearchPatterns = new HashSet<UserRepeatableSearchPattern>();
+	
 	public User() {
-		
 	}
 	public User(String name) {
 		this.name=name;
@@ -52,6 +52,13 @@ public class User {
 		this.compositeUserFeeds = compositeUserFeeds;
 	}
 	
+	@XmlElement(name="repeatableSearchPattern")
+	public Set<UserRepeatableSearchPattern> getRepeatableSearchPatterns() {
+		return repeatableSearchPatterns;
+	}
+	public void setRepeatableSearchPatterns(Set<UserRepeatableSearchPattern> repeatableSearchPatterns) {
+		this.repeatableSearchPatterns = repeatableSearchPatterns;
+	}
 	
 	public boolean containsFeedId(String feedId) {
 		for(UserFeed userFeed : getUserFeeds()) {
@@ -69,6 +76,15 @@ public class User {
 			}
 		}
 		return false;
+	}
+	
+	public String getRepeatableSearchPatternByDomain(String domain) {
+		for(UserRepeatableSearchPattern ursp : getRepeatableSearchPatterns()) {
+			if(ursp.getDomain().equals(domain)) {
+				return ursp.getPattern();
+			}
+		}
+		return null;
 	}
 	
 	public static void main(String args[]) throws JAXBException {
