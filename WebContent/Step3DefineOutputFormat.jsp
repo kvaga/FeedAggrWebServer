@@ -1,5 +1,23 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="UTF-8"%>
+<%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtils,
+    ru.kvaga.rss.feedaggr.FeedAggrException,ru.kvaga.rss.feedaggr.Exec,
+    ru.kvaga.rss.feedaggr.FeedAggrException,ru.kvaga.rss.feedaggr.Item,
+    java.util.LinkedList,
+    java.util.ArrayList,
+    java.util.Date,
+    java.io.File,
+    ru.kvaga.rss.feedaggr.Exec,
+    ru.kvaga.rss.feedaggr.objects.RSS,
+    ru.kvaga.rss.feedaggr.objects.Channel,
+    ru.kvaga.rss.feedaggr.objects.Feed,
+    ru.kvaga.rss.feedaggr.objects.GUID,
+    ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils,
+    ru.kvaga.rss.feedaggrwebserver.objects.user.User,
+    ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed,
+    ru.kvaga.rss.feedaggrwebserver.objects.user.UserRepeatableSearchPattern,
+    ru.kvaga.rss.feedaggrwebserver.ConfigMap
+    "%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,7 +25,12 @@
 <title>Insert title here</title>
 </head>
 <body>
+ 
 <h2>Step 3. Define output format</h2>
+<%
+File userFile=new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+request.getSession().getAttribute("login")+".xml");
+User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+%>
 
 				<form method="post" action="Feed.jsp">
 				<input type="hidden" name="enableStep4FeedPreview" value="true">
@@ -50,10 +73,17 @@
 					<p>
 						Item Title Template<span class="bullet">*</span>: <a
 							class="small help" title="Help on this option"
-							href="javascript:help('item_title')">?</a><br> 
-							<input name="itemTitleTemplate" id="item_title" class="text" size="64" maxlength="150"
-							value="{%2}">
-					</p>
+							href="javascript:help('item_title')">?</a><br>
+							<input name="itemTitleTemplate" id="item_title" class="text" size="64" maxlength="150" value="<%
+									if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(
+											Exec.getDomainFromURL((String)request.getSession().getAttribute("url")))!=null){
+										out.print(user.getRssItemPropertiesPatternByDomain(
+												Exec.getDomainFromURL((String)request.getSession().getAttribute("url"))).getPatternTitle());
+									}else{
+										out.print("{%2}");
+									}
+%>"/>
+							</p>
 
 					<p>
 						Item Link Template<span class="bullet">*</span>: <a
@@ -61,9 +91,19 @@
 							href="javascript:help('item_link')">?</a><br> 
 							<input name="itemLinkTemplate"
 							id="item_link" class="text" size="64" maxlength="2048"
-							value="{%1}">
+							value="<%
+if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(
+		Exec.getDomainFromURL((String)request.getSession().getAttribute("url")))!=null){
+	out.print(user.getRssItemPropertiesPatternByDomain(
+			Exec.getDomainFromURL((String)request.getSession().getAttribute("url"))).getPatternLink());
+}else{
+	out.print("{%1}");
+}
+%>" />
 					</p>
 
+
+							
 					<p class="nobr">
 						Item Content Template<span class="bullet">*</span>: <a
 							class="small help" title="Help on this option"
@@ -73,15 +113,17 @@
 						<tbody>
 							<tr valign="top">
 								<td class="w100"><textarea id="item_template" name="itemContentTemplate" cols="40"
-										rows="4" wrap="soft">{%3}
-&lt;br&gt;
-&lt;center&gt;&lt;font size="36"&gt;&lt;a href="{%1}"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;
-&lt;br&gt;
-&lt;center&gt;&lt;font size="36"&gt;&lt;a href="{%1}"&gt;============ Link ============&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;
-&lt;br&gt;
-&lt;center&gt;&lt;font size="36"&gt;&lt;a href="{%1}"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;
-&lt;br&gt;
-<%=request.getSession().getAttribute("feedTitle") %>
+										rows="4" wrap="soft"><%
+if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(
+		Exec.getDomainFromURL((String)request.getSession().getAttribute("url")))!=null){
+	out.print(user.getRssItemPropertiesPatternByDomain(
+			Exec.getDomainFromURL((String)request.getSession().getAttribute("url"))).getPatternDescription());
+}else{
+	out.print("{%3}&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============ Link ============&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;");
+}
+%>
+
+<%= (String)request.getSession().getAttribute("feedTitle") %>
 </textarea></td>
 								<td style="padding-left: 5px">
 									<div class="small"

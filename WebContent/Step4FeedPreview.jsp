@@ -1,9 +1,12 @@
+<%@page import="ru.kvaga.rss.feedaggrwebserver.objects.user.UserRssItemPropertiesPatterns"%>
 <%@page import="ru.kvaga.rss.feedaggrwebserver.ConfigMap"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="UTF-8"%>
-      <%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtils,
-    ru.kvaga.rss.feedaggr.FeedAggrException,ru.kvaga.rss.feedaggr.Exec,
-    ru.kvaga.rss.feedaggr.FeedAggrException,ru.kvaga.rss.feedaggr.Item,
+<%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtils,
+    ru.kvaga.rss.feedaggr.FeedAggrException,
+    ru.kvaga.rss.feedaggr.Exec,
+    ru.kvaga.rss.feedaggr.FeedAggrException,
+    ru.kvaga.rss.feedaggr.Item,
     java.util.LinkedList,
     java.util.ArrayList,
     java.util.Date,
@@ -112,15 +115,16 @@ String url=request.getParameter("url");
 														itemLink=itemLinkTemplate;
 														itemContent=itemContentTemplate;
 														int itemLinkNumber = Exec.getNumberFromItemLink(itemLink);
-														
+														itemLink=itemLink.replaceAll("\\{%"+itemLinkNumber+"}", itemFromHtmlBody.get(itemLinkNumber));
+														itemLink=Exec.checkItemURLForFullness(url, itemLink);
 														//цикл для замены всех {%Х} на значения
 															for (int i = 1; i <= itemFromHtmlBody.length(); i++) {
 																try{
 																System.out.println("count: " + i + " [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
 																
 																itemTitle=itemTitle.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
-																itemLink=itemLink.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
-																itemLink=Exec.checkItemURLForFullness(url, itemLink);
+																//itemLink=itemLink.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
+																
 																itemContent=itemContent.replaceAll("\\{%"+itemLinkNumber+"}", itemLink);											
 																//itemLink=Exec.checkItemURLForFullness(url, itemLink);
 																itemContent=itemContent.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
@@ -174,14 +178,25 @@ String url=request.getParameter("url");
 												        //User kvaga = new User("kvaga"); // TODO: change to session value
 														//File file = new File("C:\\eclipseWorkspace\\FeedAggrWebServer\\WebContent\\data\\users\\kvaga.xml");
 														
+												       
 												        user.getUserFeeds().add(new UserFeed(feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern));
-														user.getRepeatableSearchPatterns().add(
+														// save repeatable search patterns
+												        user.getRepeatableSearchPatterns().add(
 																new UserRepeatableSearchPattern(
 																		Exec.getDomainFromURL((String)request.getSession().getAttribute("url")), 
 																		//"<entry>{*}<title>{%}</title>{*}<link rel=\"alternate\" href=\"{%}\"/>{*}<author>{*}<media:description>{%}</media:description>{*}</entry>"
 																		(String)request.getSession().getAttribute("repeatableSearchPattern")
 																		));
 														
+														// save rss output properties templates
+														user.getRssItemPropertiesPatterns().update(
+																new UserRssItemPropertiesPatterns(
+																		Exec.getDomainFromURL((String)request.getSession().getAttribute("url")),
+																		itemTitleTemplate,
+																		itemLinkTemplate,
+																		itemContentTemplate
+																)
+														);
 												        //----------------------
 														ObjectsUtils.saveXMLObjectToFile(user, user.getClass(), userFile);
 												        System.out.println("Object user ["+user.getName()+"] successfully saved to the ["+userFile+"] file");

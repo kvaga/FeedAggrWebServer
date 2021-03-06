@@ -2,6 +2,8 @@ package ru.kvaga.rss.feedaggr;
 
 import java.util.Date;
 
+import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
+
 public class _Feed {
 	/*
 	private String title;
@@ -105,4 +107,28 @@ public class _Feed {
 		this.serviceType = serviceType;
 	}
 	*/
+	private static String qqq() {
+		User user = new User();
+		QQQQ  request = new QQQQ();
+		if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(
+				Exec.getDomainFromURL((String)request.getSession().getAttribute("url")))!=null){
+			return ""+user.getRssItemPropertiesPatternByDomain(
+					Exec.getDomainFromURL((String)request.getSession().getAttribute("url"))).getPatternTitle();
+		}else{
+			return "{%2}";
+		}
+	}
+	
+	
+}
+class QQQQ{
+	public QQQQ2 getSession() {
+		return null;
+	}
+}
+
+class QQQQ2{
+	public String getAttribute(String str) {
+		return null;
+	}
 }

@@ -10,6 +10,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 @XmlRootElement
@@ -18,7 +19,8 @@ public class User {
 	private Set<UserFeed> userFeeds=new HashSet<UserFeed>();
 	private Set<CompositeUserFeed> compositeUserFeeds=new HashSet<CompositeUserFeed>();
 	private Set<UserRepeatableSearchPattern> repeatableSearchPatterns = new HashSet<UserRepeatableSearchPattern>();
-	
+	private UserRssItemPropertiesPatternsSet rssItemPropertiesPatterns = new UserRssItemPropertiesPatternsSet();
+
 	public User() {
 	}
 	public User(String name) {
@@ -60,6 +62,14 @@ public class User {
 		this.repeatableSearchPatterns = repeatableSearchPatterns;
 	}
 	
+	@XmlElement(name="rssItemPropertiesPatterns")
+	public UserRssItemPropertiesPatternsSet getRssItemPropertiesPatterns() {
+		return rssItemPropertiesPatterns;
+	}
+	public void setRssItemPropertiesPatterns(UserRssItemPropertiesPatternsSet rssItemPropertiesPatterns) {
+		this.rssItemPropertiesPatterns = rssItemPropertiesPatterns;
+	}
+	
 	public boolean containsFeedId(String feedId) {
 		for(UserFeed userFeed : getUserFeeds()) {
 			if(userFeed.getId().equals(feedId)) {
@@ -78,6 +88,15 @@ public class User {
 		return false;
 	}
 	
+	public UserRssItemPropertiesPatterns getRssItemPropertiesPatternByDomain(String domain) {
+		for(UserRssItemPropertiesPatterns ursp : getRssItemPropertiesPatterns()) {
+			if(ursp.getDomain().equals(domain)) {
+				return ursp;
+			}
+		}
+		return null;
+	}
+	
 	public String getRepeatableSearchPatternByDomain(String domain) {
 		for(UserRepeatableSearchPattern ursp : getRepeatableSearchPatterns()) {
 			if(ursp.getDomain().equals(domain)) {
@@ -90,9 +109,9 @@ public class User {
 	public static void main(String args[]) throws JAXBException {
 //		BigInteger bi = new BigInteger("dsfadsfnsdn".getBytes());
 //		int q = bi.longValue();
-		User kvaga = new User("kvaga");
+//		User kvaga = new User("kvaga");
 //		kvaga.setName("kvaga");
-		File file = new File("C:\\eclipseWorkspace\\FeedAggrWebServer\\WebContent\\data\\users\\kvaga.xml");
+		File file = new File("C:\\eclipseWorkspace\\FeedAggrWebServer\\data\\users\\kvaga.xml ");
 //		Set<String> fIds = kvaga.getFeedIds();
 //		fIds.add("2526736822660417");
 //		fIds.add("54433456543345666542245");
@@ -136,15 +155,39 @@ public class User {
 		UserFeed userFeed4 = new UserFeed("qqq", "{%2}", "{%1}", "{%3}", "some repet");
 
 		
-		kvaga.getUserFeeds().add(userFeed1);
-		kvaga.getUserFeeds().add(userFeed2);
-		kvaga.getUserFeeds().add(userFeed3);
-		kvaga.getUserFeeds().add(userFeed4);
+//		kvaga.getUserFeeds().add(userFeed1);
+//		kvaga.getUserFeeds().add(userFeed2);
+//		kvaga.getUserFeeds().add(userFeed3);
+//		kvaga.getUserFeeds().add(userFeed4);
 		
-		ObjectsUtils.saveXMLObjectToFile(kvaga, kvaga.getClass(), file);
+//		ObjectsUtils.saveXMLObjectToFile(kvaga, kvaga.getClass(), file);
 		
-		User kvaga1 = (User) ObjectsUtils.getXMLObjectFromXMLFile(file, new User());
-		ObjectsUtils.printXMLObject(kvaga1);
+		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(file, new User());
+		String url = "https://www.youtube.com/sadas";
+		UserRssItemPropertiesPatterns t = user.getRssItemPropertiesPatternByDomain(
+				Exec.getDomainFromURL(url));
+		System.out.println(t.getPatternTitle());
+		System.out.println(t.getPatternLink());
+		System.out.println(t.getPatternDescription());
+
+		user.getRssItemPropertiesPatterns().update(
+				new UserRssItemPropertiesPatterns(
+						Exec.getDomainFromURL(url),
+						t.getPatternLink(),
+						t.getPatternTitle(),
+						t.getPatternDescription()
+				)
+		);
+		
+		if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(
+				Exec.getDomainFromURL(url))!=null){
+			System.out.println(":::"+user.getRssItemPropertiesPatternByDomain(
+					Exec.getDomainFromURL(url)).getPatternTitle());
+		}else{
+			System.out.println(":::{%2}");
+		}
+		
+//		ObjectsUtils.printXMLObject(kvaga1);
 		
 //		System.out.println(kvaga1.getName());
 //		for(UserFeed s: kvaga.getUserFeeds()) {
