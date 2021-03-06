@@ -1,8 +1,16 @@
+<%@page import="ru.kvaga.rss.feedaggr.objects.RSSForPrintingComparatorByTitle"%>
 <%@page import="ru.kvaga.rss.feedaggrwebserver.ConfigMap"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="UTF-8"%>
     <%@ page
-	import="ru.kvaga.rss.feedaggr.objects.Feed,ru.kvaga.rss.feedaggr.objects.RSS,ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils,ru.kvaga.rss.feedaggrwebserver.ServerUtils"%>
+	import="ru.kvaga.rss.feedaggr.objects.Feed,ru.kvaga.rss.feedaggr.objects.RSS,
+	ru.kvaga.rss.feedaggr.objects.Feed,ru.kvaga.rss.feedaggr.objects.RSSForPrintingComparatorByTitle,
+	ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils,
+	ru.kvaga.rss.feedaggrwebserver.ServerUtils,
+	java.util.Collections,
+	java.util.HashMap,
+	java.util.ArrayList"
+	%>
     
 <!DOCTYPE html>
 <html>
@@ -18,17 +26,29 @@ Your feeds are listed below. If you have other feeds, <a href="Feed.jsp?action=n
 //final static org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger();
 
 //String realPath=getServletContext().getRealPath("data/feeds/");
+ArrayList<RSS> rssListForPrinting = new ArrayList<RSS>();
+ArrayList<RSS> rssCompositeListForPrinting = new ArrayList<RSS>();
 
+HashMap<RSS,String> mapRssStringForPrinting = new HashMap<RSS, String>();
 for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
 //	System.out.println(feedOnServer.getXmlFile());
-	if(feedOnServer.getId().startsWith("composite")) continue;
-	out.println("<br>");	 
 	RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
-	out.println("<a href=\"showFeed?feedId="+feedOnServer.getId() +"\">"+rssFeed.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+feedOnServer.getId()+"\">Delete</a>]");
+	if(feedOnServer.getId().startsWith("composite")) {
+		rssCompositeListForPrinting.add(rssFeed);
+	}else{
+		rssListForPrinting.add(rssFeed);
+	}
+	mapRssStringForPrinting.put(rssFeed, feedOnServer.getId());
+}
+Collections.sort(rssListForPrinting, new RSSForPrintingComparatorByTitle());
+Collections.sort(rssCompositeListForPrinting, new RSSForPrintingComparatorByTitle());
+for(RSS rss : rssListForPrinting){
 	out.println("<br>");	 
-	out.println("Source URL: "+rssFeed.getChannel().getLink());
+	out.println("<a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]");
 	out.println("<br>");	 
-	out.println("Last updated: " + rssFeed.getChannel().getLastBuildDate());
+	out.println("Source URL: "+rss.getChannel().getLink());
+	out.println("<br>");	 
+	out.println("Last updated: " + rss.getChannel().getLastBuildDate());
 	out.println("<br><br>");	 
 //	ObjectsUtills.printXMLObject(rssFeed);
 }
@@ -36,16 +56,14 @@ for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
 <br>
 <h3>Composite feeds</h3>
 <%
-for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
-//	System.out.println(feedOnServer.getXmlFile());
-	if(!feedOnServer.getId().startsWith("composite")) continue;
+
+for(RSS rss : rssCompositeListForPrinting) {
 	out.println("<br>");	 
-	RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
-	out.println("<a href=\"showFeed?feedId="+feedOnServer.getId() +"\">"+rssFeed.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+feedOnServer.getId()+"\">Delete</a>]");
+	out.println("<a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]");
 	out.println("<br>");	 
-	out.println("Source URL: "+rssFeed.getChannel().getLink());
+	out.println("Source URL: "+rss.getChannel().getLink());
 	out.println("<br>");	 
-	out.println("Last updated: " + rssFeed.getChannel().getLastBuildDate());
+	out.println("Last updated: " + rss.getChannel().getLastBuildDate());
 	out.println("<br><br>");	 
 //	ObjectsUtills.printXMLObject(rssFeed);
 }
