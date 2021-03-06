@@ -27,12 +27,13 @@ for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
 if(feedOnServer.getId().startsWith("composite")) continue;
 	out.println("<tr><br>");	 
 	RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
+	out.println("<td valign=\"top\"><input type=\"checkbox\" id=\"vehicle1\" name=\"id_"+(k)+"\" value=\""+feedOnServer.getId()+"\"></td>");
 	out.println("<td><a href=\"showFeed?feedId="+feedOnServer.getId() +"\">"+rssFeed.getChannel().getTitle()+"</a>");
 	out.println("<br>");	 
 	out.println("Source URL: "+rssFeed.getChannel().getLink());
 	out.println("<br>");	 
 	out.println("Last updated: " + rssFeed.getChannel().getLastBuildDate());
-	out.println("<td><td><input type=\"checkbox\" id=\"vehicle1\" name=\"id_"+(k)+"\" value=\""+feedOnServer.getId()+"\"></td></tr>");	 
+	out.println("</td></tr>");	 
 k++;
 }
 
