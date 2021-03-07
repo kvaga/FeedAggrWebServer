@@ -276,6 +276,7 @@ public class Exec {
 									String itemLinkTemplate,
 									String itemContentTemplate
 	) throws Exception {
+		log.debug("===== getRSSFromWeb ===== ");
 		int countOfPercentItemsInSearchPattern = Exec.countWordsUsingSplit(repeatableSearchPattern, "{%}");
 		String feedTitle = Exec.getTitleFromHtmlBody(responseHtmlBody);
 		RSS rss = new RSS();
@@ -298,21 +299,20 @@ public class Exec {
 			int k = 0;
 			for (Item itemFromHtmlBody : itemsFromHtmlBody) {
 		        ru.kvaga.rss.feedaggr.objects.Item _item = new ru.kvaga.rss.feedaggr.objects.Item();
-				itemTitle=itemTitleTemplate;
-				itemLink=itemLinkTemplate;
-				itemContent=itemContentTemplate;
+//				itemTitle=itemTitleTemplate;
+//				itemLink=itemLinkTemplate;
+//				itemContent=itemContentTemplate;
 
 				int itemLinkNumber = Exec.getNumberFromItemLink(itemLink);
 				
 				log.debug(itemFromHtmlBody.getContentForPrinting());
-			log.debug("=====");
 				//цикл для замены всех {%Х} на значения
 					for (int i = 1; i <= itemFromHtmlBody.length(); i++) {
 						log.debug("in cycle: itemFromHtmlBody.get("+i+")="+itemFromHtmlBody.get(i));
-						itemTitle=itemTitle.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
-						itemLink=itemLink.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
+						itemTitle=itemTitleTemplate.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
+						itemLink=itemLinkTemplate.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
 						itemLink=Exec.checkItemURLForFullness(url, itemLink);
-						itemContent=itemContent.replaceAll("\\{%"+itemLinkNumber+"}", itemLink);											
+						itemContent=itemContentTemplate.replaceAll("\\{%"+itemLinkNumber+"}", itemLink);											
 						itemContent=itemContent.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
 					}
 					
