@@ -148,7 +148,7 @@ public class FeedsUpdateJob implements Runnable {
 						if(!foundItemBol) {
 //							System.out.println("Такого item [" + itemFromWeb.getTitle() + "] с guid ["+itemFromWeb.getGuid().getValue()+"] нет в файле");
 							log.debug("Такого item [" + itemFromWeb.getTitle() + "] с guid ["+itemFromWeb.getGuid().getValue()+"] нет в файле");
-							itemFromWeb.setDescription(itemFromWeb.getDescription()+"<br>"+itemFromWeb.getTitle());
+							itemFromWeb.setDescription(itemFromWeb.getDescription()+"<br>"+rssFromWeb.getChannel().getTitle());
 							log.debug("Added title to the end of itemFromWeb because thiw item is a new one");
 							rssFromFile.getChannel().getItem().add(itemFromWeb);
 							log.debug("itemFromWeb [" + itemFromWeb.getTitle() + "] с guid ["+itemFromWeb.getGuid().getValue()+"] добавлен в rssFromFile");

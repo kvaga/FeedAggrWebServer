@@ -38,6 +38,7 @@ import ru.kvaga.rss.feedaggr.FeedAggrException.SplitHTMLContent;
 import ru.kvaga.rss.feedaggr.objects.Channel;
 import ru.kvaga.rss.feedaggr.objects.GUID;
 import ru.kvaga.rss.feedaggr.objects.RSS;
+import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 
 public class Exec {
@@ -287,7 +288,7 @@ public class Exec {
         channel.setLink(url);
         channel.setTtl(360);
         channel.setLastBuildDate(new Date());
-        channel.setGenerator("Feed Aggr Web Server Generator");
+        channel.setGenerator(ConfigMap.generator);
         channel.setDescription(feedTitle);
         ArrayList<ru.kvaga.rss.feedaggr.objects.Item> items = new ArrayList<ru.kvaga.rss.feedaggr.objects.Item>();
 
