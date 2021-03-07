@@ -34,7 +34,7 @@ if(cookies!=null){
 	<br>
 	<a href="CheckoutPage.jsp">Checkout Page</a>
 	<br>
-		<a href="Test">Checkout Page</a>
+	<a href="Test">Test page</a>
 	<br>
 	<hr>
 	<jsp:include page="/FeedsList.jsp">

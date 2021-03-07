@@ -123,8 +123,10 @@ if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPattern
 }
 %>
 
+
+</textarea>
 <%= (String)request.getSession().getAttribute("feedTitle") %>
-</textarea></td>
+</td>
 								<td style="padding-left: 5px">
 									<div class="small"
 										style="text-align: center; line-height: 14pt">

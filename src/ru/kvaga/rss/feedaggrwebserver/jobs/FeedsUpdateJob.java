@@ -107,6 +107,7 @@ public class FeedsUpdateJob implements Runnable {
 					log.debug("Found rssXmlFile ["+rssXmlFile+"] for users file ["+userFile+"]");
 					// Получаем feed объект из файла
 					RSS rssFromFile = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(rssXmlFile,new RSS());
+					rssFromFile.removeItemsOlderThanXDays(ConfigMap.ttlOfFeedsInDays);
 //				ObjectsUtils.printXMLObject(rssFromFile);
 
 					// Получаем вспомогательную информацию для получения feed (RSS) объекта из Web
@@ -147,6 +148,8 @@ public class FeedsUpdateJob implements Runnable {
 						if(!foundItemBol) {
 //							System.out.println("Такого item [" + itemFromWeb.getTitle() + "] с guid ["+itemFromWeb.getGuid().getValue()+"] нет в файле");
 							log.debug("Такого item [" + itemFromWeb.getTitle() + "] с guid ["+itemFromWeb.getGuid().getValue()+"] нет в файле");
+							itemFromWeb.setDescription(itemFromWeb.getDescription()+"<br>"+itemFromWeb.getTitle());
+							log.debug("Added title to the end of itemFromWeb because thiw item is a new one");
 							rssFromFile.getChannel().getItem().add(itemFromWeb);
 							log.debug("itemFromWeb [" + itemFromWeb.getTitle() + "] с guid ["+itemFromWeb.getGuid().getValue()+"] добавлен в rssFromFile");
 						}

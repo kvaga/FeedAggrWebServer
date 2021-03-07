@@ -113,10 +113,11 @@ String url=request.getParameter("url");
 
 														itemTitle=itemTitleTemplate;
 														itemLink=itemLinkTemplate;
-														itemContent=itemContentTemplate;
+														itemContent=itemContentTemplate+"<br>"+itemTitle;
 														int itemLinkNumber = Exec.getNumberFromItemLink(itemLink);
 														itemLink=itemLink.replaceAll("\\{%"+itemLinkNumber+"}", itemFromHtmlBody.get(itemLinkNumber));
 														itemLink=Exec.checkItemURLForFullness(url, itemLink);
+														
 														//цикл для замены всех {%Х} на значения
 															for (int i = 1; i <= itemFromHtmlBody.length(); i++) {
 																try{

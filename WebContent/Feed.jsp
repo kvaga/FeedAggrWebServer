@@ -12,6 +12,8 @@ ru.kvaga.rss.feedaggr.Exec
 
 </head>
 <body>
+<a href="LoginSuccess.jsp">Main page</a>
+<hr>
 <%
 
 if(request.getParameter("url")!=null){
