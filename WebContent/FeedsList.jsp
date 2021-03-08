@@ -30,6 +30,7 @@ ArrayList<RSS> rssListForPrinting = new ArrayList<RSS>();
 ArrayList<RSS> rssCompositeListForPrinting = new ArrayList<RSS>();
 
 HashMap<RSS,String> mapRssStringForPrinting = new HashMap<RSS, String>();
+System.out.println("=======================> " + ConfigMap.feedsPath);
 for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
 //	System.out.println(feedOnServer.getXmlFile());
 	RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());

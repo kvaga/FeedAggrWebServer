@@ -304,19 +304,26 @@ public class Exec {
 //				itemLink=itemLinkTemplate;
 //				itemContent=itemContentTemplate;
 
-				int itemLinkNumber = Exec.getNumberFromItemLink(itemLink);
+				int itemLinkNumber = Exec.getNumberFromItemLink(itemLinkTemplate);
+				itemLink=itemLinkTemplate.replaceAll("\\{%"+itemLinkNumber+"}", itemFromHtmlBody.get(itemLinkNumber));
+				itemLink=Exec.checkItemURLForFullness(url, itemLink);
+				itemTitle=itemTitleTemplate;
+				itemContent=itemContentTemplate.replaceAll("\\{%"+itemLinkNumber+"}", itemLink);											
 				
+				//log.debug("title before: " + itemTitle + ", itemTitleTemplate: " + itemTitleTemplate);
+				//log.debug("content before: " + itemContent + ", itemContentTemplate: " + itemContentTemplate);
+
 				log.debug(itemFromHtmlBody.getContentForPrinting());
 				//цикл для замены всех {%Х} на значения
 					for (int i = 1; i <= itemFromHtmlBody.length(); i++) {
 						log.debug("in cycle: itemFromHtmlBody.get("+i+")="+itemFromHtmlBody.get(i));
-						itemTitle=itemTitleTemplate.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
-						itemLink=itemLinkTemplate.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
-						itemLink=Exec.checkItemURLForFullness(url, itemLink);
-						itemContent=itemContentTemplate.replaceAll("\\{%"+itemLinkNumber+"}", itemLink);											
+						itemTitle=itemTitle.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
+//						log.debug("title cont: " + itemTitle + ", itemTitleTemplate: " + itemTitleTemplate);
 						itemContent=itemContent.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
 					}
-					
+					//log.debug("title after: " + itemTitle + ", itemTitleTemplate: " + itemTitleTemplate);
+					//log.debug("content after: " + itemContent + ", itemContentTemplate: " + itemContentTemplate);
+
 					_item.setTitle(itemTitle);
 			        _item.setLink(Exec.checkItemURLForFullness(channel.getLink(), itemLink));
 //			        _item.setDescription("<![CDATA[\""+itemContent+"\"]]>");

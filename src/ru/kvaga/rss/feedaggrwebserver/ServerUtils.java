@@ -124,7 +124,7 @@ public class ServerUtils {
 //		String dataDirText="WebContent/data";
 //		System.out.println("CurrentDir: " + userDirPath);
 //		String userDirText=String.format("%s/%s", dataDirText,user);
-		ArrayList<Feed> al = null;
+		ArrayList<Feed> al = new ArrayList<Feed>();
 //		System.out.println("UserDir: " + userDir);
 		log.debug("Searching Feed in the [" + dir + "] directory");
 		if (!dir.isDirectory()) {
@@ -137,8 +137,6 @@ public class ServerUtils {
 			String feedId = feedFile.getName().replaceAll("\\.xml", "");
 			Feed feed = new Feed(feedId, feedFile, null);
 //				System.out.println(feed);
-			if (al == null)
-				al = new ArrayList<Feed>();
 			al.add(feed);
 		}
 		return al;

@@ -5,7 +5,8 @@
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
     </Console>
  <RollingRandomAccessFile name="LogB" fileName="${sys:catalina.base}/logs/FeedAggrWebServer.log" filePattern="$${sys:catalina.base}/logs/FeedAggrWebServer.log.%d{yyyy-MM-dd-HH}">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36}:%L - %msg%n"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36}:%L - %msg%n"/>
+			                   
             <Policies>
                 <TimeBasedTriggeringPolicy/>
             </Policies>

@@ -89,6 +89,9 @@ public class FeedsUpdateJob implements Runnable {
 			// Пробегаемся по всем пользователям
 			for (File userFile : listOfUsersFiles) {
 //				System.out.println("[point 4] userFile="+userFile);
+				if(!userFile.getName().endsWith(".xml")) {
+					continue;
+				}
 				log.debug("Found user file ["+userFile+"]");
 				User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
 				// Находим у каждого пользователя список feed id и соответствующие им
@@ -148,7 +151,7 @@ public class FeedsUpdateJob implements Runnable {
 						if(!foundItemBol) {
 //							System.out.println("Такого item [" + itemFromWeb.getTitle() + "] с guid ["+itemFromWeb.getGuid().getValue()+"] нет в файле");
 							log.debug("Такого item [" + itemFromWeb.getTitle() + "] с guid ["+itemFromWeb.getGuid().getValue()+"] нет в файле");
-							itemFromWeb.setDescription(itemFromWeb.getDescription()+"<br>"+rssFromWeb.getChannel().getTitle());
+							itemFromWeb.setDescription(itemFromWeb.getDescription());
 							log.debug("Added title to the end of itemFromWeb because thiw item is a new one");
 							rssFromFile.getChannel().getItem().add(itemFromWeb);
 							log.debug("itemFromWeb [" + itemFromWeb.getTitle() + "] с guid ["+itemFromWeb.getGuid().getValue()+"] добавлен в rssFromFile");
