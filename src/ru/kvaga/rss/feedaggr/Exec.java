@@ -152,6 +152,9 @@ public class Exec {
 	public static synchronized String getTitleFromHtmlBody(String responseHtmlBody) {
 //		Pattern pattern = Pattern.compile(".*<html.*><head.*>.*<title.*>(?<title>.*)<\\/title>.*<\\/head>");
 		Pattern pattern = Pattern.compile("<title>(?<title>.*?)<\\/title>");
+		if(responseHtmlBody==null) {
+			return null;
+		}
 		responseHtmlBody = responseHtmlBody.replaceAll("\r\n", "").replaceAll("\n", "");
 		Matcher matcher = pattern.matcher(responseHtmlBody);
 		if(matcher.find()) {
@@ -229,7 +232,7 @@ public class Exec {
 						String.format("Received unsupported charset: %s. ", con.getContentType()));
 			}
 			String encoding=con.getContentEncoding();
-			if (encoding.equals("gzip")) {
+			if (encoding!=null && encoding.equals("gzip")) {
 				try (InputStream gzippedResponse = con.getInputStream();
 						InputStream ungzippedResponse = new GZIPInputStream(gzippedResponse);
 						Reader reader = new InputStreamReader(ungzippedResponse, charset);
