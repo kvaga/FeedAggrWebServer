@@ -1,8 +1,13 @@
 package ru.kvaga.rss.feedaggrwebserver;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +23,7 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggr.FeedAggrException;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetFeedsListByUser;
 import ru.kvaga.rss.feedaggr.objects.Channel;
@@ -395,6 +401,21 @@ public class ServerUtils {
 		return request.getAttribute(attr);
 	}
 
+	public static synchronized String encodeString(String text, String encoding) throws IOException {
+		BufferedReader br = new BufferedReader(
+		        new InputStreamReader(
+		          new ByteArrayInputStream(text.getBytes())
+		          , Charset.forName(encoding)
+		          ));
+		String s;
+		StringBuilder sb = new StringBuilder();
+		 while((s=br.readLine())!=null) {
+			 sb.append(s);
+			 sb.append("\n");
+		 }
+		 return sb.toString();
+	}
+	
 	public static synchronized  String convertStringToUTF8(String str) {
 //		ByteBuffer buffer = StandardCharsets.UTF_8.encode(str); 
 //		return StandardCharsets.UTF_8.decode(buffer).toString();

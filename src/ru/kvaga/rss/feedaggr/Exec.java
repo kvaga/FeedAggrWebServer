@@ -1,14 +1,19 @@
 package ru.kvaga.rss.feedaggr;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,16 +51,31 @@ public class Exec {
 	final static org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(Exec.class);
 
 	public static void main(String[] args) throws FeedAggrException.GetURLContentException, FeedAggrException.GetSubstringForHtmlBodySplitException, FeedAggrException.SplitHTMLContent, FeedAggrException.CommonException, GetFeedsListByUser {
+		String urlText[] = {
+//			"https://hh.ru/search/vacancy/rss?area=1&clusters=true&enable_snippets=true&text=NAME%3A%28%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%BE%D1%80+OR+%D0%BD%D0%B0%D1%87%D0%B0%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA+OR+%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%29+AND+COMPANY_NAME%3A%28%D0%98%D0%BD%D0%BD%D0%BE%D1%82%D0%B5%D1%85%29&specialization=1&from=cluster_professionalArea&showClusters=true",
+//				"https://www.youtube.com/feeds/videos.xml?channel_id=UCBzN3JKOWOPo6ic0_UtQXhA",
+//				"https://4brain.ru/blog/",
+//				"https://www.drive2.ru/experience/audi/g4859/?",
+				"https://journal.open-broker.ru/",
+				
+		};
+System.out.println(Charset.defaultCharset());
+		try {
+			for(String url : urlText) {
+//				System.err.println(ServerUtils.encodeString(Exec.getURLContent(url), "UTF-8").replaceAll("<title>", "\n<title>"));
+				System.err.println(Exec.getURLContent(url).replaceAll("<title>", "\n<title>"));
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		
-		
-//		String urlText = "https://www.drive2.ru/experience/kia/g3688/";
-//		String urlText = "https://journal.open-broker.ru/";
-		String urlText = "https://4brain.ru/blog/";
-
+		if(true) {
+			System.exit(0);
+		}
 		String repeatableSearchPattern = "<div class=\"c-post-preview__title\">{*}<a class=\"c-link c-link--text\" href=\"{%}\"  rel=\"noopener\" target=\"_blank\" data-ym-target=\"post_title\">{%}</a>{*}<div class=\"c-post-preview__lead\">{%}</div>{*}<div class=\"c-post-preview__comments\">";
 
-		String responseHtmlBody = Exec.getTitleFromHtmlBody(getURLContent(urlText));
+		String responseHtmlBody = Exec.getTitleFromHtmlBody(Exec.getURLContent(""));
 
 		System.out.println(responseHtmlBody.length()>150 ? responseHtmlBody.substring(0,150) : responseHtmlBody);
 		if(true) {
@@ -223,9 +243,8 @@ public class Exec {
 					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36");
 
 			log.debug("Connection response code: " + con.getResponseCode());
-
+			
 			if (con.getContentType().toLowerCase().contains("charset=utf-8")) {
-				
 				charset = "UTF-8";
 			} else {
 				throw new FeedAggrException.GetURLContentException(urlText,
@@ -247,7 +266,7 @@ public class Exec {
 				}
 
 			} else {
-				BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
 				String s;
 //				System.err.println("Response Message: " + con.getContentEncoding());
 				StringBuilder sb = new StringBuilder();
