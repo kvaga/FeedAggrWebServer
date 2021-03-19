@@ -10,17 +10,32 @@
 <title>Insert title here</title>
 </head>
 <body>
+<%
+/*
+out.print("------------ Step 1.jsp ------------<br>");
+out.print("parameter[feedTitle]: " + request.getParameter("feedTitle")+"<br>");
+out.print("attribute[feedTitle]: " + request.getSession().getAttribute("feedTitle")+"<br>");
+out.print("----------------------------<br>");
+*/
+%>
 	<%
 		//
 		// Сделать здесь редирект на главную если responseHtmlBody==null
 		//
+		String feedTitle=null;
 		String responseHtmlBody = request.getParameter("responseHtmlBody");
-		String feedTitle = Exec.getTitleFromHtmlBody(responseHtmlBody);
-		request.getSession().setAttribute("feedTitle", feedTitle);
-		System.out.println("[point 8] feedTitle="+feedTitle);
-		if(feedTitle!=null){
-			request.getSession().setAttribute("feedTitle", feedTitle);
+		System.err.println("1---> request.getSession().getAttribute(\"feedTitle\")=["+request.getSession().getAttribute("feedTitle")+"]");
+		if(request.getSession().getAttribute("feedTitle")==null){
+			request.getSession().setAttribute("feedTitle", Exec.getTitleFromHtmlBody(responseHtmlBody));
 		}
+		feedTitle=(String)request.getSession().getAttribute("feedTitle");
+
+		System.err.println("2---> request.getSession().getAttribute(\"feedTitle\")=["+request.getSession().getAttribute("feedTitle")+"]");
+
+		System.out.println("[point 8] feedTitle="+feedTitle);
+		//if(feedTitle!=null){
+			//request.getSession().setAttribute("feedTitle", feedTitle);
+		//}
 	%>
 	<table class="w100"
 		<%if (responseHtmlBody == null) {
@@ -53,11 +68,9 @@
 				<tr valign="top">
 					<td class="w100">
 						<div id="raw_data" class="textarea">
-							<textarea cols="120" rows="20">
-								<%
+							<textarea cols="120" rows="20"><%
 									out.println(responseHtmlBody);
-								%>
-								</textarea>
+								%></textarea>
 						</div>
 					</td>
 					<td style="padding-left: 5px">

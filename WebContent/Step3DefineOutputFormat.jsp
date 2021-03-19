@@ -25,6 +25,14 @@
 <title>Insert title here</title>
 </head>
 <body>
+ <%
+ /*
+out.print("------------ Step 3.jsp ------------<br>");
+out.print("parameter[feedTitle]: " + request.getParameter("feedTitle")+"<br>");
+out.print("attribute[feedTitle]: " + request.getSession().getAttribute("feedTitle")+"<br>");
+out.print("----------------------------<br>");
+*/
+%>
  
 <h2>Step 3. Define output format</h2>
 <%
@@ -125,7 +133,6 @@ if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPattern
 
 
 </textarea>
-<%= (String)request.getSession().getAttribute("feedTitle") %>
 </td>
 								<td style="padding-left: 5px">
 									<div class="small"

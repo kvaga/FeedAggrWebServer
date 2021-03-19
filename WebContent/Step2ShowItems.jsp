@@ -21,6 +21,15 @@
   </style>
 </head>
 <body>
+<%
+/*
+out.print("------------ Step 2.2.jsp ------------<br>");
+out.print("parameter[feedTitle]: " + request.getParameter("feedTitle")+"<br>");
+out.print("attribute[feedTitle]: " + request.getSession().getAttribute("feedTitle")+"<br>");
+out.print("----------------------------<br>");
+*/
+%>
+
 
 				<%
 				String repeatableSearchPattern=request.getParameter("repeatableSearchPattern");

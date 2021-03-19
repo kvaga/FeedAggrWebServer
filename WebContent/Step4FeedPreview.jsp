@@ -28,6 +28,15 @@
 </head>
 <body>
 <%
+/*
+out.print("------------ Step 4.jsp ------------<br>");
+out.print("parameter[feedTitle]: " + request.getParameter("feedTitle")+"<br>");
+out.print("attribute[feedTitle]: " + request.getSession().getAttribute("feedTitle")+"<br>");
+out.print("----------------------------<br>");
+*/
+%>
+
+<%
 
 String repeatableSearchPattern=request.getParameter("repeatableSearchPattern");
 String substringForHtmlBodySplit=Exec.getSubstringForHtmlBodySplit(repeatableSearchPattern);
@@ -38,8 +47,11 @@ String itemTitleTemplate=request.getParameter("itemTitleTemplate");
 String itemLinkTemplate=request.getParameter("itemLinkTemplate");
 String itemContentTemplate=request.getParameter("itemContentTemplate");
 String feedId=request.getParameter("feedId");
+
 String feedTitle=(String)request.getSession().getAttribute("feedTitle");
-String feedDescription=request.getParameter("feedDescription");
+
+
+String feedDescription=(String)request.getSession().getAttribute("feedDescription");
 //request.getSession().setAttribute("feedDescription", feedDescription);
 
 String url=request.getParameter("url");
@@ -201,12 +213,12 @@ String url=request.getParameter("url");
 												        //----------------------
 														ObjectsUtils.saveXMLObjectToFile(user, user.getClass(), userFile);
 												        System.out.println("Object user ["+user.getName()+"] successfully saved to the ["+userFile+"] file");
-												        request.getSession().setAttribute("url", null);
-												        request.getSession().setAttribute("feedTitle", null);
-												        request.getSession().setAttribute("responseHtmlBody", null);
-												        request.getSession().setAttribute("repeatableSearchPattern", null);
-												        request.getSession().setAttribute("feedId", null);
-												    	request.getSession().setAttribute("dataClippedBol", null);
+												        request.getSession().removeAttribute("url");
+												        request.getSession().removeAttribute("feedTitle");
+												        request.getSession().removeAttribute("responseHtmlBody");
+												        request.getSession().removeAttribute("repeatableSearchPattern");
+												        request.getSession().removeAttribute("feedId");
+												    	request.getSession().removeAttribute("dataClippedBol");
 
 												        
 												        

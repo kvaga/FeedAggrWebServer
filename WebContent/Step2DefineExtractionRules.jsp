@@ -18,6 +18,15 @@
 <title>Insert title here</title>
 </head>
 <body>
+<%
+/*
+out.print("------------ Step 2.1.jsp ------------<br>");
+out.print("parameter[feedTitle]: " + request.getParameter("feedTitle")+"<br>");
+out.print("attribute[feedTitle]: " + request.getSession().getAttribute("feedTitle")+"<br>");
+out.print("----------------------------<br>");
+*/
+%>
+
 <% 
 String responseHtmlBody=request.getParameter("responseHtmlBody");
 

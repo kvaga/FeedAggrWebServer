@@ -1,3 +1,4 @@
+<%@page import="java.util.Enumeration"%>
 <%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtils,
 ru.kvaga.rss.feedaggr.Exec
 "%>
@@ -14,7 +15,27 @@ ru.kvaga.rss.feedaggr.Exec
 <body>
 <a href="LoginSuccess.jsp">Main page</a>
 <hr>
+
 <%
+/*
+Enumeration enumParameters = request.getParameterNames();
+out.print("Список параметров:<br>");
+while(enumParameters.hasMoreElements()){
+	String parName=(String)enumParameters.nextElement();
+	out.print("parameter["+parName+"]: " + request.getParameter(parName)+"<br>");
+}
+out.print("-------------<br>");
+
+Enumeration enumAttributes = request.getSession().getAttributeNames();
+out.print("Список атрибутов сессии:<br>");
+while(enumAttributes.hasMoreElements()){
+	String parName=(String)enumAttributes.nextElement();
+	if(parName.equals("responseHtmlBody")) continue;
+	out.print("attribute["+parName+"]: " + request.getSession().getAttribute(parName)+"<br>");
+}
+out.print("-------------<br>");
+*/
+
 
 if(request.getParameter("url")!=null){
 	request.getSession().setAttribute("url",request.getParameter("url"));
@@ -27,11 +48,13 @@ if(request.getParameter("feedDescription")!=null){
 if(request.getParameter("feedId")!=null){
 	request.getSession().setAttribute("feedId",request.getParameter("feedId"));
 }
+if(request.getParameter("feedTitle")!=null){
+	request.getSession().setAttribute("feedTitle", request.getParameter("feedTitle"));
+}
 
 if(request.getParameter("repeatableSearchPattern")!=null){
 	request.getSession().setAttribute("repeatableSearchPattern",request.getParameter("repeatableSearchPattern"));
 }
-
 
 if(request.getParameter("itemTitleTemplate")!=null){
 	request.getSession().setAttribute("itemTitleTemplate",request.getParameter("itemTitleTemplate"));
@@ -43,11 +66,11 @@ if(request.getParameter("itemContentTemplate")!=null){
 	request.getSession().setAttribute("itemContentTemplate",request.getParameter("itemContentTemplate"));
 }
 
-
 String enableStep4FeedPreview=request.getParameter("enableStep4FeedPreview");
 String feedId=(String)request.getSession().getAttribute("feedId");
 //String feedTitle=(String)request.getSession().getAttribute("feedTitle");
-String feedTitle=request.getSession().getAttribute("feedTitle")==null?null:(String)request.getSession().getAttribute("feedTitle");
+
+String feedTitle=request.getSession().getAttribute("feedTitle")==null?"":(String)request.getSession().getAttribute("feedTitle");
 
 //String responseHtmlBody = request.getParameter("responseHtmlBody");
 String responseHtmlBody = (String)request.getSession().getAttribute("responseHtmlBody");
@@ -60,14 +83,20 @@ String itemContentTemplate	=(String)request.getSession().getAttribute("itemConte
 if(request.getParameter("action")!=null && request.getParameter("action").equals("new")){
 	feedId=ServerUtils.getNewFeedId();
 	request.getSession().setAttribute("feedId",feedId);
-	request.getSession().setAttribute("responseHtmlBody", null);
+	request.getSession().removeAttribute("responseHtmlBody");
 	
-	request.getSession().setAttribute("url", null);
-	request.getSession().setAttribute("dataClippedBol", null);
+	request.getSession().removeAttribute("url");
+	request.getSession().removeAttribute("dataClippedBol");
 	
 	
-    request.getSession().setAttribute("feedTitle", null);
-    request.getSession().setAttribute("repeatableSearchPattern", null);
+    request.getSession().removeAttribute("feedTitle");
+    request.getSession().removeAttribute("repeatableSearchPattern");
+    
+    request.getSession().removeAttribute("itemTitleTemplate");
+    request.getSession().removeAttribute("itemLinkTemplate");
+    request.getSession().removeAttribute("itemContentTemplate");
+    request.getSession().removeAttribute("repeatableSearchPattern");
+    request.getSession().removeAttribute("feedDescription");
     
 	enableStep4FeedPreview=null;
 	responseHtmlBody=null;
@@ -78,14 +107,19 @@ if(request.getParameter("action")!=null && request.getParameter("action").equals
 	itemContentTemplate=null;
 	
 	feedTitle="<New Feed>";
+	System.out.println("Parameters were cleared");
 }
+
 String url= (String)request.getSession().getAttribute("url");
 
 
 %>
 URL=<%= url %><br>
 feedId=<%=feedId%><br>
-feedTitle=<%=feedTitle %><br>
+feedTitle='<%=feedTitle %>'<br>
+request.getSession().getAttribute("feedTitle")='<%request.getSession().getAttribute("feedTitle"); %>'<br>
+request.getParameter("feedTitle")='<%request.getParameter("feedTitle"); %>'<br>
+request.getSession().getAttribute("feedDescription")=<%request.getSession().getAttribute("feedDescription"); %><br>
 responseHtmlBody=<%= responseHtmlBody!=null?"OK":null%><br>
 repeatableSearchPattern=<%=repeatableSearchPattern %><br>
 
@@ -165,17 +199,18 @@ repeatableSearchPattern=<%=repeatableSearchPattern %><br>
 			//response.sendRedirect("Feed.jsp");
 		}
 		try{
-			feedTitle=Exec.getTitleFromHtmlBody(responseHtmlBody);
-			request.getSession().setAttribute("feedTitle", feedTitle);
+			if(request.getSession().getAttribute("feedTitle")==null)
+				request.getSession().setAttribute("feedTitle", Exec.getTitleFromHtmlBody(responseHtmlBody));
+			feedTitle=(String)request.getSession().getAttribute("feedTitle");
 		}catch(Exception e){
 			e.printStackTrace();
 			out.print("<font color=red>Couldn't get content from the URL</font>");
 		}
 		request.getSession().setAttribute("responseHtmlBody", responseHtmlBody);
 		//System.out.println("==================>>> feedTitle: " + feedTitle);
-		if(request.getSession().getAttribute("feedTitle")==null && feedTitle!=null){
-			request.getSession().setAttribute("feedTitle", feedTitle);
-		};
+		//if(request.getSession().getAttribute("feedTitle")==null && feedTitle!=null){
+		//	request.getSession().setAttribute("feedTitle", feedTitle);
+		//};
 		
 	%>
 				<jsp:include page="Step1ShowRetreivedSourceCodeOfPage.jsp">
