@@ -4,6 +4,7 @@ import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -102,6 +103,26 @@ public class User {
 		}
 		return false;
 	}
+	
+	public CompositeUserFeed getCompositeUserFeedById(String feedId) throws Exception {
+		for(CompositeUserFeed userFeed : getCompositeUserFeeds()) {
+			if(userFeed.getId().equals(feedId)) {
+				return userFeed;
+			}
+		}
+		throw new Exception("User ["+getName()+"] doesn't have such compositeFeed ["+feedId+"]");
+	}
+	
+	public boolean removeCompositeUserFeedById(String feedId) {
+		for (Iterator<CompositeUserFeed> iterator = getCompositeUserFeeds().iterator(); iterator.hasNext();) {
+		    if (iterator.next().getId().equals(feedId)) {
+		        iterator.remove();
+		        return true;
+		    }       
+		}
+		return false;
+	}
+	
 	
 	public UserRssItemPropertiesPatterns getRssItemPropertiesPatternByDomain(String domain) {
 		for(UserRssItemPropertiesPatterns ursp : getRssItemPropertiesPatterns()) {

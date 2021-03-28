@@ -61,6 +61,7 @@ for(RSS rss : rssListForPrinting){
 for(RSS rss : rssCompositeListForPrinting) {
 	out.println("<br>");	 
 	out.println("<a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]");
+	out.println("&nbsp&nbsp&nbsp[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+rss.getChannel().getTitle()+"\">Edit</a>]");
 	out.println("<br>");	 
 	out.println("Source URL: "+rss.getChannel().getLink());
 	out.println("<br>");	 

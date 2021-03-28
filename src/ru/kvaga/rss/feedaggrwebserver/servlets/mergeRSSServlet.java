@@ -49,7 +49,7 @@ public class mergeRSSServlet extends HttpServlet {
 			throws ServletException, IOException {
 		try {
 			String userName = (String) request.getSession().getAttribute("login");
-
+			String compositeFeedID=request.getParameter("feedId");
 			log.debug("Getting list of incoming feed ids ["+userName+"]:");
 			;
 			ArrayList<String> feedIdList = new ArrayList<String>();
@@ -63,7 +63,12 @@ public class mergeRSSServlet extends HttpServlet {
 			}
 			String compositeRSSTitle = request.getParameter("compositeRSSTitle");
 //			ServerUtils.mergeRSS(compositeRSSTitle, userName, feedIdList, null);
-			ServerUtils.createCompositeRSS(userName, compositeRSSTitle, feedIdList);
+			if(compositeFeedID==null) {
+				ServerUtils.createCompositeRSS(userName, compositeRSSTitle, feedIdList);
+			}else {
+//				System.err.println("Got feed id: " + compositeFeedID);
+				ServerUtils.updateCompositeRSS(compositeFeedID, userName, compositeRSSTitle, feedIdList);
+			}
 			ServerUtils.updateCompositeRSSFilesOfUser(userName);
 		} catch (Exception e) {
 			log.error("Exception: ", e);

@@ -435,17 +435,28 @@ public class ServerUtils {
 		return al;
 	}
 
-	public static synchronized void createCompositeRSS(String userName, String compositeRSSTitle, ArrayList<String> feedIdList)
+	public static synchronized void updateCompositeRSS(String feedId, String userName, String compositeRSSTitle, ArrayList<String> feedIdList) throws Exception {
+		createCompositeRSS(feedId, userName, compositeRSSTitle, feedIdList);
+	}
+	public static synchronized void createCompositeRSS(String userName, String compositeRSSTitle, ArrayList<String> feedIdList) {
+		createCompositeRSS(userName, compositeRSSTitle, feedIdList);
+	}
+	public static synchronized void createCompositeRSS(String feedId, String userName, String compositeRSSTitle, ArrayList<String> feedIdList)
 			throws Exception {
 		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + userName + ".xml");
 		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
-		String compositeFeedId = "composite_" + ServerUtils.getNewFeedId();
+		String compositeFeedId = null;
+		if(feedId==null) {
+			compositeFeedId="composite_" + ServerUtils.getNewFeedId();
+		}else {
+			compositeFeedId=feedId;
+		}
 		File compositeRSSFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + compositeFeedId + ".xml");
 
 		// Check does user have all needed feed ids
-		for (String feedId : feedIdList) {
-			if (!user.containsFeedId(feedId)) {
-				throw new Exception("User [" + userName + "] doesn't have feed id [" + feedId + "]");
+		for (String feedIdFromList : feedIdList) {
+			if (!user.containsFeedId(feedIdFromList)) {
+				throw new Exception("User [" + userName + "] doesn't have feed id [" + feedIdFromList + "]");
 			}
 		}
 
@@ -457,10 +468,31 @@ public class ServerUtils {
 		// Creating new CompositeUserFeed and adding to user
 		CompositeUserFeed compositeUserFeed = new CompositeUserFeed();
 		compositeUserFeed.setId(compositeFeedId);
-		for (String feedId : feedIdList) {
-			compositeUserFeed.getFeedIds().add(feedId);
+		
+		if(user.removeCompositeUserFeedById(compositeFeedId)) {
+				log.debug("Removed previous version of composite feed ["+compositeFeedId+"]");
+				System.err.println("Removed previous version of composite feed ["+compositeFeedId+"]");
+				
+				
 		}
+		for(CompositeUserFeed f : user.getCompositeUserFeeds()) {
+			System.err.println("f:" + f.getId());
+		}
+		System.err.println("size: " + user.getCompositeUserFeeds().size());
+		for (String feedIdFromList : feedIdList) {
+//			if(compositeUserFeed.doesHaveCompositeFeedId(feedIdFromList)) {
+//				if(compositeUserFeed.getFeedIds().remove((String)feedIdFromList)) {
+//					log.debug("compositeUserFeed already had feed id ["+feedIdFromList+"], therefore it was removed");
+//					System.err.println("compositeUserFeed already had feed id ["+feedIdFromList+"], therefore it was removed");
+//				}
+//			}
+			compositeUserFeed.getFeedIds().add(feedIdFromList);
+			log.debug("Feed id ["+feedIdFromList+"] was added to composite feed");
+		}
+		
 		user.getCompositeUserFeeds().add(compositeUserFeed);
+		log.debug("Composite feed ["+compositeFeedId+"] was added to the ["+user.getName()+"] user");
+
 
 		// Creating new composite rss and channel
 		RSS compositeRSS = new RSS();
@@ -473,8 +505,11 @@ public class ServerUtils {
 		compositeChannel.setLink("_link");
 		compositeChannel.setTtl(360);
 		compositeRSS.setChannel(compositeChannel);
-		log.debug("Created new compositeRSSFile [" + compositeRSSFile.getAbsolutePath() + "]");
-
+		if(feedId==null) {
+			log.debug("Created new compositeRSSFile [" + compositeRSSFile.getAbsolutePath() + "]");
+		}else {
+			log.debug("Updated compositeRSSFile [" + compositeRSSFile.getAbsolutePath() + "]");
+		}
 		// Storing composite RSS and USer to files
 		ObjectsUtils.saveXMLObjectToFile(compositeRSS, compositeRSS.getClass(), compositeRSSFile);
 		log.debug("Composite RSS was successfully saved to the file [" + compositeRSSFile.getAbsolutePath() + "]");
