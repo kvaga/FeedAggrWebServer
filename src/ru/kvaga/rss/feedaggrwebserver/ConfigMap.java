@@ -16,8 +16,23 @@ public class ConfigMap {
 	/*
 	 regex for drive: https://www.drive2.ru/experience/kia/g3688?sort=Date
 <div class="c-post-preview__title">{*}<a class="c-link c-link--text" href="{%}"  rel="noopener" target="_blank" data-ym-target="post_title">{%}</a>{*}<div class="c-post-preview__lead">{%}<button class="c-post-preview
-	 regex for drive: youttube
+	 regex for drive: youtube
 <entry>{*}<title>{%}</title>{*}<link rel=\"alternate\" href=\"{%}\"/>{*}<author>{*}<media:description>{%}</media:description>{*}</entry>
+     regex for 4brain: "item":{"id":{*},"broker_id":{*}"price_start":{%},"price":{*}"target_yield":{%},"title":"{%}","description":"{%}\r\n{*}href=\"{%}?ii_ref=lfls{*}"name":"{%}","accuracy":{%}}}},
+		
+     // Tinkoff Investmnets
+	 //	URL: https://www.tinkoff.ru/api/invest/smartfeed-public/v1/feed/api/main?nav_code=ideas
+	 // Desciption:
+		(Broker: {%6}, upside: {%2}, accuracy: {%7}): {%3}
+		<br>
+		{%4}: {%5}
+		<br>
+		<center><font size="36"><a href="{%1}">============================</a></font></center><br><center><font size="36"><a href="{%1}">============ Link ============</a></font></center><br><center><font size="36"><a href="{%1}">============================</a></font></center><br>
+		regex: "item":{"id":{%},"broker_id":{*}target_yield":{%},"title":"{%}","description":{*}"ticker":"{%}","name"{*}"brand_name":"{%}","logo_name"{*}"name":"{%}","accuracy":{%}}}},
+
+	// Sber Vacancy
+	 regex: "title":"{%}","header"{*}"id":{%},"fullPartTime{*}custorgStreamI":"{%}","accessibility{*}
+	 url: https://my.sbertalents.ru/job-requisition/v2?postingCategory=797&postingCategory=796&postingCategory=777&region=1466&keywords=%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%BE%D1%80&page=0&size=120
 
 */
 

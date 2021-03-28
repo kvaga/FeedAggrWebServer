@@ -202,7 +202,7 @@ String url=request.getParameter("url");
 																		));
 														
 														// save rss output properties templates
-														user.getRssItemPropertiesPatterns().update(
+														user.updateRssItemPropertiesPatterns(/*getRssItemPropertiesPatterns().update(*/
 																new UserRssItemPropertiesPatterns(
 																		Exec.getDomainFromURL((String)request.getSession().getAttribute("url")),
 																		itemTitleTemplate,

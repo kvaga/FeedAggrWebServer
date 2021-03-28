@@ -83,8 +83,9 @@ User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
 							class="small help" title="Help on this option"
 							href="javascript:help('item_title')">?</a><br>
 							<input name="itemTitleTemplate" id="item_title" class="text" size="64" maxlength="150" value="<%
-									if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(
-											Exec.getDomainFromURL((String)request.getSession().getAttribute("url")))!=null){
+									if(	
+										user.getRssItemPropertiesPatterns()!=null && 
+										user.getRssItemPropertiesPatternByDomain(Exec.getDomainFromURL((String)request.getSession().getAttribute("url")))!=null){
 										out.print(user.getRssItemPropertiesPatternByDomain(
 												Exec.getDomainFromURL((String)request.getSession().getAttribute("url"))).getPatternTitle());
 									}else{
@@ -120,8 +121,8 @@ if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPattern
 					<table>
 						<tbody>
 							<tr valign="top">
-								<td class="w100"><textarea id="item_template" name="itemContentTemplate" cols="40"
-										rows="4" wrap="soft"><%
+								<td class="w100"><textarea id="item_template" name="itemContentTemplate" 
+								cols="120"	rows="5" wrap="soft"><%
 if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(
 		Exec.getDomainFromURL((String)request.getSession().getAttribute("url")))!=null){
 	out.print(user.getRssItemPropertiesPatternByDomain(

@@ -9,12 +9,16 @@ import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.JSpinner.DateEditor;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -39,7 +43,7 @@ import ru.kvaga.rss.feedaggr.objects.RSS;
 public class ServerUtils {
 	final private static Logger log = LogManager.getLogger(ServerUtils.class);
 
-	public static void main(String[] args) throws GetFeedsListByUser, JAXBException {
+	public static void main(String[] args) throws GetFeedsListByUser, JAXBException, ParseException {
 //		for(Feed feedOnServer : getFeedsListByUser("kvaga")) {
 ////			System.out.println(feedOnServer.getXmlFile());
 //			RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
@@ -49,8 +53,8 @@ public class ServerUtils {
 //			 
 ////			ObjectsUtills.printXMLObject(rssFeed);
 //		}
+	
 	}
-
 	public static synchronized String getNewFeedId() {
 		return "" + new Date().getTime();
 	}

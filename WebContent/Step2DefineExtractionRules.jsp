@@ -72,7 +72,7 @@ String responseHtmlBody=request.getParameter("responseHtmlBody");
 							<% 												        
 								User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+request.getSession().getAttribute("login")+".xml"), new User());
 							%>
-								<textarea name="repeatableSearchPattern" cols="40" rows="4" wrap="soft"><%= 
+								<textarea name="repeatableSearchPattern" cols="120" rows="20" wrap="soft"><%= 
 									user.getRepeatableSearchPatternByDomain(Exec.getDomainFromURL((String)request.getSession().getAttribute("url")))
 								%></textarea>
 							</div>

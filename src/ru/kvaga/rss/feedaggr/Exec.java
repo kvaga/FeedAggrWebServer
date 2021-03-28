@@ -130,7 +130,15 @@ System.out.println(Charset.defaultCharset());
 //			System.err.println(repeatableSearchPattern);
 //			System.err.println(s);
 			repeatableSearchPattern=repeatableSearchPattern.trim();
-			Pattern pattern = Pattern.compile(repeatableSearchPattern);
+			String temp_text_pattern = repeatableSearchPattern
+					.replaceAll("(\\\\r\\\\n|\\\\n)", ".")
+					.replaceAll("\\{", "\\\\{")
+//					.replace('\r', '.')
+//					.replace('\n', '.')
+//					.replace("\\", "\\\\")
+//					.replaceAll("\\{", "\\\\{")
+					;
+			Pattern pattern = Pattern.compile(temp_text_pattern);
 			Matcher matcher = pattern.matcher(s);
 			if (matcher.find()) {
 //				log.debug("Item found");
@@ -148,6 +156,11 @@ System.out.println(Charset.defaultCharset());
 				log.debug("GetItems: Added item " + item.getContentForPrinting() + " to a list \n ");
 				ll.add(item);
 			} else {
+				System.err.println("-1==> temp_text_pattern: " + temp_text_pattern);
+				System.err.println("0==> repeatableSearch: "+repeatableSearchPattern);
+				System.err.println("1==> " + s);
+				System.err.println("2==> " + repeatableSearchPattern);
+
 				log.warn("Couldn't find item in the piece ["+(s.length()>=repeatableSearchPattern.length()?s.substring(0,repeatableSearchPattern.length()-1):s)+"] of html content by regex expression ["+repeatableSearchPattern+"] and substringForHtmlBodySplit ["+substringForHtmlBodySplit+"]");
 				
 				
@@ -202,7 +215,8 @@ System.out.println(Charset.defaultCharset());
 	static synchronized String[] splitHtmlContent(String htmlBody, String substringForHtmlBodySplit) throws FeedAggrException.SplitHTMLContent {
 //		System.err.println("repeatable search: " + substringForHtmlBodySplit);
 		log.debug("Splitting html content [is html content null: " + (htmlBody==null? "null":"not null")+"]");
-		String splittedItems[]=htmlBody.split(substringForHtmlBodySplit);
+		String ss = substringForHtmlBodySplit.replaceAll("\\{", "\\\\{");
+		String splittedItems[]=htmlBody.split(ss);
 		log.debug("splitted html content items.length="+splittedItems.length);
 		log.debug("substringForHtmlBodySplit="+substringForHtmlBodySplit);
 		if(splittedItems.length<2) {
@@ -243,12 +257,16 @@ System.out.println(Charset.defaultCharset());
 					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36");
 
 			log.debug("Connection response code: " + con.getResponseCode());
+			log.debug("ContentType: " + con.getContentType());
+
 			
 			if (con.getContentType().toLowerCase().contains("charset=utf-8")) {
 				charset = "UTF-8";
+			} else if(con.getContentType().toLowerCase().contains("application/json")) {
+				charset = "UTF-8";
 			} else {
 				throw new FeedAggrException.GetURLContentException(urlText,
-						String.format("Received unsupported charset: %s. ", con.getContentType()));
+						String.format("Received unsupported contentType: %s. ", con.getContentType()));
 			}
 			String encoding=con.getContentEncoding();
 			if (encoding!=null && encoding.equals("gzip")) {
@@ -360,7 +378,7 @@ System.out.println(Charset.defaultCharset());
 	}
 	
 	public static synchronized int getNumberFromItemLink(String itemLink) throws Exception {
-		Pattern pattern = Pattern.compile("\\{%(\\d+)}");
+		Pattern pattern = Pattern.compile(".*\\{%(\\d+)}.*");
 		Matcher m = pattern.matcher(itemLink);
 		if(m.matches()) {
 			log.debug("Found number ["+m.group(1)+"] in the item link ["+itemLink+"]");

@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlElement;
@@ -19,7 +20,10 @@ public class User {
 	private Set<UserFeed> userFeeds=new HashSet<UserFeed>();
 	private Set<CompositeUserFeed> compositeUserFeeds=new HashSet<CompositeUserFeed>();
 	private Set<UserRepeatableSearchPattern> repeatableSearchPatterns = new HashSet<UserRepeatableSearchPattern>();
-	private UserRssItemPropertiesPatternsSet rssItemPropertiesPatterns = new UserRssItemPropertiesPatternsSet();
+	private Set<UserRssItemPropertiesPatterns> rssItemPropertiesPatterns = 
+			ConcurrentHashMap.newKeySet();
+//		new UserRssItemPropertiesPatternsSet()
+			;
 
 	public User() {
 	}
@@ -63,13 +67,24 @@ public class User {
 	}
 	
 	@XmlElement(name="rssItemPropertiesPatterns")
-	public UserRssItemPropertiesPatternsSet getRssItemPropertiesPatterns() {
+	public Set<UserRssItemPropertiesPatterns> getRssItemPropertiesPatterns() {
 		return rssItemPropertiesPatterns;
 	}
 	public void setRssItemPropertiesPatterns(UserRssItemPropertiesPatternsSet rssItemPropertiesPatterns) {
 		this.rssItemPropertiesPatterns = rssItemPropertiesPatterns;
 	}
 	
+	public synchronized void updateRssItemPropertiesPatterns(UserRssItemPropertiesPatterns userRssItemPropertiesPatterns) {
+		for(UserRssItemPropertiesPatterns iterItem : getRssItemPropertiesPatterns()) {
+			if (iterItem.equals(userRssItemPropertiesPatterns)) {
+				iterItem.setPatternTitle(userRssItemPropertiesPatterns.getPatternTitle());
+				iterItem.setPatternLink(userRssItemPropertiesPatterns.getPatternLink());
+				iterItem.setPatternDescription(userRssItemPropertiesPatterns.getPatternDescription());
+			} else {
+				getRssItemPropertiesPatterns().add(userRssItemPropertiesPatterns);
+			}
+		}
+	}
 	public boolean containsFeedId(String feedId) {
 		for(UserFeed userFeed : getUserFeeds()) {
 			if(userFeed.getId().equals(feedId)) {
@@ -170,7 +185,7 @@ public class User {
 		System.out.println(t.getPatternLink());
 		System.out.println(t.getPatternDescription());
 
-		user.getRssItemPropertiesPatterns().update(
+		user.updateRssItemPropertiesPatterns(
 				new UserRssItemPropertiesPatterns(
 						Exec.getDomainFromURL(url),
 						t.getPatternLink(),
