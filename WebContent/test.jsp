@@ -46,5 +46,7 @@ if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPattern
 	out.print("{%2}");
 }
 %>
+<br>
+<a href="ICSServlet?ics_filename=my_filename.ics&ics_summary=summary&ics_description=description">download the jsp file</a>  
 </body>
 </html>

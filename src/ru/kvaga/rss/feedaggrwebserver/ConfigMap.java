@@ -34,6 +34,13 @@ public class ConfigMap {
 	 regex: "title":"{%}","header"{*}"id":{%},"fullPartTime{*}custorgStreamI":"{%}","accessibility{*}
 	 url: https://my.sbertalents.ru/job-requisition/v2?postingCategory=797&postingCategory=796&postingCategory=777&region=1466&keywords=%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%BE%D1%80&page=0&size=120
 
+	Tinkoff Invest
+	URL:
+	Regex: "item":{"id":{%},"broker_id"{*},"price_start":{%},"price":{%},"yield":{%},"target_yield":{%},"title":"{%}","description":{*}"ticker":"{%}","name":"{%}",{*}brand_name":"Роснефть",{*}"broker":{*}"name":"{%}","accuracy":{%}}}},
+
+	Tinkoff Feed Line
+	URL: https://www.tinkoff.ru/api/invest/smartfeed-public/v1/feed/api/main
+	regex: "item":{"id":{%},"announce":"{%}","title":"{%}","img_big":"","date":"{*}ticker":"{%}","name":"{%}","type":"{*}","brand_name":"{%}","logo{*}price":{%},"yield_absolute{*}yield_relative":{%}}],"tags"{*}"name":"{%}"},{*}
 */
 
 }

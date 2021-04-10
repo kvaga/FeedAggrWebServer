@@ -9,7 +9,7 @@
 			                   
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
-				<SizeBasedTriggeringPolicy size="2 MB"/>
+				<SizeBasedTriggeringPolicy size="20 MB"/>
             </Policies>
   </RollingRandomAccessFile>
 </Appenders>

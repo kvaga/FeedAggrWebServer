@@ -106,8 +106,19 @@ System.out.println(Charset.defaultCharset());
 			String substringForHtmlBodySplit, 
 			String repeatableSearchPattern,
 			int countOfPercentItemsInSearchPattern
+			) throws SplitHTMLContent{
+		return getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern, countOfPercentItemsInSearchPattern, null);
+	}
+	public static synchronized LinkedList<Item> getItems(
+			String responseHtmlBody, 
+			String substringForHtmlBodySplit, 
+			String repeatableSearchPattern,
+			int countOfPercentItemsInSearchPattern,
+			String filterWords
 			) throws FeedAggrException.SplitHTMLContent {
 		int i = 0;
+		log.debug("Filter words were set ["+filterWords+"]");
+
 		repeatableSearchPattern = repeatableSearchPattern
 				.replaceAll("\\{\\*}", ".*")
 				.replaceAll("\\{%}", "(.*)")
@@ -126,6 +137,22 @@ System.out.println(Charset.defaultCharset());
 			}
 			s = substringForHtmlBodySplit + s;
 			
+			// Check a presence of filter words in the item if filter set 
+			if(filterWords!=null) {
+				boolean contains = false;
+				for(String word : filterWords.split("\\|")) {
+					log.debug("Searching word ["+word+"] in the string ["+s+"]");
+					if(s.toLowerCase().contains(word.toLowerCase())) {
+						log.debug("Found filter word ["+word+"] in item therefore saving item ["+s+"]");
+						contains=true;
+						break;
+					}
+				}
+				if(!contains) {
+					log.debug("Didn't find filter words in item. Therefore skipping this item ["+s+"]");
+					continue;
+				}
+			}
 //			System.err.println("=============" + ++i + "==========");
 //			System.err.println(repeatableSearchPattern);
 //			System.err.println(s);
@@ -315,7 +342,8 @@ System.out.println(Charset.defaultCharset());
 									String repeatableSearchPattern,
 									String itemTitleTemplate,
 									String itemLinkTemplate,
-									String itemContentTemplate
+									String itemContentTemplate,
+									String filterWords
 	) throws Exception {
 		log.debug("===== getRSSFromWeb ===== ");
 		int countOfPercentItemsInSearchPattern = Exec.countWordsUsingSplit(repeatableSearchPattern, "{%}");
@@ -333,7 +361,7 @@ System.out.println(Charset.defaultCharset());
         ArrayList<ru.kvaga.rss.feedaggr.objects.Item> items = new ArrayList<ru.kvaga.rss.feedaggr.objects.Item>();
 
         // список полученных из html body элементов
-		LinkedList<Item> itemsFromHtmlBody = Exec.getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,countOfPercentItemsInSearchPattern);					
+		LinkedList<Item> itemsFromHtmlBody = Exec.getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,countOfPercentItemsInSearchPattern, filterWords);					
 		String itemTitle=null;
 		String itemLink=null;
 		String itemContent=null;

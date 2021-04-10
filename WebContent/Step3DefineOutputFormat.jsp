@@ -149,6 +149,13 @@ if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPattern
 					</table>
 
 					<p>
+						Filter words (divided by '|')<span class="bullet">*</span>: <a
+							class="small help" title="Help on this option"
+							href="javascript:help('item_title')">?</a><br>
+							<input name="filterWords" id="filterWords" class="text" size="64" maxlength="150" value=""/>
+					</p>
+							
+					<p>
 						<a href="javascript:toggle('optional_parameters')"><span
 							id="optional_parameters_toggle" class="toggle"></span>Optional
 							parameters</a>

@@ -185,10 +185,10 @@ public class User {
 //				"<br>\r\n" + 
 //				"<center><font size=\"36\"><a href=\"{%1}\">============================</a></font></center>");
 		
-		UserFeed userFeed1 = new UserFeed("2526736822660417", "{%2}", "{%1}", "{%3}", "some repetable search");
-		UserFeed userFeed2 = new UserFeed("54433456543345666542245", "{%2}", "{%1}", "{%3}", "some repeateble search");
-		UserFeed userFeed3 = new UserFeed("qqq", "{%2}", "{%1}", "{%3}", "some repet");
-		UserFeed userFeed4 = new UserFeed("qqq", "{%2}", "{%1}", "{%3}", "some repet");
+		UserFeed userFeed1 = new UserFeed("2526736822660417", "{%2}", "{%1}", "{%3}", "some repetable search", null);
+		UserFeed userFeed2 = new UserFeed("54433456543345666542245", "{%2}", "{%1}", "{%3}", "some repeateble search",null);
+		UserFeed userFeed3 = new UserFeed("qqq", "{%2}", "{%1}", "{%3}", "some repet",null);
+		UserFeed userFeed4 = new UserFeed("qqq", "{%2}", "{%1}", "{%3}", "some repet",null);
 
 		
 //		kvaga.getUserFeeds().add(userFeed1);

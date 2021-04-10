@@ -72,6 +72,7 @@ public class FeedsUpdateJob implements Runnable {
 		String itemTitleTemplate = null;// get from config
 		String itemLinkTemplate = null; // get from config
 		String itemContentTemplate = null; // get from config
+		String filterWords=null;
 //		System.out.println("[point 2]");
 
 //		System.out.println(new File(feedsPath).getCanonicalPath());
@@ -124,8 +125,10 @@ public class FeedsUpdateJob implements Runnable {
 					itemLinkTemplate = userFeed.getItemLinkTemplate();
 					itemContentTemplate = userFeed.getItemContentTemplate();
 					repeatableSearchPattern = userFeed.getRepeatableSearchPattern();
-					log.debug(String.format("Got parameters for feed [feedId='%s', itemTitleTemplate='%s', itemLinkTemplate='%s', itemContentTemplate='%s', repeatableSearchPattern='%s']", 
-							feedId,itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern));
+					filterWords = userFeed.getFilterWords();
+					
+					log.debug(String.format("Got parameters for feed [feedId='%s', itemTitleTemplate='%s', itemLinkTemplate='%s', itemContentTemplate='%s', repeatableSearchPattern='%s', filterWords='%s']", 
+							feedId,itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern, filterWords));
 //					System.out.println("itemTitleTemplate: " + itemTitleTemplate);
 //					System.out.println("itemLinkTemplate: " + itemLinkTemplate);
 //					System.out.println("itemContentTemplate: " + itemContentTemplate);
@@ -135,7 +138,7 @@ public class FeedsUpdateJob implements Runnable {
 
 					// Получаем feed (RSS) объект из Web
 					RSS rssFromWeb = Exec.getRSSFromWeb(url, responseHtmlBody, substringForHtmlBodySplit,
-							repeatableSearchPattern, itemTitleTemplate, itemLinkTemplate, itemContentTemplate);
+							repeatableSearchPattern, itemTitleTemplate, itemLinkTemplate, itemContentTemplate, filterWords);
 //					ObjectsUtils.printXMLObject(rssFromWeb);
 					
 					// Сравниванием списки item из Web и Файла

@@ -47,6 +47,7 @@ String itemTitleTemplate=request.getParameter("itemTitleTemplate");
 String itemLinkTemplate=request.getParameter("itemLinkTemplate");
 String itemContentTemplate=request.getParameter("itemContentTemplate");
 String feedId=request.getParameter("feedId");
+String filterWords=(request.getParameter("filterWords")!=null && !request.getParameter("filterWords").equals(""))? request.getParameter("filterWords"): null ;
 
 String feedTitle=(String)request.getSession().getAttribute("feedTitle");
 
@@ -106,7 +107,7 @@ String url=request.getParameter("url");
 										       
 										        
 										        // список полученных из html body элементов
-												LinkedList<Item> itemsFromHtmlBody = Exec.getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,countOfPercentItemsInSearchPattern);					
+												LinkedList<Item> itemsFromHtmlBody = Exec.getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,countOfPercentItemsInSearchPattern, filterWords);					
 												String itemTitle=null;
 												String itemLink=null;
 												String itemContent=null;
@@ -192,8 +193,9 @@ String url=request.getParameter("url");
 														//File file = new File("C:\\eclipseWorkspace\\FeedAggrWebServer\\WebContent\\data\\users\\kvaga.xml");
 														
 												       
-												        user.getUserFeeds().add(new UserFeed(feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern));
-														// save repeatable search patterns
+												        user.getUserFeeds().add(new UserFeed(feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern, filterWords));
+														
+												        // save repeatable search patterns
 												        user.getRepeatableSearchPatterns().add(
 																new UserRepeatableSearchPattern(
 																		Exec.getDomainFromURL((String)request.getSession().getAttribute("url")), 
