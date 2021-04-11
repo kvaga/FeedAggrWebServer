@@ -9,7 +9,10 @@
 	ru.kvaga.rss.feedaggrwebserver.ServerUtils,
 	java.util.Collections,
 	java.util.HashMap,
-	java.util.ArrayList"
+	java.util.ArrayList,
+	org.apache.logging.log4j.*
+	
+	"
 	%>
     
 <!DOCTYPE html>
@@ -23,16 +26,16 @@ Your feeds are listed below. If you have other feeds, <a href="Feed.jsp?action=n
 <br>
 <h3>Common feeds</h3>
 <%
-//final static org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger();
+Logger log = LogManager.getLogger( "FeedList.jsp" );
 
 //String realPath=getServletContext().getRealPath("data/feeds/");
 ArrayList<RSS> rssListForPrinting = new ArrayList<RSS>();
 ArrayList<RSS> rssCompositeListForPrinting = new ArrayList<RSS>();
 
 HashMap<RSS,String> mapRssStringForPrinting = new HashMap<RSS, String>();
-System.out.println("=======================> " + ConfigMap.feedsPath);
+log.debug("=======================> " + ConfigMap.feedsPath);
 for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
-//	System.out.println(feedOnServer.getXmlFile());
+//	log.debug(feedOnServer.getXmlFile());
 	RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
 	if(feedOnServer.getId().startsWith("composite")) {
 		rssCompositeListForPrinting.add(rssFeed);

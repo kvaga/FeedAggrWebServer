@@ -59,15 +59,15 @@ public class Exec {
 				"https://journal.open-broker.ru/",
 				
 		};
-System.out.println(Charset.defaultCharset());
+		log.debug(Charset.defaultCharset());
 		try {
 			for(String url : urlText) {
 //				System.err.println(ServerUtils.encodeString(Exec.getURLContent(url), "UTF-8").replaceAll("<title>", "\n<title>"));
-				System.err.println(Exec.getURLContent(url).replaceAll("<title>", "\n<title>"));
+				log.error(Exec.getURLContent(url).replaceAll("<title>", "\n<title>"));
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
 		
 		if(true) {
@@ -77,7 +77,7 @@ System.out.println(Charset.defaultCharset());
 
 		String responseHtmlBody = Exec.getTitleFromHtmlBody(Exec.getURLContent(""));
 
-		System.out.println(responseHtmlBody.length()>150 ? responseHtmlBody.substring(0,150) : responseHtmlBody);
+		log.debug(responseHtmlBody.length()>150 ? responseHtmlBody.substring(0,150) : responseHtmlBody);
 		if(true) {
 			System.exit(0);
 		}
@@ -263,7 +263,7 @@ System.out.println(Charset.defaultCharset());
 //			con.connect();
 			
 
-//			System.out.println("Con: " + con.getResponseCode());
+//			log.debug("Con: " + con.getResponseCode());
 			con.setRequestMethod("GET");
 			con.setRequestProperty("accept",
 					"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
@@ -316,7 +316,6 @@ System.out.println(Charset.defaultCharset());
 //				System.err.println("Response Message: " + con.getContentEncoding());
 				StringBuilder sb = new StringBuilder();
 				while ((s = br.readLine()) != null) {
-//					System.out.println(s);
 					sb.append(s);
 				}
 				body = sb.toString();
@@ -327,7 +326,6 @@ System.out.println(Charset.defaultCharset());
 			return body;
 			
 		} catch (Exception e) {
-//			e.printStackTrace();
 			log.error("GetURLContentException: couldn't get a content for the ["+urlText+"] URL", e);
 			if(con!=null) {
 				con.disconnect();

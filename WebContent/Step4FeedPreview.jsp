@@ -18,8 +18,15 @@
     ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils,
     ru.kvaga.rss.feedaggrwebserver.objects.user.User,
     ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed,
-        ru.kvaga.rss.feedaggrwebserver.objects.user.UserRepeatableSearchPattern
+        ru.kvaga.rss.feedaggrwebserver.objects.user.UserRepeatableSearchPattern,
+            		org.apache.logging.log4j.*
+        
     "%>
+    
+    <%
+    Logger log = LogManager.getLogger( "Step4FeedPreview.jsp" );
+
+    %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -111,10 +118,7 @@ String url=request.getParameter("url");
 												String itemTitle=null;
 												String itemLink=null;
 												String itemContent=null;
-												//System.out.println("[point 9] itemTitleTemplate="+itemTitleTemplate);
-												//System.out.println("[point 9] itemLinkTemplate="+itemLinkTemplate);
-												//System.out.println("[point 9] itemContentTemplate="+itemContentTemplate);
-
+												
 													int k = 0;
 													for (Item itemFromHtmlBody : itemsFromHtmlBody) {
 													
@@ -134,7 +138,7 @@ String url=request.getParameter("url");
 														//цикл для замены всех {%Х} на значения
 															for (int i = 1; i <= itemFromHtmlBody.length(); i++) {
 																try{
-																System.out.println("count: " + i + " [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
+																log.debug("count: " + i + " [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
 																
 																itemTitle=itemTitle.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
 																//itemLink=itemLink.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
@@ -143,26 +147,21 @@ String url=request.getParameter("url");
 																//itemLink=Exec.checkItemURLForFullness(url, itemLink);
 																itemContent=itemContent.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
 																}catch(Exception e){
-																	e.printStackTrace();
+																	log.error("Exception", e);
 																}
-																System.out.println("[point 10] itemTitle="+itemTitle +", itemTitleTemplate="+itemTitleTemplate+", [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
-																System.out.println("[point 10] itemLink="+itemLink +", itemLinkTemplate="+itemLinkTemplate+", [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
-																System.out.println("[point 10] itemContent="+itemContent +", itemContentTemplate="+itemContentTemplate+", [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
+																log.debug("[point 10] itemTitle="+itemTitle +", itemTitleTemplate="+itemTitleTemplate+", [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
+																log.debug("[point 10] itemLink="+itemLink +", itemLinkTemplate="+itemLinkTemplate+", [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
+																log.debug("[point 10] itemContent="+itemContent +", itemContentTemplate="+itemContentTemplate+", [item.get("+i+")="+itemFromHtmlBody.get(i)+"]");
 																
 																//out.println("<nobr><span class=\"param\">{%" + i + "}</span> = " + item.get(i) + "</nobr><br>");
 															}
 															out.println("<nobr><span class=\"param\">" + ++k +". " + itemTitle + "</nobr><br>");
 															out.println("<nobr><span class=\"param\">" + itemLink + "</nobr><br>");
 															out.println("<nobr><span class=\"param\">" + itemContent + "</nobr><br>");
-															//System.out.println("===========================");
-															//System.out.println("itemContent: " + itemContent);
-															//System.out.println("===========================");
-		
 															
 															_item.setTitle(itemTitle);
 													        _item.setLink(itemLink);
 													       // _item.setLink(Exec.checkItemURLForFullness(url, itemLink));
-													        //System.out.println("CDATA: " + _item.getDescription());
 
 													        _item.setDescription(itemContent);
 													        //_item.setDescription("<![CDATA["+itemContent+"]]>");
@@ -185,7 +184,7 @@ String url=request.getParameter("url");
 												       	File userFile=new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+request.getSession().getAttribute("login")+".xml");
 
 												        ObjectsUtils.saveXMLObjectToFile(rss, rss.getClass(), xmlFile);
-												        System.out.println("Object rss ["+rss.getChannel().getTitle()+"] successfully saved to the ["+xmlFile+"] file");
+												        log.debug("Object rss ["+rss.getChannel().getTitle()+"] successfully saved to the ["+xmlFile+"] file");
 
 												        User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
 												        //----------------------
@@ -214,7 +213,7 @@ String url=request.getParameter("url");
 														);
 												        //----------------------
 														ObjectsUtils.saveXMLObjectToFile(user, user.getClass(), userFile);
-												        System.out.println("Object user ["+user.getName()+"] successfully saved to the ["+userFile+"] file");
+														log.debug("Object user ["+user.getName()+"] successfully saved to the ["+userFile+"] file");
 												        request.getSession().removeAttribute("url");
 												        request.getSession().removeAttribute("feedTitle");
 												        request.getSession().removeAttribute("responseHtmlBody");

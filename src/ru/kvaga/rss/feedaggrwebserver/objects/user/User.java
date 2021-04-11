@@ -202,10 +202,7 @@ public class User {
 		String url = "https://www.youtube.com/sadas";
 		UserRssItemPropertiesPatterns t = user.getRssItemPropertiesPatternByDomain(
 				Exec.getDomainFromURL(url));
-		System.out.println(t.getPatternTitle());
-		System.out.println(t.getPatternLink());
-		System.out.println(t.getPatternDescription());
-
+		
 		user.updateRssItemPropertiesPatterns(
 				new UserRssItemPropertiesPatterns(
 						Exec.getDomainFromURL(url),
@@ -217,15 +214,13 @@ public class User {
 		
 		if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(
 				Exec.getDomainFromURL(url))!=null){
-			System.out.println(":::"+user.getRssItemPropertiesPatternByDomain(
-					Exec.getDomainFromURL(url)).getPatternTitle());
+//			log.debug(":::"+user.getRssItemPropertiesPatternByDomain(Exec.getDomainFromURL(url)).getPatternTitle());
 		}else{
-			System.out.println(":::{%2}");
+//			log.debug(":::{%2}");
 		}
 		
 //		ObjectsUtils.printXMLObject(kvaga1);
 		
-//		System.out.println(kvaga1.getName());
 //		for(UserFeed s: kvaga.getUserFeeds()) {
 //			ObjectsUtils.printXMLObject(kvaga1);
 //			

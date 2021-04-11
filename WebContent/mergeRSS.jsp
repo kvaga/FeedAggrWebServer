@@ -12,11 +12,16 @@
 	java.util.Collections,
 	java.util.HashMap,
 	java.io.File,
-	ru.kvaga.rss.feedaggrwebserver.objects.user.User
+	ru.kvaga.rss.feedaggrwebserver.objects.user.User,
+		org.apache.logging.log4j.*
+	
 	
 	"
+	
 	%>
-    
+    <%
+    Logger log = LogManager.getLogger( "mergeRSS.jsp" );
+    %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -44,7 +49,6 @@ int k=0;
 ArrayList<RSS> rssListForPrinting = new ArrayList<RSS>();
 HashMap<RSS,String> mapRssStringForPrinting = new HashMap<RSS, String>();
 for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
-	//	System.out.println(feedOnServer.getXmlFile());
 	if(feedOnServer.getId().startsWith("composite")) continue;
 	RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
 	rssListForPrinting.add(rssFeed);

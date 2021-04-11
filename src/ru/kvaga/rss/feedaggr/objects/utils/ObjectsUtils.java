@@ -133,13 +133,11 @@ public class ObjectsUtils {
 		    Marshaller marshaller = jc.createMarshaller();
 		    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		    marshaller.marshal(rss, writer);
-		    System.out.println(writer.toString());
 		    
-//		    System.out.println(rss);
 		}
 		catch (JAXBException e) 
 		{
-		    e.printStackTrace();
+		   log.error("Exception", e);
 		}
 		
 	}

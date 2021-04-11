@@ -42,7 +42,6 @@ public class GUID{
 	   MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 	   messageDigest.update(stringToHash.getBytes());
 	   String stringHash = new String(messageDigest.digest());
-	   System.out.println(stringHash);
    }
     
 }

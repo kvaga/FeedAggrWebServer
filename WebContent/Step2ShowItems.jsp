@@ -3,8 +3,14 @@
     <%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtils,
     ru.kvaga.rss.feedaggr.FeedAggrException,ru.kvaga.rss.feedaggr.Exec,
     ru.kvaga.rss.feedaggr.FeedAggrException,ru.kvaga.rss.feedaggr.Item,
-    java.util.LinkedList
+    java.util.LinkedList,
+    		org.apache.logging.log4j.*
+    
     "%>
+    <%
+    Logger log = LogManager.getLogger( "Step2ShowItems.jsp" );
+
+    %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,10 +43,10 @@ out.print("----------------------------<br>");
 				String responseHtmlBody = (String)request.getSession().getAttribute("responseHtmlBody");
 				int countOfPercentItemsInSearchPattern = Exec.countWordsUsingSplit(repeatableSearchPattern, "{%}");
 
-				System.out.println("[point 2]: repeatableSearchPattern="+repeatableSearchPattern);
-				System.out.println("[point 2]: substringForHtmlBodySplit="+substringForHtmlBodySplit);
-				System.out.println("[point 2]: responseHtmlBody="+(responseHtmlBody==null?null:"OK"));
-				System.out.println("[point 2]: countOfPercentItemsInSearchPattern="+countOfPercentItemsInSearchPattern);
+				log.debug("[point 2]: repeatableSearchPattern="+repeatableSearchPattern);
+				log.debug("[point 2]: substringForHtmlBodySplit="+substringForHtmlBodySplit);
+				log.debug("[point 2]: responseHtmlBody="+(responseHtmlBody==null?null:"OK"));
+				log.debug("[point 2]: countOfPercentItemsInSearchPattern="+countOfPercentItemsInSearchPattern);
 
 				
 
@@ -57,7 +63,7 @@ out.print("----------------------------<br>");
 					response.getWriter().print("<font color=red>The repeatable search pattern ["+repeatableSearchPattern+"] doesn't contain any {%}+</font>");
 					rd.include(request, response);
 				}
-				System.out.println("repeatableSearchPattern: " + repeatableSearchPattern);
+				log.debug("repeatableSearchPattern: " + repeatableSearchPattern);
 				//LinkedList<Item> items = new LinkedList<Item>();
 				LinkedList<Item> items = Exec.getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,countOfPercentItemsInSearchPattern);					
 					%>
@@ -73,7 +79,7 @@ out.print("----------------------------<br>");
 													out.println("OK");
 													
 													request.getSession().setAttribute("dataClippedBol", true);
-													System.out.println("[point 2.1] request.getSession().getAttribute(\"dataClippedBol\", true)="+request.getSession().getAttribute("dataClippedBol"));
+													log.debug("[point 2.1] request.getSession().getAttribute(\"dataClippedBol\", true)="+request.getSession().getAttribute("dataClippedBol"));
 												} else {
 													out.println("FAIL");
 												}
@@ -134,10 +140,9 @@ out.print("----------------------------<br>");
 														for (int i = 1; i <= item.length(); i++) {
 															if(i==3){
 																/*
-																System.out.println("-------------------------");
-
-																System.out.println("item[3=]: " + item.get(i));
-																System.out.println("-------------------------");
+																log.debug("-------------------------");
+																log.debug("item[3=]: " + item.get(i));
+																log.debug("-------------------------");
 																*/
 															}
 															if(i==3){

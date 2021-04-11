@@ -45,11 +45,8 @@ public class ServerUtils {
 
 	public static void main(String[] args) throws GetFeedsListByUser, JAXBException, ParseException {
 //		for(Feed feedOnServer : getFeedsListByUser("kvaga")) {
-////			System.out.println(feedOnServer.getXmlFile());
 //			RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
-//			System.out.println(rssFeed.getChannel().getTitle());
-//			System.out.println("Source URL: "+rssFeed.getChannel().getLink());
-//			System.out.println("Last updated: " + rssFeed.getChannel().getLastBuildDate());
+
 //			 
 ////			ObjectsUtills.printXMLObject(rssFeed);
 //		}
@@ -96,10 +93,8 @@ public class ServerUtils {
 
 	public static synchronized ArrayList<UserFeed> getUserFeedListByUser(String userName) throws Exception {
 //		String dataDirText="WebContent/data";
-//		System.out.println("CurrentDir: " + userDirPath);
 //		String userDirText=String.format("%s/%s", dataDirText,user);
 		ArrayList<Feed> al = new ArrayList<Feed>();
-//		System.out.println("UserDir: " + userDir);
 		log.debug("Getting user configuration file");
 		File userConfigFile = new File(ConfigMap.usersPath.getAbsolutePath() + "/" + userName + ".xml");
 		if (!userConfigFile.exists()) {
@@ -113,29 +108,29 @@ public class ServerUtils {
 
 	public static synchronized ArrayList<Feed> getFeedsList(String realPath) throws GetFeedsListByUser, JAXBException {
 		/*
-		 * // String dataDirText="WebContent/data"; // System.out.println("CurrentDir: "
-		 * + userDirPath); // String userDirText=String.format("%s/%s",
+		 * // String dataDirText="WebContent/data";  
+		 * // String userDirText=String.format("%s/%s",
 		 * dataDirText,user); ArrayList<Feed> al = new ArrayList<Feed>(); File dir = new
-		 * File(realPath); // System.out.println("UserDir: " + userDir);
+		 * File(realPath); 
 		 * 
 		 * if(!dir.isDirectory()) { throw new
 		 * FeedAggrException.GetFeedsListByUser(String.
 		 * format("Couldn't find feeds [%s] directory because [path: %s, absolutePath: %s] is not a directory. Current directory: %s"
 		 * , dir, dir.getPath(),dir.getAbsolutePath(), new
 		 * File(".").getAbsolutePath())); } for(File feedFile : dir.listFiles()) { //
-		 * System.out.println("feedIdDir: " + feedIdDir); String feedId =
 		 * feedFile.getName().replaceAll("\\.xml", ""); Feed feed = new Feed(feedId,
-		 * feedFile, null); // System.out.println(feed); al.add(feed); } return al;
+		 * feedFile, null); 
+		 * //  al.add(feed); 
+		 * } 
+		 * return al;
 		 */
 		return getFeedsList(new File(realPath));
 	}
 
 	public static synchronized ArrayList<Feed> getFeedsList(File dir) throws GetFeedsListByUser, JAXBException {
 //		String dataDirText="WebContent/data";
-//		System.out.println("CurrentDir: " + userDirPath);
 //		String userDirText=String.format("%s/%s", dataDirText,user);
 		ArrayList<Feed> al = new ArrayList<Feed>();
-//		System.out.println("UserDir: " + userDir);
 		log.debug("Searching Feed in the [" + dir + "] directory");
 		if (!dir.isDirectory()) {
 			throw new FeedAggrException.GetFeedsListByUser(String.format(
@@ -143,10 +138,8 @@ public class ServerUtils {
 					dir, dir.getPath(), dir.getAbsolutePath(), new File(".").getAbsolutePath()));
 		}
 		for (File feedFile : dir.listFiles()) {
-//				System.out.println("feedIdDir: " + feedIdDir);
 			String feedId = feedFile.getName().replaceAll("\\.xml", "");
 			Feed feed = new Feed(feedId, feedFile, null);
-//				System.out.println(feed);
 			al.add(feed);
 		}
 		return al;
@@ -483,7 +476,6 @@ public class ServerUtils {
 //			if(compositeUserFeed.doesHaveCompositeFeedId(feedIdFromList)) {
 //				if(compositeUserFeed.getFeedIds().remove((String)feedIdFromList)) {
 //					log.debug("compositeUserFeed already had feed id ["+feedIdFromList+"], therefore it was removed");
-//					System.err.println("compositeUserFeed already had feed id ["+feedIdFromList+"], therefore it was removed");
 //				}
 //			}
 			compositeUserFeed.getFeedIds().add(feedIdFromList);

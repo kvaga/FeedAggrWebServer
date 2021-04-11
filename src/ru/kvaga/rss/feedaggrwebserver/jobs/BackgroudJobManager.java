@@ -39,7 +39,6 @@ public class BackgroudJobManager implements ServletContextListener{
 		scheduler2.scheduleAtFixedRate(new CompositeFeedsUpdateJob(), 0, 1, TimeUnit.HOURS);
 		log.info("BackgroudJobManager started with jobs [MergeFeeds for each 1 hours]");
 
-//		System.out.println("BackgroudJobManager started: " + event);
 //		Scheduler scheduler = new Scheduler();
 //        scheduler.schedule("7 8-22 * * *", new Task());
 //        scheduler.start();

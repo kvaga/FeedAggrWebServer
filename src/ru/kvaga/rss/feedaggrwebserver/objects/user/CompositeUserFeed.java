@@ -35,7 +35,6 @@ public class CompositeUserFeed {
 	
 	// Переопределяем hashCode и equals для корректного сравнения и поиска уникальнх объектов в HashSet
 	public int hashCode() {
-//		System.out.println("==========: " + new BigInteger(id.getBytes()).intValue());
 		return new BigInteger(id.getBytes()).intValue();
 	}
 	public boolean equals(Object object) {

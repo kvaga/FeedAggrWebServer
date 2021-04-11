@@ -1,6 +1,7 @@
 <%@page import="java.util.Enumeration"%>
 <%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtils,
-ru.kvaga.rss.feedaggr.Exec
+ru.kvaga.rss.feedaggr.Exec,
+org.apache.logging.log4j.*
 "%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="UTF-8"%>
@@ -17,6 +18,8 @@ ru.kvaga.rss.feedaggr.Exec
 <hr>
 
 <%
+Logger log = LogManager.getLogger( "Feed.jsp" );
+
 /*
 Enumeration enumParameters = request.getParameterNames();
 out.print("Список параметров:<br>");
@@ -107,7 +110,7 @@ if(request.getParameter("action")!=null && request.getParameter("action").equals
 	itemContentTemplate=null;
 	
 	feedTitle="<New Feed>";
-	System.out.println("Parameters were cleared");
+	log.debug("Parameters were cleared");
 }
 
 String url= (String)request.getSession().getAttribute("url");
@@ -194,7 +197,7 @@ repeatableSearchPattern=<%=repeatableSearchPattern %><br>
 			}
 			responseHtmlBody = Exec.getURLContent(url);
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error("Exception", e);
 			out.print("<font color=red>Couldn't get content from the URL</font>");
 			//response.sendRedirect("Feed.jsp");
 		}
@@ -203,11 +206,10 @@ repeatableSearchPattern=<%=repeatableSearchPattern %><br>
 				request.getSession().setAttribute("feedTitle", Exec.getTitleFromHtmlBody(responseHtmlBody));
 			feedTitle=(String)request.getSession().getAttribute("feedTitle");
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error("Exception", e);
 			out.print("<font color=red>Couldn't get content from the URL</font>");
 		}
 		request.getSession().setAttribute("responseHtmlBody", responseHtmlBody);
-		//System.out.println("==================>>> feedTitle: " + feedTitle);
 		//if(request.getSession().getAttribute("feedTitle")==null && feedTitle!=null){
 		//	request.getSession().setAttribute("feedTitle", feedTitle);
 		//};
@@ -229,8 +231,8 @@ repeatableSearchPattern=<%=repeatableSearchPattern %><br>
 	<% }%>
 	
 	<%if (repeatableSearchPattern != null) {	
-		System.out.println("[point 1]: repeatableSearchPattern="+repeatableSearchPattern);
-		System.out.println("[point 1]: responseHtmlBody="+(responseHtmlBody==null?null:"OK"));
+		log.debug("repeatableSearchPattern="+repeatableSearchPattern);
+		log.debug("responseHtmlBody="+(responseHtmlBody==null?null:"OK"));
 
 	%>
 				<jsp:include page="Step2ShowItems.jsp">
@@ -240,10 +242,10 @@ repeatableSearchPattern=<%=repeatableSearchPattern %><br>
 	<% }%>
 	
 	<%
-	System.out.println("[point 5]: request.getAttribute(\"dataClippedBol\")="+request.getAttribute("dataClippedBol") );
+	log.debug("request.getAttribute(\"dataClippedBol\")="+request.getAttribute("dataClippedBol") );
 
 	if(request.getSession().getAttribute("dataClippedBol")!=null && (Boolean)request.getSession().getAttribute("dataClippedBol")) {
-		System.out.println("[point 6]: OK" );
+		log.debug("dataClippedBol: OK" );
 	%>
 				<jsp:include page="Step3DefineOutputFormat.jsp">
 		        	<jsp:param name="" value="" />
@@ -252,7 +254,7 @@ repeatableSearchPattern=<%=repeatableSearchPattern %><br>
 		
 		<!-- Step 4 (Feed Preview) -->
 		<%
-		System.out.println("[point 8] enableStep4FeedPreview="+enableStep4FeedPreview);
+		log.debug("enableStep4FeedPreview="+enableStep4FeedPreview);
 
 		if(enableStep4FeedPreview!=null && enableStep4FeedPreview.equals("true")){ %>
 				<jsp:include page="Step4FeedPreview.jsp">

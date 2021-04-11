@@ -92,17 +92,13 @@ public class showFeedServlet extends HttpServlet {
 		try {
 
 			for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
-//				System.out.println("feedOnServer.getId(): "+ feedOnServer.getId());
-//				System.out.println("feedId: "+ feedId);
-//				System.out.println("------------------------------");
+
 
 				if(feedOnServer.getId().equals(feedId)) {
-//					System.out.println("==========================");
 					br = new BufferedReader(new InputStreamReader(new FileInputStream(feedOnServer.getXmlFile()),StandardCharsets.UTF_8));
 					String s;
 //					out.println(feedOnServer.getId());
 					while((s=br.readLine())!=null) {
-//						System.out.println("InFile: " + s);
 						feedXML.append(s);
 						
 
@@ -117,9 +113,7 @@ public class showFeedServlet extends HttpServlet {
 				
 //			ObjectsUtills.printXMLObject(rssFeed);
 			}
-//			System.out.println("XML:"+feedXML.toString());
 			 writer.write(feedXML.toString());
-//			 System.out.print("feedXML:"+feedXML);
 		} catch (GetFeedsListByUser e) {
 			
 log.error("GetFeedsListByUser", e);

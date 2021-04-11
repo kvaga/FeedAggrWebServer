@@ -1,8 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="ru.kvaga.rss.feedaggr.Exec"%>
+<%@ page import="ru.kvaga.rss.feedaggr.Exec,
+		org.apache.logging.log4j.*
 
+"%>
 
+<% 
+Logger log = LogManager.getLogger( "Step1ShowRetreivedSourceCodeOfPage.jsp" );
+
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,15 +30,15 @@ out.print("----------------------------<br>");
 		//
 		String feedTitle=null;
 		String responseHtmlBody = request.getParameter("responseHtmlBody");
-		System.err.println("1---> request.getSession().getAttribute(\"feedTitle\")=["+request.getSession().getAttribute("feedTitle")+"]");
+		log.error("1---> request.getSession().getAttribute(\"feedTitle\")=["+request.getSession().getAttribute("feedTitle")+"]");
 		if(request.getSession().getAttribute("feedTitle")==null){
 			request.getSession().setAttribute("feedTitle", Exec.getTitleFromHtmlBody(responseHtmlBody));
 		}
 		feedTitle=(String)request.getSession().getAttribute("feedTitle");
 
-		System.err.println("2---> request.getSession().getAttribute(\"feedTitle\")=["+request.getSession().getAttribute("feedTitle")+"]");
+		log.debug("2---> request.getSession().getAttribute(\"feedTitle\")=["+request.getSession().getAttribute("feedTitle")+"]");
 
-		System.out.println("[point 8] feedTitle="+feedTitle);
+		log.debug("[point 8] feedTitle="+feedTitle);
 		//if(feedTitle!=null){
 			//request.getSession().setAttribute("feedTitle", feedTitle);
 		//}

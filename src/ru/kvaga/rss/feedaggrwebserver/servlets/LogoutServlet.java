@@ -33,7 +33,6 @@ public class LogoutServlet extends HttpServlet {
 		if(cookies!=null) {
 			for(Cookie cookie : cookies) {
 				if(cookie.getName().equals("JSESSIONID")) {
-					System.out.println("JSESSIONID: " + cookie.getValue());
 					cookie.setMaxAge(0);
 					response.addCookie(cookie);
 				}
@@ -41,7 +40,6 @@ public class LogoutServlet extends HttpServlet {
 			//invalidate the session if exists
 			HttpSession session = request.getSession(false);
 			if(session!=null) {
-				System.out.println("User: " + session.getAttribute("user"));
 				session.invalidate();
 			}
 			//no encoding because we have invalidated the session

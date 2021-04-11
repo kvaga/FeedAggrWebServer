@@ -68,7 +68,6 @@ public class RSS {
     public void removeItemsOlderThanXDays(int xDays) {
     	ArrayList<Item> updatedListOfItems = new ArrayList<Item>();
     	for(Item item : getChannel().getItem()) {
-//			System.err.println("pubDate: " + item.getPubDate());
     		if(item.getPubDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isBefore(LocalDate.now().minusDays(xDays))) {
     			log.debug("RSS Item ["+item.getGuid()+"] was deleted because is older than ["+xDays+"]");
     			continue;
@@ -82,9 +81,7 @@ public class RSS {
 		String rssXmlFile="C:\\eclipseWorkspace\\FeedAggrWebServer\\data\\feeds\\composite_1613899705224.xml";
 		RSS rssFromFile = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(rssXmlFile,new RSS());
 		rssFromFile.removeItemsOlderThanXDays(10);
-		for(Item item : rssFromFile.getChannel().getItem()) {
-			System.out.println("pubDate: " + item.getPubDate());
-		}
+		
     }
 }
 

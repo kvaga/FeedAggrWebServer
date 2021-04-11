@@ -18,7 +18,6 @@ public class UserFeed {
 		this.itemContentTemplate=itemContentTemplate;
 		this.repeatableSearchPattern=repeatableSearchPattern;
 		this.filterWords=filterWords;
-//		System.out.println(hashCode());
 	}
 	public String getId() {
 		return id;
@@ -62,7 +61,6 @@ public class UserFeed {
 	
 	// Переопределяем hashCode и equals для корректного сравнения и поиска уникальнх объектов в HashSet
 	public int hashCode() {
-//		System.out.println("==========: " + new BigInteger(id.getBytes()).intValue());
 		return new BigInteger(id.getBytes()).intValue();
 	}
 	public boolean equals(Object object) {

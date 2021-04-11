@@ -25,10 +25,7 @@ public class Test {
 //				"<center><font size=\"36\"><a href=\"{%1}\">============================</a></font></center>\r\n" + 
 //				"";
 //		
-//		System.out.println(itemContentTemplate.
-//				replaceAll("\\{%3}", "QQQ")
-//				.replaceAll("\\{%1}", "http://yandex.ru")
-//				);
+
 		
 //		String url="https://www.youtube.com/user/AcademeG/videos";
 		String urls[]= {"https://www.youtube.com/c/FailArmyNation/videos"};
@@ -64,8 +61,7 @@ public class Test {
 				"<media:thumbnail url=\"https://i3.ytimg.com/vi/NM3_wjqWhro/hqdefault.jpg\" width=\"480\" height=\"360\"/>\r\n" + 
 				"<media:description>Регистрируйся и возвращай свой горящий кэшбэк вместе с LetyShops — https://letyshops.app.link/y8FL0Dv84db Электротонировка на любой автомобиль https://on-glass.ru Музыка: https://vk.com/wall-114871206_27422 ПО вопросам рекламы и сотрудничества: academeg@a-proved.ru Мой канал стримов: https://www.youtube.com/c/AcademeGDailyStream Instagram: https://instagram.com/academeg Вконтакт: http://vk.com/AcademeG AcademeG тру ориджинал групп: http://vk.com/academeg_reviews Фтарой канал: https://www.youtube.com/user/AcademeG2ndCH TikTok https://www.tiktok.com/@academeg.official Автохимия Suprotec-Aprohim: https://suprotec.ru/</media:description>\r\n" + 
 				"<media:community>";
-//		System.out.println(Exec.getTitleFromHtmlBody(str));
-//		System.out.println(getYoutubeFeedURL(url));
+
 		//"item":{"id":{*},"broker_id":{*}"price_start":{%},"price":{*}"target_yield":{%},"title":"{%}","description":"{%}\r\n{*}href=\"{%}?ii_ref=lfls{*}"name":"{%}","accuracy":{%}}}},
 		
 		//-1==> temp_text_pattern: "item":\{"id":.*,"broker_id":.*"price_start":(.*),"price":.*"target_yield":(.*),"title":"(.*)","description":"(.*)\\r\\n.*href=\\"(.*)?ii_ref=lfls.*"name":"(.*)","accuracy":(.*)}}},
@@ -75,33 +71,22 @@ public class Test {
 		String st = "\"item\":{\"id\":.*,\"broker_id\":.*\"price_start\":(.*),\"price\":.*\"target_yield\":(.*),\"title\":\"(.*)\",\"description\":\"(.*)\r\n.*href=\"(.*)?ii_ref=lfls.*\"name\":\"(.*)\",\"accuracy\":(.*)}}},\r\n" + 
 				"";
 //		for(String s : st.split(":{".replaceAll("\\{", "\\\\{"))) {
-//			System.out.println(s);
+//;
 //		}
-//		System.out.println(
-//				st.replace('\r', '.')
-//				.replace('\n', '.')
-//				.replace("\\", "\\\\")
-//				.replaceAll("\\{", "\\\\{")
-//				);
+
 		String regex=readString(new File("c:/temp/11/string_regex.txt"));
 		String string_for_test=readString(new File("c:/temp/11/string_for_test.txt"));
-		System.out.println("regex before: " + regex);
-		System.out.println("string_for_test: " + string_for_test);
+		
 		
 regex=regex
 .replaceAll("(\\\\r\\\\n|\\\\n)", ".")
 .replaceAll("\\{", "\\\\{")
 ;
-System.out.println("regex after: " + regex);
 
 		Pattern pattern = Pattern.compile(regex);
 		Matcher m = pattern.matcher(string_for_test);
 
-		if(m.find()) {
-			System.out.println("group[1]="+m.group(1));
-		}else {
-			System.err.println("error");
-		}
+		
 	}
 	
 	

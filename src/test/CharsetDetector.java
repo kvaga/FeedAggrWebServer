@@ -67,7 +67,6 @@ public class CharsetDetector {
     }
 
     public static void main(String[] args) throws GetURLContentException {
-       System.out.println();
 /*
         String[] charsetsToBeTested = {"UTF-8", "windows-1253", "ISO-8859-7"};
 
@@ -79,17 +78,17 @@ public class CharsetDetector {
                 InputStreamReader reader = new InputStreamReader(new ByteArrayInputStream(Exec.getURLContent(url).getBytes()), charset);
                 int c = 0;
                 while ((c = reader.read()) != -1) {
-                    System.out.print((char)c);
+                    log.debug((char)c);
                 }
                 reader.close();
             } catch (FileNotFoundException fnfe) {
-                fnfe.printStackTrace();
+				log.error("Exception", e);
             }catch(IOException ioe){
-                ioe.printStackTrace();
+				log.error("Exception", e);
             }
 
         }else{
-            System.out.println("Unrecognized charset.");
+            log.debug("Unrecognized charset.");
         }
     
     */
