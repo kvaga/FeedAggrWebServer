@@ -29,10 +29,7 @@ Your feeds are listed below. If you have other feeds, <a href="Feed.jsp?action=n
 <br>
 <h3>Common feeds</h3>
 <%
-ArrayList<RSS> nullVal=null;
-if(true){
-	nullVal.add(new RSS());
-}
+
 //String realPath=getServletContext().getRealPath("data/feeds/");
 ArrayList<RSS> rssListForPrinting = new ArrayList<RSS>();
 ArrayList<RSS> rssCompositeListForPrinting = new ArrayList<RSS>();
