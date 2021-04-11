@@ -431,8 +431,8 @@ public class ServerUtils {
 	public static synchronized void updateCompositeRSS(String feedId, String userName, String compositeRSSTitle, ArrayList<String> feedIdList) throws Exception {
 		createCompositeRSS(feedId, userName, compositeRSSTitle, feedIdList);
 	}
-	public static synchronized void createCompositeRSS(String userName, String compositeRSSTitle, ArrayList<String> feedIdList) {
-		createCompositeRSS(userName, compositeRSSTitle, feedIdList);
+	public static synchronized void createCompositeRSS(String userName, String compositeRSSTitle, ArrayList<String> feedIdList) throws Exception {
+		createCompositeRSS(null, userName, compositeRSSTitle, feedIdList);
 	}
 	public static synchronized void createCompositeRSS(String feedId, String userName, String compositeRSSTitle, ArrayList<String> feedIdList)
 			throws Exception {
