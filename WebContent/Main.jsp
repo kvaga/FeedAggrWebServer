@@ -1,8 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="UTF-8"%>
 <%@ page
-	import="ru.kvaga.rss.feedaggr.Item,ru.kvaga.rss.feedaggr.Exec,ru.kvaga.rss.feedaggr.FeedAggrException,java.util.LinkedList"%>
+	import="ru.kvaga.rss.feedaggr.Item,ru.kvaga.rss.feedaggr.Exec,
+	ru.kvaga.rss.feedaggr.FeedAggrException,java.util.LinkedList,
+	org.apache.logging.log4j.*,
+	ru.kvaga.rss.feedaggrwebserver.ConfigMap
+	"%>
+<%
+final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClass().getSimpleName());
 
+%>
 <!DOCTYPE html>
 <html>
 <head>

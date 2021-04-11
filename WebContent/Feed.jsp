@@ -1,8 +1,12 @@
 <%@page import="java.util.Enumeration"%>
 <%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtils,
 ru.kvaga.rss.feedaggr.Exec,
-org.apache.logging.log4j.*
-"%>
+org.apache.logging.log4j.*,
+ru.kvaga.rss.feedaggrwebserver.ConfigMap
+	"%>
+<%
+final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClass().getSimpleName());
+%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="UTF-8"%>
     
@@ -18,7 +22,6 @@ org.apache.logging.log4j.*
 <hr>
 
 <%
-Logger log = LogManager.getLogger( "Feed.jsp" );
 
 /*
 Enumeration enumParameters = request.getParameterNames();

@@ -10,9 +10,12 @@
 	java.util.Collections,
 	java.util.HashMap,
 	java.util.ArrayList,
-	org.apache.logging.log4j.*
-	
-	"
+	org.apache.logging.log4j.*,
+	ru.kvaga.rss.feedaggrwebserver.ConfigMap
+	"%>
+	<%
+	final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClass().getSimpleName());
+
 	%>
     
 <!DOCTYPE html>
@@ -26,8 +29,10 @@ Your feeds are listed below. If you have other feeds, <a href="Feed.jsp?action=n
 <br>
 <h3>Common feeds</h3>
 <%
-Logger log = LogManager.getLogger( "FeedList.jsp" );
-
+ArrayList<RSS> nullVal=null;
+if(true){
+	nullVal.add(new RSS());
+}
 //String realPath=getServletContext().getRealPath("data/feeds/");
 ArrayList<RSS> rssListForPrinting = new ArrayList<RSS>();
 ArrayList<RSS> rssCompositeListForPrinting = new ArrayList<RSS>();

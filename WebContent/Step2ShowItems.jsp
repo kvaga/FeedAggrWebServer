@@ -4,12 +4,12 @@
     ru.kvaga.rss.feedaggr.FeedAggrException,ru.kvaga.rss.feedaggr.Exec,
     ru.kvaga.rss.feedaggr.FeedAggrException,ru.kvaga.rss.feedaggr.Item,
     java.util.LinkedList,
+        ru.kvaga.rss.feedaggrwebserver.ConfigMap,
     		org.apache.logging.log4j.*
     
     "%>
     <%
-    Logger log = LogManager.getLogger( "Step2ShowItems.jsp" );
-
+		final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClass().getSimpleName());
     %>
 <!DOCTYPE html>
 <html>

@@ -24,8 +24,7 @@
     "%>
     
     <%
-    Logger log = LogManager.getLogger( "Step4FeedPreview.jsp" );
-
+	final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClass().getSimpleName());
     %>
 <!DOCTYPE html>
 <html>

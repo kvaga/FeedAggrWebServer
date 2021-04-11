@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="ru.kvaga.rss.feedaggr.Exec,
-		org.apache.logging.log4j.*
+		org.apache.logging.log4j.*,
+    ru.kvaga.rss.feedaggrwebserver.ConfigMap
 
 "%>
 
 <% 
-Logger log = LogManager.getLogger( "Step1ShowRetreivedSourceCodeOfPage.jsp" );
-
+final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClass().getSimpleName());
 %>
 <!DOCTYPE html>
 <html>

@@ -13,14 +13,13 @@
 	java.util.HashMap,
 	java.io.File,
 	ru.kvaga.rss.feedaggrwebserver.objects.user.User,
-		org.apache.logging.log4j.*
-	
-	
+	org.apache.logging.log4j.*,
+	ru.kvaga.rss.feedaggrwebserver.ConfigMap
 	"
 	
 	%>
     <%
-    Logger log = LogManager.getLogger( "mergeRSS.jsp" );
+	final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClass().getSimpleName());
     %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

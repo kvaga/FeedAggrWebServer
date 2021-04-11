@@ -9,8 +9,13 @@
     ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed,
     ru.kvaga.rss.feedaggrwebserver.objects.user.UserRepeatableSearchPattern,
     ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils,
-    java.io.File
+    java.io.File,
+    ru.kvaga.rss.feedaggrwebserver.ConfigMap,
+    		org.apache.logging.log4j.*
         "%>
+        <% 
+        		final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClass().getSimpleName());
+        %>
 <!DOCTYPE html>
 <html>
 <head>

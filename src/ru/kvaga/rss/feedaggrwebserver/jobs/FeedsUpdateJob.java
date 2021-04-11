@@ -170,7 +170,6 @@ public class FeedsUpdateJob implements Runnable {
 
 		try {
 			updateFeeds();
-			log.debug("Job finished");
 		} catch (NoSuchAlgorithmException e) {
 			log.error("NoSuchAlgorithmException", e);
 		} catch (SplitHTMLContent e) {
