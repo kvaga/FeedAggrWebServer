@@ -468,10 +468,10 @@ public class ServerUtils {
 				
 				
 		}
-		for(CompositeUserFeed f : user.getCompositeUserFeeds()) {
-			System.err.println("f:" + f.getId());
-		}
-		System.err.println("size: " + user.getCompositeUserFeeds().size());
+//		for(CompositeUserFeed f : user.getCompositeUserFeeds()) {
+//			System.err.println("f:" + f.getId());
+//		}
+//		System.err.println("size: " + user.getCompositeUserFeeds().size());
 		for (String feedIdFromList : feedIdList) {
 //			if(compositeUserFeed.doesHaveCompositeFeedId(feedIdFromList)) {
 //				if(compositeUserFeed.getFeedIds().remove((String)feedIdFromList)) {
@@ -515,17 +515,15 @@ public class ServerUtils {
 		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
 
 		for (CompositeUserFeed compositeUserFeed : user.getCompositeUserFeeds()) {
-			File compositeRSSFile = new File(
-					ConfigMap.feedsPath.getAbsoluteFile() + "/" + compositeUserFeed.getId() + ".xml");
+			File compositeRSSFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + compositeUserFeed.getId() + ".xml");
 			RSS compositeRSS = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(compositeRSSFile, new RSS());
 			try {
 				for (String feedId : compositeUserFeed.getFeedIds()) {
 					File xmlFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + feedId + ".xml");
-
 					RSS rss = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(xmlFile, new RSS());
-					log.debug("Got rss from the file [" + xmlFile.getAbsolutePath() + "] with ["
-							+ rss.getChannel().getItem().size() + "] items");
+					log.debug("Got rss from the file [" + xmlFile.getAbsolutePath() + "] with ["+ rss.getChannel().getItem().size() + "] items");
 					for (Item item : rss.getChannel().getItem()) {
+						item.setTitle("["+rss.getChannel().getTitle()+"] "+item.getTitle());
 						if (!compositeRSS.getChannel().containsItem(item)) {
 							compositeRSS.getChannel().getItem().add(item);
 							log.debug("Added item [" + item.getTitle() + "] to the composite items list");

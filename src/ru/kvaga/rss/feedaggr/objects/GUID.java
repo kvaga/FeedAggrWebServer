@@ -26,9 +26,9 @@ public class GUID{
         return value;
     }
     public static String generateGUID(String anyString) throws NoSuchAlgorithmException {
-    	MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
- 	   messageDigest.update(anyString.getBytes());
- 	   String stringHash = new String(messageDigest.digest());
+//    	MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+// 	   messageDigest.update(anyString.getBytes());
+// 	   String stringHash = new String(messageDigest.digest());
 //    	return stringHash;
  	   return anyString;
     }

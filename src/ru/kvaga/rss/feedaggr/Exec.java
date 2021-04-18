@@ -395,7 +395,7 @@ public class Exec {
 //			        _item.setDescription("<![CDATA[\""+itemContent+"\"]]>");
 			        _item.setDescription(itemContent);
 			        _item.setPubDate(new Date());
-			        _item.setGuid(new GUID("false", GUID.generateGUID(itemLink+itemTitle)));
+			        _item.setGuid(new GUID("false", itemLink));
 					 items.add(_item);
 			}
 			channel.setItem(items);
