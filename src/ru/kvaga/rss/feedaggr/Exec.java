@@ -1,50 +1,29 @@
 package ru.kvaga.rss.feedaggr;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.logging.LogManager;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-
-import org.apache.logging.log4j.*;
-
-import ru.kvaga.rss.feedaggr.FeedAggrException;
 import ru.kvaga.rss.feedaggr.FeedAggrException.CommonException;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetFeedsListByUser;
-import ru.kvaga.rss.feedaggr.FeedAggrException.GetSubstringForHtmlBodySplitException;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetURLContentException;
 import ru.kvaga.rss.feedaggr.FeedAggrException.SplitHTMLContent;
 import ru.kvaga.rss.feedaggr.objects.Channel;
 import ru.kvaga.rss.feedaggr.objects.GUID;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
-import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 
 public class Exec {
 
@@ -290,6 +269,8 @@ public class Exec {
 			if (con.getContentType().toLowerCase().contains("charset=utf-8")) {
 				charset = "UTF-8";
 			} else if(con.getContentType().toLowerCase().contains("application/json")) {
+				charset = "UTF-8";
+			}else if(con.getContentType().toLowerCase().contains("text/html")) {
 				charset = "UTF-8";
 			} else {
 				throw new FeedAggrException.GetURLContentException(urlText,
