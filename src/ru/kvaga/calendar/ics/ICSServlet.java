@@ -33,9 +33,15 @@ public class ICSServlet extends HttpServlet {
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("APPLICATION/OCTET-STREAM");   
+		response.setContentType("APPLICATION/OCTET-STREAM; charset=UTF-8");   
 		 response.setHeader("Content-Disposition","attachment; filename=\"" + request.getParameter("ics_filename") + "\"");
-		
+			log.debug("getICS: "
+					+ "fileName ["+request.getParameter("ics_filename")+"], "
+					+ "summary ["+request.getParameter("summary")+"],"
+					+ "description ["+request.getParameter("description")+"],"
+					+ "date_format ["+request.getParameter("date_format")+"], "
+					+ "date ["+request.getParameter("date")+"]");
+
 		try {
 			response.getWriter().write(getICS(request.getParameter("summary"), request.getParameter("description"),request.getParameter("date_format"),request.getParameter("date")));
 		} catch (ParseException e) {
