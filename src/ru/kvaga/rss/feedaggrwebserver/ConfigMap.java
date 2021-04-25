@@ -42,6 +42,11 @@ public class ConfigMap {
 	Tinkoff Feed Line
 	URL: https://www.tinkoff.ru/api/invest/smartfeed-public/v1/feed/api/main
 	regex: "item":{"id":{%},"announce":"{%}","title":"{%}","img_big":"","date":"{*}ticker":"{%}","name":"{%}","type":"{*}","brand_name":"{%}","logo{*}price":{%}}],"tags"{*}"name":"{%}"},{*}
+	
+	HeadHunter
+	URL:
+	regex: 
+	<title>{%}</title><link>{%}</link>{*}<description><!\[CDATA\[{%}\]\]></description>{*}</item>
 	*/
 
 }
