@@ -25,7 +25,8 @@
 <title>Feeds List</title>
 </head>
 <body>
-Your feeds are listed below. If you have other feeds, <a href="Feed.jsp?action=new">add</a> them to your account. Or <a href="mergeRSS.jsp">create Composite</a> rss feed
+<jsp:include page="Header.jsp"></jsp:include>
+Your feeds are listed below. 
 <br>
 <h3>Common feeds</h3>
 <%
@@ -50,7 +51,7 @@ Collections.sort(rssListForPrinting, new RSSForPrintingComparatorByTitle());
 Collections.sort(rssCompositeListForPrinting, new RSSForPrintingComparatorByTitle());
 for(RSS rss : rssListForPrinting){
 	out.println("<br>");	 
-	out.println("<a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]");
+	out.println("<a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]&nbsp&nbsp&nbsp[<a href=\"Feed.jsp?action=edit&feedId="+mapRssStringForPrinting.get(rss)+"\">Edit</a>]");
 	out.println("<br>");	 
 	out.println("Source URL: "+rss.getChannel().getLink());
 	out.println("<br>");	 

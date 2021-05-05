@@ -72,7 +72,7 @@ User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
 						Feed Description<span class="bullet">*</span>: <a
 							class="small help" title="Help on this option"
 							href="javascript:help('feed_description')">?</a><br>
-						<textarea id="feed_description" name="feedDescription" cols="120" rows="10" wrap="soft"><%=request.getSession().getAttribute("feedDescription") %></textarea>
+						<textarea id="feed_description" name="feedDescription" cols="120" rows="10" wrap="soft"><%=request.getSession().getAttribute("feedDescription")!=null ? request.getSession().getAttribute("feedDescription") : "" %></textarea>
 					</p>
 
 					<h3>RSS item properties</h3>
@@ -82,13 +82,14 @@ User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
 							class="param">{%1}</span>, <span class="param">{%2}</span> and so
 						on).
 					</p>
-
-					<p>
+				<p>
 						Item Title Template<span class="bullet">*</span>: <a
 							class="small help" title="Help on this option"
 							href="javascript:help('item_title')">?</a><br>
 							<input name="itemTitleTemplate" id="item_title" class="text" size="64" maxlength="150" value="<%
-									if(	
+								if(request.getSession().getAttribute("itemTitleTemplate")!=null){	
+									out.print(request.getSession().getAttribute("itemTitleTemplate"));
+								}else if(	
 										user.getRssItemPropertiesPatterns()!=null && 
 										user.getRssItemPropertiesPatternByDomain(Exec.getDomainFromURL((String)request.getSession().getAttribute("url")))!=null){
 										out.print(user.getRssItemPropertiesPatternByDomain(
@@ -106,7 +107,9 @@ User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
 							<input name="itemLinkTemplate"
 							id="item_link" class="text" size="64" maxlength="2048"
 							value="<%
-if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(
+									if(request.getSession().getAttribute("itemLinkTemplate")!=null){	
+										out.print(request.getSession().getAttribute("itemLinkTemplate"));
+									}else if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(
 		Exec.getDomainFromURL((String)request.getSession().getAttribute("url")))!=null){
 	out.print(user.getRssItemPropertiesPatternByDomain(
 			Exec.getDomainFromURL((String)request.getSession().getAttribute("url"))).getPatternLink());
@@ -128,17 +131,16 @@ if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPattern
 							<tr valign="top">
 								<td class="w100"><textarea id="item_template" name="itemContentTemplate" 
 								cols="120"	rows="5" wrap="soft"><%
-if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(
+										if(request.getSession().getAttribute("itemContentTemplate")!=null){	
+											out.print(request.getSession().getAttribute("itemContentTemplate"));
+										}else if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(
 		Exec.getDomainFromURL((String)request.getSession().getAttribute("url")))!=null){
 	out.print(user.getRssItemPropertiesPatternByDomain(
 			Exec.getDomainFromURL((String)request.getSession().getAttribute("url"))).getPatternDescription());
 }else{
 	out.print("{%3}&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============ Link ============&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;");
 }
-%>
-
-
-</textarea>
+%></textarea>
 </td>
 								<td style="padding-left: 5px">
 									<div class="small"
@@ -157,7 +159,7 @@ if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPattern
 						Filter words (divided by '|')<span class="bullet">*</span>: <a
 							class="small help" title="Help on this option"
 							href="javascript:help('item_title')">?</a><br>
-							<input name="filterWords" id="filterWords" class="text" size="64" maxlength="150" value=""/>
+							<input name="filterWords" id="filterWords" class="text" size="64" maxlength="150" value="<%= request.getSession().getAttribute("filterWords")!=null ? request.getSession().getAttribute("filterWords") : "" %>"/>
 					</p>
 							
 					<p>

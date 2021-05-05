@@ -142,6 +142,60 @@ public class User {
 		return null;
 	}
 	
+	public String getRepeatableSearchPatternByFeedId(String feedId) {
+		for(UserFeed uf : getUserFeeds()) {
+			if(uf.getId().equals(feedId)) {
+				return uf.getRepeatableSearchPattern();
+			}
+		}
+		return null;
+	}
+	
+	public String getItemTitleTemplateByFeedId(String feedId) {
+		for(UserFeed uf : getUserFeeds()) {
+			if(uf.getId().equals(feedId)) {
+				return uf.getItemTitleTemplate();
+			}
+		}
+		return null;
+	}
+	
+	public String getItemLinkTemplateByFeedId(String feedId) {
+		for(UserFeed uf : getUserFeeds()) {
+			if(uf.getId().equals(feedId)) {
+				return uf.getItemLinkTemplate();
+			}
+		}
+		return null;
+	}
+	
+	public String getItemContentTemplateByFeedId(String feedId) {
+		for(UserFeed uf : getUserFeeds()) {
+			if(uf.getId().equals(feedId)) {
+				return uf.getItemContentTemplate();
+			}
+		}
+		return null;
+	}
+	
+	public String getFilterWordsByFeedId(String feedId) {
+		for(UserFeed uf : getUserFeeds()) {
+			if(uf.getId().equals(feedId)) {
+				return uf.getFilterWords();
+			}
+		}
+		return null;
+	}
+	
+	public UserFeed getUserFeedByFeedId(String feedId) {
+		for(UserFeed uf : getUserFeeds()) {
+			if(uf.getId().equals(feedId)) {
+				return uf;
+			}
+		}
+		return null;
+	}
+	
 	public static void main(String args[]) throws JAXBException {
 //		BigInteger bi = new BigInteger("dsfadsfnsdn".getBytes());
 //		int q = bi.longValue();

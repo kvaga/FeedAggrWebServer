@@ -38,34 +38,34 @@ out.print("----------------------------<br>");
 
 
 				<%
-				String repeatableSearchPattern=request.getParameter("repeatableSearchPattern");
-				String substringForHtmlBodySplit=Exec.getSubstringForHtmlBodySplit(repeatableSearchPattern);
-				String responseHtmlBody = (String)request.getSession().getAttribute("responseHtmlBody");
-				int countOfPercentItemsInSearchPattern = Exec.countWordsUsingSplit(repeatableSearchPattern, "{%}");
+				// String repeatableSearchPattern=request.getParameter("repeatableSearchPattern");
+				String substringForHtmlBodySplit=Exec.getSubstringForHtmlBodySplit((String) request.getSession().getAttribute("repeatableSearchPattern"));
+				// String responseHtmlBody = (String)request.getSession().getAttribute("responseHtmlBody");
+				int countOfPercentItemsInSearchPattern = Exec.countWordsUsingSplit((String) request.getSession().getAttribute("repeatableSearchPattern"), "{%}");
 
-				log.debug("[point 2]: repeatableSearchPattern="+repeatableSearchPattern);
+				log.debug("[point 2]: repeatableSearchPattern="+(String) request.getSession().getAttribute("repeatableSearchPattern"));
 				log.debug("[point 2]: substringForHtmlBodySplit="+substringForHtmlBodySplit);
-				log.debug("[point 2]: responseHtmlBody="+(responseHtmlBody==null?null:"OK"));
+				log.debug("[point 2]: responseHtmlBody="+((String)request.getSession().getAttribute("responseHtmlBody")==null?null:"OK"));
 				log.debug("[point 2]: countOfPercentItemsInSearchPattern="+countOfPercentItemsInSearchPattern);
 
 				
 
-				if (repeatableSearchPattern==null  ) {
+				if ((String) request.getSession().getAttribute("repeatableSearchPattern")==null  ) {
 					throw new FeedAggrException.CommonException(
 							String.format("The repeatable search pattern can't be null"));
 				}
-				if (responseHtmlBody==null) {
+				if ((String)request.getSession().getAttribute("responseHtmlBody")==null) {
 					throw new FeedAggrException.CommonException(
 							String.format("The response html body can't be null"));
 				}
 				if (countOfPercentItemsInSearchPattern < 1) {
 					RequestDispatcher rd = getServletContext().getRequestDispatcher("/Login.html");
-					response.getWriter().print("<font color=red>The repeatable search pattern ["+repeatableSearchPattern+"] doesn't contain any {%}+</font>");
+					response.getWriter().print("<font color=red>The repeatable search pattern ["+(String) request.getSession().getAttribute("repeatableSearchPattern")+"] doesn't contain any {%}+</font>");
 					rd.include(request, response);
 				}
-				log.debug("repeatableSearchPattern: " + repeatableSearchPattern);
+				log.debug("repeatableSearchPattern: " + (String) request.getSession().getAttribute("repeatableSearchPattern"));
 				//LinkedList<Item> items = new LinkedList<Item>();
-				LinkedList<Item> items = Exec.getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,countOfPercentItemsInSearchPattern);					
+				LinkedList<Item> items = Exec.getItems((String)request.getSession().getAttribute("responseHtmlBody"), substringForHtmlBodySplit, (String) request.getSession().getAttribute("repeatableSearchPattern"),countOfPercentItemsInSearchPattern);					
 					%>
 					
 				<table class="w100">
@@ -138,28 +138,17 @@ out.print("----------------------------<br>");
 																+ " <span class=\"pubdate\">&lt;Sat, 02 Jan 2021 14:22:07 GMT&gt;</span></h4>");
 														out.print("<p>");
 														for (int i = 1; i <= item.length(); i++) {
-															if(i==3){
-																/*
-																log.debug("-------------------------");
-																log.debug("item[3=]: " + item.get(i));
-																log.debug("-------------------------");
-																*/
-															}
+															
+															out.println("<nobr><span class=\"param\">{%" + i + "}</span> = " +ServerUtils.escapeHTML(item.get(i)) + "</nobr><br>");
+
+															/*
 															if(i==3){
 																//out.println("<nobr><span class=\"param\">{%" + i + "}</span> = <![CDATA[" + item.get(i) + "]]></nobr><br>");
-																
-																out.println("<nobr><span class=\"param\">{%" + i + "}</span> = " +ServerUtils.escapeHTML(item.get(i)) + "</nobr><br>");
-
-
 															}else{
-																out.println("<nobr><span class=\"param\">{%" + i + "}</span> = " + item.get(i) + "</nobr><br>");
+																//out.println("<nobr><span class=\"param\">{%" + i + "}</span> = " + item.get(i) + "</nobr><br>");
+																out.println("<nobr><span class=\"param\">{%" + i + "}</span> = " +ServerUtils.escapeHTML(item.get(i)) + "</nobr><br>");
 															}
-															
-															
-															
-																
-																
-														
+															*/
 														}
 														out.println("</p>");
 													}

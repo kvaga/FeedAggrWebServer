@@ -2,8 +2,14 @@
 <%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtils,
 ru.kvaga.rss.feedaggr.Exec,
 org.apache.logging.log4j.*,
-ru.kvaga.rss.feedaggrwebserver.ConfigMap
-	"%>
+ru.kvaga.rss.feedaggrwebserver.ConfigMap,
+java.io.File,
+ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils,
+ru.kvaga.rss.feedaggrwebserver.objects.user.User,
+ru.kvaga.rss.feedaggr.objects.RSS,
+ru.kvaga.rss.feedaggr.objects.Channel,
+ru.kvaga.rss.feedaggr.objects.Feed
+"%>
 <%
 final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClass().getSimpleName());
 %>
@@ -11,6 +17,27 @@ final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClas
     pageEncoding="UTF-8"%>
     
 <!DOCTYPE html>
+<%
+if(request.getParameter("action")!=null && request.getParameter("action").equals("edit")){
+	ServerUtils.clearSessionFromFeedAttributes(request);
+	if(request.getParameter("feedId")!=null){
+		request.getSession().setAttribute("feedId", request.getParameter("feedId"));
+		File xmlFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + request.getSession().getAttribute("feedId") + ".xml");
+		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + request.getSession().getAttribute("login") + ".xml");
+		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+		RSS rss = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(xmlFile, new RSS());
+		request.getSession().setAttribute("feedTitle", rss.getChannel().getTitle());
+		request.getSession().setAttribute("url", rss.getChannel().getLink());
+		request.getSession().setAttribute("repeatableSearchPattern",user.getRepeatableSearchPatternByFeedId((String)request.getSession().getAttribute("feedId")));
+		request.getSession().setAttribute("itemTitleTemplate", user.getItemTitleTemplateByFeedId((String)request.getSession().getAttribute("feedId")));
+		request.getSession().setAttribute("itemLinkTemplate", user.getItemLinkTemplateByFeedId((String)request.getSession().getAttribute("feedId")));
+		request.getSession().setAttribute("itemContentTemplate", user.getItemContentTemplateByFeedId((String)request.getSession().getAttribute("feedId")));
+		request.getSession().setAttribute("filterWords", user.getFilterWordsByFeedId((String)request.getSession().getAttribute("feedId")));
+		request.getSession().setAttribute("feedDescription", rss.getChannel().getDescription());
+
+	}
+}
+%>
 <html>
 <head>
 <meta charset="utf-8">
@@ -18,8 +45,8 @@ final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClas
 
 </head>
 <body>
-<a href="LoginSuccess.jsp">Main page</a>
-<hr>
+<jsp:include page="Header.jsp"></jsp:include>
+
 
 <%
 
@@ -58,6 +85,11 @@ if(request.getParameter("feedTitle")!=null){
 	request.getSession().setAttribute("feedTitle", request.getParameter("feedTitle"));
 }
 
+if(request.getParameter("filterWords") != null){
+	request.getSession().setAttribute("filterWords", request.getParameter("filterWords"));
+}
+
+
 if(request.getParameter("repeatableSearchPattern")!=null){
 	request.getSession().setAttribute("repeatableSearchPattern",request.getParameter("repeatableSearchPattern"));
 }
@@ -70,6 +102,9 @@ if(request.getParameter("itemLinkTemplate")!=null){
 }
 if(request.getParameter("itemContentTemplate")!=null){
 	request.getSession().setAttribute("itemContentTemplate",request.getParameter("itemContentTemplate"));
+}
+if(request.getParameter("responseHtmlBody") != null){
+	request.getSession().setAttribute("responseHtmlBody", request.getParameter("responseHtmlBody"));
 }
 
 String enableStep4FeedPreview=request.getParameter("enableStep4FeedPreview");
@@ -89,25 +124,12 @@ String itemContentTemplate	=(String)request.getSession().getAttribute("itemConte
 if(request.getParameter("action")!=null && request.getParameter("action").equals("new")){
 	feedId=ServerUtils.getNewFeedId();
 	request.getSession().setAttribute("feedId",feedId);
-	request.getSession().removeAttribute("responseHtmlBody");
-	
-	request.getSession().removeAttribute("url");
-	request.getSession().removeAttribute("dataClippedBol");
-	
-	
-    request.getSession().removeAttribute("feedTitle");
-    request.getSession().removeAttribute("repeatableSearchPattern");
-    
-    request.getSession().removeAttribute("itemTitleTemplate");
-    request.getSession().removeAttribute("itemLinkTemplate");
-    request.getSession().removeAttribute("itemContentTemplate");
-    request.getSession().removeAttribute("repeatableSearchPattern");
-    request.getSession().removeAttribute("feedDescription");
+	ServerUtils.clearSessionFromFeedAttributes(request);
     
 	enableStep4FeedPreview=null;
 	responseHtmlBody=null;
 	repeatableSearchPattern=null;
-	feedDescription=null;
+	//feedDescription=null;
 	itemTitleTemplate=null;
 	itemLinkTemplate=null;
 	itemContentTemplate=null;
@@ -120,16 +142,7 @@ String url= (String)request.getSession().getAttribute("url");
 
 
 %>
-URL=<%= url %><br>
-feedId=<%=feedId%><br>
-feedTitle='<%=feedTitle %>'<br>
-request.getSession().getAttribute("feedTitle")='<%request.getSession().getAttribute("feedTitle"); %>'<br>
-request.getParameter("feedTitle")='<%request.getParameter("feedTitle"); %>'<br>
-request.getSession().getAttribute("feedDescription")=<%request.getSession().getAttribute("feedDescription"); %><br>
-responseHtmlBody=<%= responseHtmlBody!=null?"OK":null%><br>
-repeatableSearchPattern=<%=repeatableSearchPattern %><br>
 
-===================
 <h1>Editing feed: <%= feedTitle %></h1>
 <hr>
 	<input id="auth" type="hidden" value="006eb65ef0494d6e0eb15a429a3e0313">
@@ -194,7 +207,8 @@ repeatableSearchPattern=<%=repeatableSearchPattern %><br>
 	<%if (url != null) {	
 		try{
 			//responseHtmlBody = ServerUtils.convertStringToUTF8(Exec.getURLContent(url));
-			url = (url.contains("youtube.com")) ? Exec.getYoutubeFeedURL(url): url;
+			
+			url = (url.contains("youtube.com") && !url.contains("youtube.com/feeds/videos.xml")) ? Exec.getYoutubeFeedURL(url): url;
 			if (url==null){
 				throw new Exception("Can't find feed channel url");
 			}
@@ -267,7 +281,7 @@ repeatableSearchPattern=<%=repeatableSearchPattern %><br>
 		           	<jsp:param name="itemContentTemplate" value="<%=itemContentTemplate %>" />
 		           	<jsp:param name="feedId" value="<%=feedId %>" />
 		           	<jsp:param name="feedTitle" value="<%=feedTitle %>" />
-		           	<jsp:param name="feedDescription" value="<%=feedDescription %>" />
+		           	<jsp:param name="feedDescription" value="<%= feedDescription %>" />
 		           	<jsp:param name="url" value="<%=url %>" />
 		  	   	</jsp:include>
 		<%} %>

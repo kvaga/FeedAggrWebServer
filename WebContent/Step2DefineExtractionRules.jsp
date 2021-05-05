@@ -33,7 +33,8 @@ out.print("----------------------------<br>");
 %>
 
 <% 
-String responseHtmlBody=request.getParameter("responseHtmlBody");
+	
+// String responseHtmlBody=request.getParameter("responseHtmlBody");
 
 %>
 
@@ -75,10 +76,13 @@ String responseHtmlBody=request.getParameter("responseHtmlBody");
 							<td class="w100">
 							<div id="raw_data" class="textarea">
 							<% 												        
-								User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+request.getSession().getAttribute("login")+".xml"), new User());
+								User user = null;
+								if(request.getSession().getAttribute("repeatableSearchPattern")==null){
+									user = (User) ObjectsUtils.getXMLObjectFromXMLFile(new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+request.getSession().getAttribute("login")+".xml"), new User());
+								}
 							%>
 								<textarea name="repeatableSearchPattern" cols="120" rows="20" wrap="soft"><%= 
-									user.getRepeatableSearchPatternByDomain(Exec.getDomainFromURL((String)request.getSession().getAttribute("url")))
+										request.getSession().getAttribute("repeatableSearchPattern")==null ? user.getRepeatableSearchPatternByDomain(Exec.getDomainFromURL((String)request.getSession().getAttribute("url"))):request.getSession().getAttribute("repeatableSearchPattern")
 								%></textarea>
 							</div>
 							</td>

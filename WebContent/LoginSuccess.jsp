@@ -40,12 +40,8 @@ if(cookies!=null){
 	<br>
 	<!--  Your SessionID=<%= sessionID %>-->
 	<br>
-	<br>
-	<a href="CheckoutPage.jsp">Checkout Page</a>
-	<br>
-	<a href="Test">Test page</a>
-	<br>
-	<hr>
+	
+	
 	<jsp:include page="/FeedsList.jsp">
         <jsp:param value="" name=""/>
     </jsp:include>

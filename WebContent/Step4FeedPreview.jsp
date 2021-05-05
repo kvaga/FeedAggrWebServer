@@ -20,8 +20,8 @@
     ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils,
     ru.kvaga.rss.feedaggrwebserver.objects.user.User,
     ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed,
-        ru.kvaga.rss.feedaggrwebserver.objects.user.UserRepeatableSearchPattern,
-            		org.apache.logging.log4j.*
+    ru.kvaga.rss.feedaggrwebserver.objects.user.UserRepeatableSearchPattern,
+    org.apache.logging.log4j.*
         
     "%>
 
@@ -45,24 +45,36 @@
 	%>
 
 	<%
-		String repeatableSearchPattern = request.getParameter("repeatableSearchPattern");
-		String substringForHtmlBodySplit = Exec.getSubstringForHtmlBodySplit(repeatableSearchPattern);
-		String responseHtmlBody = (String) request.getSession().getAttribute("responseHtmlBody");
-		int countOfPercentItemsInSearchPattern = Exec.countWordsUsingSplit(repeatableSearchPattern, "{%}");
+		
+		String substringForHtmlBodySplit = Exec.getSubstringForHtmlBodySplit((String)request.getSession().getAttribute("repeatableSearchPattern"));
+		//String responseHtmlBody = (String) request.getSession().getAttribute("responseHtmlBody");
+		int countOfPercentItemsInSearchPattern = Exec.countWordsUsingSplit((String)request.getSession().getAttribute("repeatableSearchPattern"), "{%}");
 
-		String itemTitleTemplate = request.getParameter("itemTitleTemplate");
-		String itemLinkTemplate = request.getParameter("itemLinkTemplate");
-		String itemContentTemplate = request.getParameter("itemContentTemplate");
-		String feedId = request.getParameter("feedId");
-		String filterWords = (request.getParameter("filterWords") != null
-				&& !request.getParameter("filterWords").equals("")) ? request.getParameter("filterWords") : null;
+		
+		// String itemTitleTemplate = request.getParameter("itemTitleTemplate");
+		
+		
+		// String itemLinkTemplate = request.getParameter("itemLinkTemplate");
+		// String itemContentTemplate = request.getParameter("itemContentTemplate");
+		
+		
+		
+		// String feedId = request.getParameter("feedId");
+		// if(request.getParameter("feedId") != null){
+		//	request.getSession().setAttribute("feedId", request.getParameter("feedId"));
+		// }
+		
+		
+		// log.debug("request.getParameter(\"filterWords\")="+request.getParameter("filterWords"));
+		// log.debug("request.getSession().getAttribute(\"filterWords\")="+request.getSession().getAttribute("filterWords"));
+		// String filterWords = (request.getParameter("filterWords") != null ) ? request.getParameter("filterWords") : null;
 
-		String feedTitle = (String) request.getSession().getAttribute("feedTitle");
+		// String feedTitle = (String) request.getSession().getAttribute("feedTitle");
 
-		String feedDescription = (String) request.getSession().getAttribute("feedDescription");
+		// String feedDescription = (String) request.getSession().getAttribute("feedDescription");
 		//request.getSession().setAttribute("feedDescription", feedDescription);
 
-		String url = request.getParameter("url");
+		// String url = request.getParameter("url");
 	%>
 	<div id="step4" class="hidden">
 
@@ -88,29 +100,28 @@
 								href="javascript:resize_height('preview',100)">(+)</a>
 						</div>
 						<div class="myClippedData">
-							Title:
-							<%=feedTitle%><br> Url:
-							<%=url%><br> Description:
-							<%=feedDescription%><br>
+							Title: <%=(String) request.getSession().getAttribute("feedTitle")%><br> 
+							Url: <%=(String) request.getSession().getAttribute("url")%> <br> 
+							Description: <%=(String) request.getSession().getAttribute("feedDescription")%><br>
 							<hr>
 							<%
 								RSS rss = new RSS();
 								rss.setVersion("2.0");
 
 								Channel channel = new Channel();
-								channel.setTitle(feedTitle);
-								channel.setLink(url);
+								channel.setTitle((String) request.getSession().getAttribute("feedTitle"));
+								channel.setLink((String) request.getSession().getAttribute("url"));
 								channel.setTtl(360);
 								channel.setLastBuildDate(new Date());
 								channel.setGenerator("Feed Aggr Web Server Generator");
-								channel.setDescription(feedDescription);
-
+								channel.setDescription((String) request.getSession().getAttribute("feedDescription"));
+								
 								// спи
 								ArrayList<ru.kvaga.rss.feedaggr.objects.Item> items = new ArrayList<ru.kvaga.rss.feedaggr.objects.Item>();
 
 								// список полученных из html body элементов
-								LinkedList<Item> itemsFromHtmlBody = Exec.getItems(responseHtmlBody, substringForHtmlBodySplit,
-										repeatableSearchPattern, countOfPercentItemsInSearchPattern, filterWords);
+								LinkedList<Item> itemsFromHtmlBody = Exec.getItems((String) request.getSession().getAttribute("responseHtmlBody"), substringForHtmlBodySplit,
+										(String)request.getSession().getAttribute("repeatableSearchPattern"), countOfPercentItemsInSearchPattern, (String)request.getSession().getAttribute("filterWords"));
 								String itemTitle = null;
 								String itemLink = null;
 								String itemContent = null;
@@ -124,12 +135,12 @@
 									//	+ " <span class=\"pubdate\">&lt;Sat, 02 Jan 2021 14:22:07 GMT&gt;</span></h4>");
 									out.print("<p>");
 
-									itemTitle = itemTitleTemplate;
-									itemLink = itemLinkTemplate;
-									itemContent = itemContentTemplate + "<br>" + itemTitle;
+									itemTitle = (String) request.getSession().getAttribute("itemTitleTemplate");
+									itemLink = (String) request.getSession().getAttribute("itemLinkTemplate");
+									itemContent = (String) request.getSession().getAttribute("itemContentTemplate") + "<br>" + itemTitle;
 									int itemLinkNumber = Exec.getNumberFromItemLink(itemLink);
 									itemLink = itemLink.replaceAll("\\{%" + itemLinkNumber + "}", itemFromHtmlBody.get(itemLinkNumber));
-									itemLink = Exec.checkItemURLForFullness(url, itemLink);
+									itemLink = Exec.checkItemURLForFullness((String) request.getSession().getAttribute("url"), itemLink);
 
 									//цикл для замены всех {%Х} на значения
 									for (int i = 1; i <= itemFromHtmlBody.length(); i++) {
@@ -145,11 +156,11 @@
 										} catch (Exception e) {
 											log.error("Exception", e);
 										}
-										log.debug("[point 10] itemTitle=" + itemTitle + ", itemTitleTemplate=" + itemTitleTemplate
+										log.debug("[point 10] itemTitle=" + itemTitle + ", itemTitleTemplate=" + (String) request.getSession().getAttribute("itemTitleTemplate")
 												+ ", [item.get(" + i + ")=" + itemFromHtmlBody.get(i) + "]");
-										log.debug("[point 10] itemLink=" + itemLink + ", itemLinkTemplate=" + itemLinkTemplate
+										log.debug("[point 10] itemLink=" + itemLink + ", itemLinkTemplate=" + (String) request.getSession().getAttribute("itemLinkTemplate")
 												+ ", [item.get(" + i + ")=" + itemFromHtmlBody.get(i) + "]");
-										log.debug("[point 10] itemContent=" + itemContent + ", itemContentTemplate=" + itemContentTemplate
+										log.debug("[point 10] itemContent=" + itemContent + ", itemContentTemplate=" + (String) request.getSession().getAttribute("itemContentTemplate")
 												+ ", [item.get(" + i + ")=" + itemFromHtmlBody.get(i) + "]");
 
 										//out.println("<nobr><span class=\"param\">{%" + i + "}</span> = " + item.get(i) + "</nobr><br>");
@@ -177,11 +188,10 @@
 								channel.setItem(items);
 								//	 <div class="c-post-preview__title"{*}href="{%}"  rel="noopener" target="_blank" data-ym-target="post_title">{%}</a>{*}class="c-post-preview__lead">{%}<div class="c-post-preview__comments">
 								rss.setChannel(channel);
-								File xmlFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + feedId + ".xml");
+								File xmlFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + (String) request.getSession().getAttribute("feedId") + ".xml");
 								//File userFile=new File(getServletContext().getRealPath("data/users")+"/"+"kvaga"+".xml");
 								//File userFile=new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+"kvaga"+".xml");
-								File userFile = new File(
-										ConfigMap.usersPath.getAbsoluteFile() + "/" + request.getSession().getAttribute("login") + ".xml");
+								File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + request.getSession().getAttribute("login") + ".xml");
 
 								ObjectsUtils.saveXMLObjectToFile(rss, rss.getClass(), xmlFile);
 								log.debug("Object rss [" + rss.getChannel().getTitle() + "] successfully saved to the [" + xmlFile
@@ -192,9 +202,22 @@
 								//User kvaga = new User("kvaga"); // TODO: change to session value
 								//File file = new File("C:\\eclipseWorkspace\\FeedAggrWebServer\\WebContent\\data\\users\\kvaga.xml");
 
-								user.getUserFeeds().add(new UserFeed(feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate,
-										repeatableSearchPattern, filterWords));
-
+								if(user.containsFeedId((String) request.getSession().getAttribute("feedId"))){
+									UserFeed uf = user.getUserFeedByFeedId((String) request.getSession().getAttribute("feedId"));
+									uf.setFilterWords((String)request.getSession().getAttribute("filterWords"));
+									uf.setItemTitleTemplate((String) request.getSession().getAttribute("itemTitleTemplate"));
+									uf.setItemLinkTemplate((String) request.getSession().getAttribute("itemLinkTemplate"));
+									uf.setItemContentTemplate((String) request.getSession().getAttribute("itemContentTemplate"));
+									uf.setRepeatableSearchPattern((String)request.getSession().getAttribute("repeatableSearchPattern"));
+								}else{
+									user.getUserFeeds().add(new UserFeed(
+												(String) request.getSession().getAttribute("feedId"), 
+												(String) request.getSession().getAttribute("itemTitleTemplate"), 
+												(String) request.getSession().getAttribute("itemLinkTemplate"), 
+												(String) request.getSession().getAttribute("itemContentTemplate"),
+												(String)request.getSession().getAttribute("repeatableSearchPattern"), 
+												(String)request.getSession().getAttribute("filterWords")));
+								}
 								// save repeatable search patterns
 								user.getRepeatableSearchPatterns()
 										.add(new UserRepeatableSearchPattern(
@@ -205,17 +228,14 @@
 								// save rss output properties templates
 								user.updateRssItemPropertiesPatterns(/*getRssItemPropertiesPatterns().update(*/
 										new UserRssItemPropertiesPatterns(
-												Exec.getDomainFromURL((String) request.getSession().getAttribute("url")), itemTitleTemplate,
-												itemLinkTemplate, itemContentTemplate));
+												Exec.getDomainFromURL((String) request.getSession().getAttribute("url")), (String) request.getSession().getAttribute("itemTitleTemplate"),
+												(String) request.getSession().getAttribute("itemLinkTemplate"), (String) request.getSession().getAttribute("itemContentTemplate")));
 								//----------------------
 								ObjectsUtils.saveXMLObjectToFile(user, user.getClass(), userFile);
 								log.debug("Object user [" + user.getName() + "] successfully saved to the [" + userFile + "] file");
-								request.getSession().removeAttribute("url");
-								request.getSession().removeAttribute("feedTitle");
-								request.getSession().removeAttribute("responseHtmlBody");
-								request.getSession().removeAttribute("repeatableSearchPattern");
-								request.getSession().removeAttribute("feedId");
-								request.getSession().removeAttribute("dataClippedBol");
+								
+
+								
 							%>
 						</div>
 					</td>
@@ -228,8 +248,8 @@
 		<p style="margin-top: 30px">
 			<span class="big">Feed URL: <a
 				title="Click to open this URL in new window" id="feed-link"
-				target="_blank" href="showFeed?feedId=<%=feedId%>"> <span
-					class="feed-icon"></span> <%=request.getContextPath() + "/showFeed?feedId=" + feedId%></a></span>
+				target="_blank" href="showFeed?feedId=<%=(String) request.getSession().getAttribute("feedId")%>"> <span
+					class="feed-icon"></span> <%=request.getContextPath() + "/showFeed?feedId=" + (String) request.getSession().getAttribute("feedId")%></a></span>
 			<a class="small help" title="Help on this option"
 				href="javascript:help('feed_url')">?</a>
 		</p>
@@ -515,3 +535,6 @@
 
 </body>
 </html>
+<%
+ServerUtils.clearSessionFromFeedAttributes(request);
+%>

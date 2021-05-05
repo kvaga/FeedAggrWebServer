@@ -91,6 +91,32 @@ public class ServerUtils {
 		log.debug("File [" + userConfigFile + "] successfully updated");
 	}
 
+	public static synchronized void clearSessionFromFeedAttributes(javax.servlet.http.HttpServletRequest request) {
+		StringBuilder sb = new StringBuilder();
+		String removeAttributes[] = {
+			"responseHtmlBody",
+			"url",
+			"dataClippedBol",
+			"feedTitle",
+			"feedDescription",
+			"feedId",
+			"repeatableSearchPattern",
+			"itemTitleTemplate",
+			"itemLinkTemplate",
+			"itemContentTemplate",
+			"filterWords"
+		};
+		boolean firstIteration=true;
+		for(String item : removeAttributes) {
+			request.getSession().removeAttribute(item);
+			if(!firstIteration) {
+				sb.append(", ");
+			}
+			sb.append(item);
+			firstIteration=false;
+		}
+		log.debug("Session cleared from feed attributes: " + sb.toString());
+	}
 	public static synchronized ArrayList<UserFeed> getUserFeedListByUser(String userName) throws Exception {
 //		String dataDirText="WebContent/data";
 //		String userDirText=String.format("%s/%s", dataDirText,user);
