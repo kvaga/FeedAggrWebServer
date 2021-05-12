@@ -21,62 +21,7 @@ import ru.kvaga.rss.feedaggr.objects.RSS;
 public class ObjectsUtils {
 	final static Logger log = LogManager.getLogger(ObjectsUtils.class);
 
-	public static void main(String[] args) throws Exception {
-        JAXBContext jc = JAXBContext.newInstance(RSS.class);
 
-        RSS rss = new RSS();
-        rss.setVersion("2.0");
-        
-        Channel channel = new Channel();
-        channel.setTitle("Some title");
-        channel.setLink("http://yandex.ru");
-        channel.setTtl(360);
-        channel.setLastBuildDate(new Date());
-        channel.setGenerator("Channel's generator");
-        channel.setDescription("Channel's description");
-        
-        ArrayList<Item> item = new ArrayList<Item>();
-        Item item1 = new Item();
-        item1.setTitle("Item's 1 title");
-        item1.setLink("http://yandex.ru/item1");
-        item1.setDescription("<![CDATA[Item's 1 description]]>");
-        item1.setPubDate(new Date());
-        item1.setGuid(new GUID("false", "693b733d9ae3955d1b948dc44e568f61"));
-        
-        Item item2 = new Item();
-        item2.setTitle("Item's 2 title");
-        item2.setLink("http://yandex.ru/item2");
-        item2.setDescription("<![CDATA[Item's 2 description]]>");
-        item2.setPubDate(new Date());
-        item2.setGuid(new GUID("false", "7515ef2bb57c3e69bb31a60d2ce89207"));
-        item.add(item1);
-        item.add(item2);
-        
-        channel.setItem(item);
-        rss.setChannel(channel);
-        
-//        customer.setId(123);
-//        ArrayList<String> name = new ArrayList<String>();
-//        name.add("Sasha");
-//        name.add("Petya");
-//        customer.setName(name);
-
-        /*
-        // print xml object
-        Marshaller m = jc.createMarshaller();
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        m.marshal(rss, System.out);
-        */
-        
-        // print XML Objectfrom xml file
-//        readFromXMLFile("C:/eclipseWorkspace/FeedAggrWebServer/WebContent/data/kvaga/54433456543345666542245/qqq.xml");
-        printXMLObject(getXMLObjectFromXMLFile(
-        		"C:/eclipseWorkspace/FeedAggrWebServer/WebContent/data/kvaga/54433456543345666542245/qqq.xml",
-        		new RSS()
-        		))
-        		;
-        ObjectsUtils.saveXMLObjectToFile(rss, rss.getClass(), new File("C:/temp/qqq1.xml"));
-	}
 
 	// Save xml file from Object
 	public static synchronized void saveXMLObjectToFile(Object object, Class _class, File file) throws JAXBException {

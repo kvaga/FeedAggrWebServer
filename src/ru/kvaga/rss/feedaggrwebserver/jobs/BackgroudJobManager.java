@@ -22,11 +22,7 @@ public class BackgroudJobManager implements ServletContextListener{
 	final static Logger log = LogManager.getLogger(BackgroudJobManager.class);
 	private static boolean jobsEnabled=true;
 	public void contextInitialized (ServletContextEvent event) {
-//		Exec.sleep(10000);
 
-//		for(Object prop : System.getProperties().entrySet()) {
-//			log.debug("===========: "+System.getProperty("CATALINA_BASE"));
-//		}
 		
 		scheduler1 = Executors.newSingleThreadScheduledExecutor();
 		scheduler2 = Executors.newSingleThreadScheduledExecutor();

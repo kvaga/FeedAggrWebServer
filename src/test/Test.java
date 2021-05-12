@@ -15,19 +15,7 @@ import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 
 public class Test {
 
-	public static void main(String[] args) throws GetURLContentException, IOException {
-		String mas[] = {
-				"One string with top-5 word",
-				"the second string without top word",
-				"the third string without TOP-8 word at all"
-		};
-		for(String s : mas) {
-			if(s.toLowerCase().contains("top-".toLowerCase())) {
-				System.out.println(s);
-			}
-		}
-		
-	}
+	
 	
 	
 	private static String readString(File file) throws IOException {

@@ -37,23 +37,5 @@ public class UserRssItemPropertiesPatternsSet extends HashSet<UserRssItemPropert
 }
 	}
 	*/
-	public static void main(String args[]) throws JAXBException {
-		File userFile=new File("C:\\eclipseWorkspace\\FeedAggrWebServer\\data\\users\\kvaga.xml");
-        User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
-        //----------------------
-        //User kvaga = new User("kvaga"); // TODO: change to session value
-		//File file = new File("C:\\eclipseWorkspace\\FeedAggrWebServer\\WebContent\\data\\users\\kvaga.xml");
-		
-       
-       
-		// save rss output properties templates
-        user.updateRssItemPropertiesPatterns(
-				new UserRssItemPropertiesPatterns(
-						"a",
-						"b",
-						"c",
-						"d"
-				)
-		);
-	}
+
 }

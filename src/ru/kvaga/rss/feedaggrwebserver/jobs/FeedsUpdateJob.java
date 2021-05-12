@@ -34,9 +34,7 @@ public class FeedsUpdateJob implements Runnable {
 
 //	private static Logger log= LogManager.getLogger(FeedsUpdateJob.class);
 
-//	public static void main(String args[]) throws IOException, GetURLContentException, GetSubstringForHtmlBodySplitException,
-//			SplitHTMLContent, NoSuchAlgorithmException {
-//	} //
+
 
 	private ServletContext context;
 

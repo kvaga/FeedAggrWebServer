@@ -43,15 +43,7 @@ import ru.kvaga.rss.feedaggr.objects.RSS;
 public class ServerUtils {
 	final private static Logger log = LogManager.getLogger(ServerUtils.class);
 
-	public static void main(String[] args) throws GetFeedsListByUser, JAXBException, ParseException {
-//		for(Feed feedOnServer : getFeedsListByUser("kvaga")) {
-//			RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
 
-//			 
-////			ObjectsUtills.printXMLObject(rssFeed);
-//		}
-	
-	}
 	public static synchronized String getNewFeedId() {
 		return "" + new Date().getTime();
 	}

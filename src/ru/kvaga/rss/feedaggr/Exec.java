@@ -29,56 +29,6 @@ public class Exec {
 
 	final static org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(Exec.class);
 
-	public static void main(String[] args) throws FeedAggrException.GetURLContentException, FeedAggrException.GetSubstringForHtmlBodySplitException, FeedAggrException.SplitHTMLContent, FeedAggrException.CommonException, GetFeedsListByUser {
-		String urlText[] = {
-//			"https://hh.ru/search/vacancy/rss?area=1&clusters=true&enable_snippets=true&text=NAME%3A%28%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%BE%D1%80+OR+%D0%BD%D0%B0%D1%87%D0%B0%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA+OR+%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%29+AND+COMPANY_NAME%3A%28%D0%98%D0%BD%D0%BD%D0%BE%D1%82%D0%B5%D1%85%29&specialization=1&from=cluster_professionalArea&showClusters=true",
-//				"https://www.youtube.com/feeds/videos.xml?channel_id=UCBzN3JKOWOPo6ic0_UtQXhA",
-//				"https://4brain.ru/blog/",
-//				"https://www.drive2.ru/experience/audi/g4859/?",
-				"https://journal.open-broker.ru/",
-				
-		};
-		log.debug(Charset.defaultCharset());
-		try {
-			for(String url : urlText) {
-//				System.err.println(ServerUtils.encodeString(Exec.getURLContent(url), "UTF-8").replaceAll("<title>", "\n<title>"));
-				log.error(Exec.getURLContent(url).replaceAll("<title>", "\n<title>"));
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			log.error(e);
-		}
-		
-		if(true) {
-			System.exit(0);
-		}
-		String repeatableSearchPattern = "<div class=\"c-post-preview__title\">{*}<a class=\"c-link c-link--text\" href=\"{%}\"  rel=\"noopener\" target=\"_blank\" data-ym-target=\"post_title\">{%}</a>{*}<div class=\"c-post-preview__lead\">{%}</div>{*}<div class=\"c-post-preview__comments\">";
-
-		String responseHtmlBody = Exec.getTitleFromHtmlBody(Exec.getURLContent(""));
-
-		log.debug(responseHtmlBody.length()>150 ? responseHtmlBody.substring(0,150) : responseHtmlBody);
-		if(true) {
-			System.exit(0);
-		}
-		String substringForHtmlBodySplit = getSubstringForHtmlBodySplit(repeatableSearchPattern);
-
-		int countOfPercentItemsInSearchPattern=countWordsUsingSplit(repeatableSearchPattern, "{%}");
-		if(countOfPercentItemsInSearchPattern<1) {
-			throw new FeedAggrException.CommonException(String.format("The repeatable search pattern [%s] doesn't contain any{%}")) ;
-		}
-
-		LinkedList<Item> items = getItems(responseHtmlBody,substringForHtmlBodySplit,repeatableSearchPattern, countOfPercentItemsInSearchPattern);
-		log.debug("OK. Found " + items.size() + " items");
-		
-		int k=0;
-		for(Item item : items) {
-			System.err.println("Item " + ++k);
-			for(int i=1;i<=item.length();i++) {
-				log.debug("{%"+i+"}: " + item.get(i));
-			}
-		}
-		//		System.err.println(repeatableSearchPattern);
-	}
 
 	public static synchronized LinkedList<Item> getItems(
 			String responseHtmlBody, 

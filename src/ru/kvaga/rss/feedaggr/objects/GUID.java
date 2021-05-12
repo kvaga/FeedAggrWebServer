@@ -37,11 +37,5 @@ public class GUID{
     	return title+url;
     }
     
-   public static void main(String args[]) throws NoSuchAlgorithmException {
-	   String stringToHash="https://4brain.ru/blog/";
-	   MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-	   messageDigest.update(stringToHash.getBytes());
-	   String stringHash = new String(messageDigest.digest());
-   }
-    
+  
 }

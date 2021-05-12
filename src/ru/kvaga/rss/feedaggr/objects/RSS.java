@@ -77,12 +77,7 @@ public class RSS {
     	getChannel().setItem(updatedListOfItems);
     }
     
-    public static void main(String args[]) throws JAXBException {
-		String rssXmlFile="C:\\eclipseWorkspace\\FeedAggrWebServer\\data\\feeds\\composite_1613899705224.xml";
-		RSS rssFromFile = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(rssXmlFile,new RSS());
-		rssFromFile.removeItemsOlderThanXDays(10);
-		
-    }
+   
 }
 
 
