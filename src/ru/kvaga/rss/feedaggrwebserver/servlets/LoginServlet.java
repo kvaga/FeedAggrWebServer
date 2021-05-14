@@ -79,7 +79,7 @@ public class LoginServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
 		String user = request.getParameter("user");
@@ -100,9 +100,9 @@ public class LoginServlet extends HttpServlet {
 			log.debug("Login success for user [" + user + "]");
 			response.sendRedirect("LoginSuccess.jsp");
 		}else {
+			log.error("Either user name or password is wrong.");
 			RequestDispatcher rd = getServletContext().getRequestDispatcher("/Login.html");
 			PrintWriter out = response.getWriter();
-			log.error("Either user name or password is wrong.");
 			out.print("<font color=red>Either user name or password is wrong.</font>");
 			rd.include(request, response);
 		}

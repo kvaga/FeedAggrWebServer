@@ -3,6 +3,7 @@ package ru.kvaga.rss.feedaggrwebserver.servlets;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
 
 import javax.security.auth.message.callback.PrivateKeyCallback.Request;
 import javax.servlet.ServletException;
@@ -18,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetURLContentException;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
+import ru.kvaga.rss.feedaggrwebserver.ServerUtilsConcurrent;
 
 /**
  * Servlet implementation class ProxySite
@@ -43,14 +45,28 @@ public class ProxySite extends HttpServlet {
 			throws ServletException, IOException {
 		String url = request.getParameter("url");
 		String action = request.getParameter("action");
+		log.debug("Incoming request with parameters: url ["+url+"], action ["+action+"]");
+		if(url==null || action==null) {
+			log.error("URL or action parameters are null");
+			response.setStatus(507);
+			return;
+		}
 		response.setContentType("text/plain");
 		response.setCharacterEncoding("UTF-8"); 
 		String htmlBody=null;
 		try {
-			htmlBody = Exec.getURLContent(url);
+			htmlBody = ServerUtilsConcurrent.getInstance().getURLContent(url);
 		} catch (GetURLContentException e) {
 			log.error("[" + url + "] Exception", e);
 			response.setStatus(508);
+			return;
+		} catch (InterruptedException e) {
+			log.error("[" + url + "] Exception", e);
+			response.setStatus(509);
+			return;
+		} catch (ExecutionException e) {
+			log.error("[" + url + "] Exception", e);
+			response.setStatus(510);
 			return;
 		}
 		if (action.equals("unescapeUnicode")) {
@@ -60,6 +76,7 @@ public class ProxySite extends HttpServlet {
 		}else if(action.equals("unescapeUnicodeAndRemoveBackSlashes")){
 			response.getWriter().write(removeBackSlashes(unescapeJava(htmlBody)));
 		}else {
+			log.error("Unknown action ["+action+"]");
 			response.setStatus(506);
 		}
 //		if (url.matches("https{0,1}://tv.yandex.ru.*")) {

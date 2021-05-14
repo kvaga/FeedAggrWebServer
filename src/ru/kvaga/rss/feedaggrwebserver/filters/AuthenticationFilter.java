@@ -13,11 +13,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Servlet Filter implementation class AuthenticationFilter
  */
 @WebFilter("/AuthenticationFilter")
 public class AuthenticationFilter implements Filter {
+	private static Logger log = LogManager.getLogger(AuthenticationFilter.class);
 	private ServletContext context;
     /**
      * Default constructor. 
@@ -42,12 +46,12 @@ public class AuthenticationFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 		String uri = req.getRequestURI();
 		context.log("Requested Resource:" + uri);
+		log.debug("Requested Resource:" + uri);
 		HttpSession session = req.getSession(false);
-		if(session==null && !(uri.endsWith("html") || uri.endsWith("LoginServlet")|| uri.endsWith("showFeed"))) {
+		if(session==null && !(uri.endsWith("ProxySite") || uri.endsWith("html") || uri.endsWith("LoginServlet")|| uri.endsWith("showFeed"))) {
 			context.log("Unauthorized access request");
 			res.sendRedirect("Login.html");
 		}else {
-		
 			chain.doFilter(request, response);
 		}
 	}
