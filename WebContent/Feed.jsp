@@ -209,6 +209,7 @@ String url= (String)request.getSession().getAttribute("url");
 			//responseHtmlBody = ServerUtils.convertStringToUTF8(Exec.getURLContent(url));
 			
 			url = (url.contains("youtube.com") && !url.contains("youtube.com/feeds/videos.xml")) ? Exec.getYoutubeFeedURL(url): url;
+			request.getSession().setAttribute("url",url);
 			if (url==null){
 				throw new Exception("Can't find feed channel url");
 			}

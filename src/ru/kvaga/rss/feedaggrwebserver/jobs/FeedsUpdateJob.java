@@ -105,6 +105,7 @@ public class FeedsUpdateJob implements Runnable {
 
 						// Получаем вспомогательную информацию для получения feed (RSS) объекта из Web
 						url = rssFromFile.getChannel().getLink();
+						url = (url.contains("youtube.com") && !url.contains("youtube.com/feeds/videos.xml")) ? Exec.getYoutubeFeedURL(url): url;
 						log.debug("Feed id [" + feedId + "] contains url [" + url + "]. Trying to get URL's content");
 						responseHtmlBody = Exec.getURLContent(url);
 //				repeatableSearchPattern="<h2 class=\"title\">{*}<a href=\"{%}\" title=\"{%}\" rel=\"bookmark\">{%}</a>{*}</h2>\r\n";

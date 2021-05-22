@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.swing.JSpinner.DateEditor;
@@ -30,6 +32,7 @@ import org.apache.logging.log4j.Logger;
 import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggr.FeedAggrException;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetFeedsListByUser;
+import ru.kvaga.rss.feedaggr.FeedAggrException.GetURLContentException;
 import ru.kvaga.rss.feedaggr.objects.Channel;
 import ru.kvaga.rss.feedaggr.objects.Feed;
 import ru.kvaga.rss.feedaggr.objects.Item;
@@ -38,6 +41,8 @@ import ru.kvaga.rss.feedaggrwebserver.jobs.CompositeFeedsUpdateJob;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed;
+import ru.kvaga.rss.feedaggrwebserver.objects.user.UserRepeatableSearchPattern;
+import ru.kvaga.rss.feedaggrwebserver.objects.user.UserRssItemPropertiesPatterns;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 
 public class ServerUtils {
@@ -643,5 +648,94 @@ public class ServerUtils {
 		ObjectsUtils.saveXMLObjectToFile(user, user.getClass(), userFile);
 
 		log.debug("Composite RSS was successfully saved to the file [" + compositeRSSFile.getAbsolutePath() + "]");
+	}
+	
+	/**
+	 * 
+	 * @param url - the URL of site that we need to autmotically add
+	 * @param login - login of the user
+	 * @return - count of items that were found
+	 * @throws Exception
+	 */
+	public static int addRSSFeedByURLAutomaticly(String url, String login) throws Exception {
+		// javax.servlet.http.HttpServletRequest request
+		url = (url.contains("youtube.com") && !url.contains("youtube.com/feeds/videos.xml")) ? Exec.getYoutubeFeedURL(url): url;
+		if (url==null){
+			throw new Exception("Can't find feed channel url");
+		}
+		String htmlContent = ServerUtilsConcurrent.getInstance().getURLContent(url);
+		String feedTitle = Exec.getTitleFromHtmlBody(htmlContent);
+		String feedId = ServerUtils.getNewFeedId();
+		File xmlFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + feedId + ".xml");
+		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + login + ".xml");
+		User user = User.getXMLObjectFromXMLFile(userFile);
+		String existingFeedIdWithCurrentURL=null;
+		if((existingFeedIdWithCurrentURL=user.containsFeedIdByUrl(url))!=null) {
+			throw new Exception("User already has feed id ["+existingFeedIdWithCurrentURL+"] with such URL ["+url+"]");
+		}
+		
+		String repeatableSearchPattern = user.getRepeatableSearchPatternByDomain(Exec.getDomainFromURL(url));
+		String substringForHtmlBodySplit=Exec.getSubstringForHtmlBodySplit(repeatableSearchPattern);
+		int countOfPercentItemsInSearchPattern = Exec.countWordsUsingSplit(repeatableSearchPattern, "{%}");
+		LinkedList<ru.kvaga.rss.feedaggr.Item> items = Exec.getItems(htmlContent, substringForHtmlBodySplit, repeatableSearchPattern, countOfPercentItemsInSearchPattern);					
+		String 	itemTitleTemplate = null, 
+				itemLinkTemplate = null, 
+				itemContentTemplate = null;
+		if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(Exec.getDomainFromURL(url))!=null){
+			itemTitleTemplate = user.getRssItemPropertiesPatternByDomain(Exec.getDomainFromURL(url)).getPatternTitle();
+		}else{
+			throw new Exception("Couldn't find existing item Title template for URL ["+url+"] and domain ["+Exec.getDomainFromURL(url)+"]");
+		}
+		
+		if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(Exec.getDomainFromURL(url))!=null){
+			itemLinkTemplate = user.getRssItemPropertiesPatternByDomain(Exec.getDomainFromURL(url)).getPatternLink();
+		}else {
+			throw new Exception("Couldn't find existing item link template for URL ["+url+"] and domain ["+Exec.getDomainFromURL(url)+"]");
+		}
+		
+		if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(Exec.getDomainFromURL(url))!=null){
+			itemContentTemplate = user.getRssItemPropertiesPatternByDomain(Exec.getDomainFromURL(url)).getPatternDescription();
+		}else{
+			throw new Exception("Couldn't find existing item content template for URL ["+url+"] and domain ["+Exec.getDomainFromURL(url)+"]");
+		}
+
+		RSS rss = new RSS();
+		Channel channel = new Channel();
+		channel.setTitle(feedTitle);
+		channel.setLink(url);
+		channel.setLastBuildDate(new Date());
+		channel.setDescription(feedTitle);
+		channel.setItemsFromRawHtmlBodyItems(items, url, itemTitleTemplate, itemLinkTemplate, itemContentTemplate);
+		rss.setChannel(channel);
+
+		// ---
+
+		rss.saveXMLObjectToFile(xmlFile);
+
+		if(user.containsFeedId(feedId)){
+			UserFeed uf = user.getUserFeedByFeedId(feedId);
+			uf.setItemTitleTemplate(itemTitleTemplate);
+			uf.setItemLinkTemplate(itemLinkTemplate);
+			uf.setItemContentTemplate(itemContentTemplate);
+			uf.setRepeatableSearchPattern(repeatableSearchPattern);
+		}else{
+			user.getUserFeeds().add(new UserFeed(
+						feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern, ""));
+		}
+		// save repeatable search patterns
+		user.getRepeatableSearchPatterns()
+				.add(new UserRepeatableSearchPattern(Exec.getDomainFromURL(url),
+						//"<entry>{*}<title>{%}</title>{*}<link rel=\"alternate\" href=\"{%}\"/>{*}<author>{*}<media:description>{%}</media:description>{*}</entry>"
+						repeatableSearchPattern));
+
+		// save rss output properties templates
+		user.updateRssItemPropertiesPatterns(/*getRssItemPropertiesPatterns().update(*/
+				new UserRssItemPropertiesPatterns(Exec.getDomainFromURL(url), itemTitleTemplate, itemLinkTemplate, itemContentTemplate));
+		//----------------------
+		user.saveXMLObjectToFile(userFile);
+		
+
+		// ---
+		return items.size();
 	}
 }

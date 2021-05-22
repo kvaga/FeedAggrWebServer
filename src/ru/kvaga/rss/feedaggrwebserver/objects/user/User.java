@@ -8,15 +8,24 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import ru.kvaga.rss.feedaggr.Exec;
+import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils;
+import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 @XmlRootElement
 public class User {
+	private static Logger log=LogManager.getLogger(User.class);
 	private String name;
 	private Set<UserFeed> userFeeds=new HashSet<UserFeed>();
 	private Set<CompositeUserFeed> compositeUserFeeds=new HashSet<CompositeUserFeed>();
@@ -93,6 +102,21 @@ public class User {
 			}
 		}
 		return false;
+	}
+	/**
+	 * 
+	 * @param url
+	 * @return id of feed which contains this @param url
+	 * @throws JAXBException 
+	 */
+	public String containsFeedIdByUrl(String url) throws JAXBException {
+		for(UserFeed userFeed : getUserFeeds()) {
+			RSS rss = RSS.getRSSObjectFromXMLFile(ConfigMap.feedsPath.getAbsoluteFile() + "/" + userFeed.getId() + ".xml");
+			if(rss.getChannel().getLink().equals(url)) {
+				return userFeed.getId();
+			}
+		}
+		return null;
 	}
 	
 	public boolean containsCompositeFeedId(String compositeFeedId) {
@@ -196,5 +220,68 @@ public class User {
 		return null;
 	}
 	
+	public static synchronized User getXMLObjectFromXMLFile(File xmlFile) throws JAXBException {
+    	JAXBContext jaxbContext;
+	    jaxbContext = JAXBContext.newInstance(User.class);              
+	    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+	    User obj = (User) jaxbUnmarshaller.unmarshal(xmlFile);
+	    return obj;
+	}
+	
+	public static synchronized User getXMLObjectFromXMLFileByUserName(String login) throws JAXBException {
+		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + login + ".xml");
+    	JAXBContext jaxbContext;
+	    jaxbContext = JAXBContext.newInstance(User.class);              
+	    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+	    User obj = (User) jaxbUnmarshaller.unmarshal(userFile);
+	    obj.setName(login);
+	    return obj;
+	}
+	
+	public static synchronized void changeFeedIdByUserNameWithSaving(String login, String oldFeedId, String newFeedId) throws Exception {
+		File oldXmlFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + oldFeedId + ".xml");
+		File newXmlFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + newFeedId + ".xml");
+		if(newXmlFile.exists()) {
+			throw new Exception("File with new feed id ["+newFeedId+"] already exists");
+		}
+		
+		User user = User.getXMLObjectFromXMLFileByUserName(login);
+		user.renameFeedWithoutSavingToFile(oldFeedId, newFeedId);
+		user.saveXMLObjectToFileByLogin(login);
+		
+		if(!oldXmlFile.renameTo(newXmlFile)) {
+			throw new Exception("Couldn't rename old feed id file ["+oldXmlFile+"] to the new feed id file ["+newXmlFile+"]");
+		}
+	}
+	
+	
+	 public synchronized void renameFeedWithoutSavingToFile(String oldFeedId, String newFeedId) throws Exception {
+		 if(getUserFeedByFeedId(newFeedId)!=null) {
+			 throw new Exception("Feed with newFeedId ["+newFeedId+"] already exists");
+		 }
+		 UserFeed oldUserFeed = getUserFeedByFeedId(oldFeedId);
+		 if(oldUserFeed==null) {
+			 throw new Exception("Feed with oldFeedId ["+oldFeedId+"] doesn't exist for this user ["+this.name+"]");
+		 }
+		 oldUserFeed.setId(newFeedId);
+	}
+	
 
+	
+	 public synchronized void saveXMLObjectToFile(File file) throws JAXBException {
+	        JAXBContext jc = JAXBContext.newInstance(this.getClass());
+	        Marshaller m = jc.createMarshaller();
+	        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+	        m.marshal(this, file);
+			log.debug("Object user [" + getName() + "] successfully saved to the [" + file + "] file");
+	}
+	 
+	 public synchronized void saveXMLObjectToFileByLogin(String login) throws JAXBException {
+			File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + login + ".xml");
+	        JAXBContext jc = JAXBContext.newInstance(this.getClass());
+	        Marshaller m = jc.createMarshaller();
+	        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+	        m.marshal(this, userFile);
+			log.debug("Object user [" + getName() + "] successfully saved to the [" + userFile + "] file");
+	}
 }

@@ -35,7 +35,7 @@ public class RSS {
     	this.channel=channel;
     }
 	@XmlAttribute
-    private String version;
+    private String version="2.0";
     
     private Channel channel = new Channel();
 
@@ -77,6 +77,13 @@ public class RSS {
     	getChannel().setItem(updatedListOfItems);
     }
     
+    public synchronized void saveXMLObjectToFile(File file) throws JAXBException {
+        JAXBContext jc = JAXBContext.newInstance(this.getClass());
+        Marshaller m = jc.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        m.marshal(this, file);
+        log.debug("Object rss [" + getChannel().getTitle() + "] successfully saved to the [" + file + "] file");
+	}
    
 }
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.logging.LogManager;
 
 import javax.servlet.ServletException;
@@ -33,27 +34,48 @@ public class ICSServlet extends HttpServlet {
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		log.debug("Incoming parameters of getICS: "
+				+ "fileName ["+request.getParameter("ics_filename")+"], "
+				+ "summary ["+request.getParameter("summary")+"],"
+				+ "description ["+request.getParameter("description")+"],"
+				+ "date_format ["+request.getParameter("date_format")+"], "
+				+ "date ["+request.getParameter("date")+"],"
+				+ "incoming_timezone ["+request.getParameter("incoming_timezone")+"]"
+				+ "outgoing_timezone ["+request.getParameter("outgoing_timezone")+"]"
+				);
+		String fileName=request.getParameter("ics_filename");
+		if(request.getParameter("ics_filename")==null) {
+			fileName=getUID()+".ics";
+			log.debug("Filename set to ["+fileName+"]");
+		}
 		response.setContentType("APPLICATION/OCTET-STREAM; charset=UTF-8");   
-		 response.setHeader("Content-Disposition","attachment; filename=\"" + request.getParameter("ics_filename") + "\"");
-			log.debug("getICS: "
-					+ "fileName ["+request.getParameter("ics_filename")+"], "
-					+ "summary ["+request.getParameter("summary")+"],"
-					+ "description ["+request.getParameter("description")+"],"
-					+ "date_format ["+request.getParameter("date_format")+"], "
-					+ "date ["+request.getParameter("date")+"]");
+		response.setHeader("Content-Disposition","attachment; filename=\"" + fileName + "\"");
+			
 
 		try {
-			response.getWriter().write(getICS(request.getParameter("summary"), request.getParameter("description"),request.getParameter("date_format"),request.getParameter("date")));
+			response.getWriter().write(getICS(request.getParameter("summary"), request.getParameter("description"),request.getParameter("date_format"),request.getParameter("date"), request.getParameter("incoming_timezone"), request.getParameter("outgoing_timezone")));
 		} catch (ParseException e) {
 			log.error("Exception", e);
+			response.getWriter().write("Exception: " + e.getMessage() + ", cause: " + e.getCause());
 		}
 		response.getWriter().close();
 	}
 	
-	public String getICS(String summary, String description, String dateFormat, String strDate) throws ParseException {
+	public String getICS(String summary, String description, String dateFormat, String strDate, String incomingTimezone, String outgoingTimezone) throws ParseException {
 		// http://localhost:8080/FeedAggrWebServer/ICSServlet?ics_filename=ics.ics&summary=qqq&description=qqq&date_format=dd.MM.yyyy%20%20HH:mm&date=21.05.2021%20%2016:15
 		SimpleDateFormat sdfIncoming = new SimpleDateFormat(dateFormat);
-		SimpleDateFormat sdfICS = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+		sdfIncoming.setTimeZone(TimeZone.getTimeZone("GMT+3"));
+		if(incomingTimezone!=null) {
+			sdfIncoming.setTimeZone(TimeZone.getTimeZone(incomingTimezone));
+			log.debug("Time zone of sdfIncoming set to ["+incomingTimezone+"]");
+		}
+//		SimpleDateFormat sdfICS = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+		SimpleDateFormat sdfICS = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+		sdfICS.setTimeZone(TimeZone.getTimeZone("GMT+3"));
+		if(outgoingTimezone!=null) {
+			sdfICS.setTimeZone(TimeZone.getTimeZone(outgoingTimezone));
+			log.debug("Time zone of sdfICS set to ["+outgoingTimezone+"]");
+		}
 		Date dateIncoming = sdfIncoming.parse(strDate);
 		String icsTemplate=
 				"BEGIN:VCALENDAR\r\n" + 
@@ -84,4 +106,6 @@ public class ICSServlet extends HttpServlet {
 	private long getUID() {
 		return new Date().getTime();
 	}
+	
+	
 }

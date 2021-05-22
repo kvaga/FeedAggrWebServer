@@ -133,13 +133,12 @@ User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
 								cols="120"	rows="5" wrap="soft"><%
 										if(request.getSession().getAttribute("itemContentTemplate")!=null){	
 											out.print(request.getSession().getAttribute("itemContentTemplate"));
-										}else if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(
-		Exec.getDomainFromURL((String)request.getSession().getAttribute("url")))!=null){
-	out.print(user.getRssItemPropertiesPatternByDomain(
-			Exec.getDomainFromURL((String)request.getSession().getAttribute("url"))).getPatternDescription());
-}else{
-	out.print("{%3}&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============ Link ============&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;");
-}
+										}else if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(	Exec.getDomainFromURL((String)request.getSession().getAttribute("url")))!=null){
+											out.print(user.getRssItemPropertiesPatternByDomain(
+												Exec.getDomainFromURL((String)request.getSession().getAttribute("url"))).getPatternDescription());
+										}else{
+											out.print("{%3}&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============ Link ============&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;");
+										}
 %></textarea>
 </td>
 								<td style="padding-left: 5px">
