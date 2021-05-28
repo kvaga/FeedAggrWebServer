@@ -654,10 +654,11 @@ public class ServerUtils {
 	 * 
 	 * @param url - the URL of site that we need to autmotically add
 	 * @param login - login of the user
+	 * @param titlePrefix - a prefix of title. It needed for playlists for yuotube
 	 * @return - count of items that were found
 	 * @throws Exception
 	 */
-	public static int addRSSFeedByURLAutomaticly(String url, String login) throws Exception {
+	public static int addRSSFeedByURLAutomaticly(String url, String login, String titlePrefixForYoutubePlaylist) throws Exception {
 		// javax.servlet.http.HttpServletRequest request
 		url = (url.contains("youtube.com") && !url.contains("youtube.com/feeds/videos.xml")) ? Exec.getYoutubeFeedURL(url): url;
 		if (url==null){
@@ -665,6 +666,9 @@ public class ServerUtils {
 		}
 		String htmlContent = ServerUtilsConcurrent.getInstance().getURLContent(url);
 		String feedTitle = Exec.getTitleFromHtmlBody(htmlContent);
+		if(titlePrefixForYoutubePlaylist!=null) {
+			feedTitle = titlePrefixForYoutubePlaylist + " [Playlist: " + feedTitle + "]";
+		}
 		String feedId = ServerUtils.getNewFeedId();
 		File xmlFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + feedId + ".xml");
 		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + login + ".xml");
@@ -737,5 +741,9 @@ public class ServerUtils {
 
 		// ---
 		return items.size();
+	}
+	
+	public static int addRSSFeedByURLAutomaticly(String url, String login) throws Exception {
+		return addRSSFeedByURLAutomaticly(url, login, null);
 	}
 }

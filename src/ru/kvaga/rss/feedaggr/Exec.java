@@ -11,6 +11,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -372,19 +373,48 @@ public static synchronized String checkItemURLForFullness(String feedURL, String
 	return leftPathOfFeedURL+itemURL;
 }
 
-
-public static synchronized String getYoutubeFeedURL(String url) throws GetURLContentException {
+public static synchronized String getYoutubeChannelId(String youtubeVideosUrl) throws GetURLContentException {
 //	String regex="\"externalId\":\"(([A-Z]*[0-9]*[a-z]*)*)\",";
 	String regex="\"externalId\":\"(.*?)\",";
-	String youtubeChannelPattern="https://www.youtube.com/feeds/videos.xml?channel_id=%s";
-	
+//	String regex = "https://www.youtube.com/channel/(.*)/videos";
 	Pattern p = Pattern.compile(regex);
-	String urlContent=Exec.getURLContent(url);
-	Matcher m = p.matcher(urlContent);
+//	String urlContent=Exec.getURLContent(youtubeVideosUrl);
+	Matcher m = p.matcher(Exec.getURLContent(youtubeVideosUrl));
 	if(m.find()) {
-		return String.format(youtubeChannelPattern, m.group(1));
+		return m.group(1);
 	}
 	return null;
+}
+
+public static synchronized String getYoutubeFeedURL(String url) throws GetURLContentException {
+	String youtubeChannelPattern="https://www.youtube.com/feeds/videos.xml?channel_id=%s";
+	String channelId = getYoutubeChannelId(url);
+	if(channelId!=null) {
+		return String.format(youtubeChannelPattern, channelId);
+	}
+	return null;
+}
+
+public static synchronized String getYoutubeMainPlaylistURL(String channelId) throws GetURLContentException {
+	String playlistsUrlPattern="https://www.youtube.com/channel/%s/playlists";
+	if(channelId!=null) {
+		return String.format(playlistsUrlPattern, channelId);
+	}
+	return null;
+}
+
+public static synchronized HashSet<String> getYoutubeListOfPlaylistsURLs(String mainPlaylistURL) throws GetURLContentException{
+	Pattern p = Pattern.compile("\\/playlist[?]list=(.*?)\",\"webPageTyp");
+	String urlPlaylistFeedPattern="https://www.youtube.com/feeds/videos.xml?playlist_id=%s";
+//	ArrayList<String> l = new ArrayList<String>();
+	HashSet<String> l = new HashSet<String>();
+	Matcher m = p.matcher(Exec.getURLContent(mainPlaylistURL));
+	while(m.find()) {
+		for(int i = 1; i<=m.groupCount(); i++) {
+			l.add(String.format(urlPlaylistFeedPattern, m.group(i)));
+		}
+	}
+	return l;
 }
 
 public synchronized static String getDomainFromURL(String url){
