@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -18,6 +19,7 @@ import java.util.zip.GZIPInputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ru.kvaga.monitoring.influxdb.InfluxDB;
 import ru.kvaga.rss.feedaggr.FeedAggrException;
 
 public final class ServerUtilsConcurrent {
@@ -52,6 +54,7 @@ class GetURLContentTask implements Callable<String>{
 		this.urlText=urlText;
 	}
 	public String call() throws Exception {
+		long t1 = new Date().getTime();
 		String body = null;
 		String charset; // You should determine it based on response header.
 		HttpURLConnection con=null;
@@ -125,9 +128,11 @@ class GetURLContentTask implements Callable<String>{
 			if(con!=null) {
 				con.disconnect();
 			}
+			InfluxDB.getInstance().send("response_time,method=GetURLContentTask.call", new Date().getTime() - t1);
 			throw new FeedAggrException.GetURLContentException(e.getMessage(),urlText);
 		}
+		InfluxDB.getInstance().send("response_time,method=GetURLContentTask.call", new Date().getTime() - t1);
 		return body;
 	}
-	
+
 }

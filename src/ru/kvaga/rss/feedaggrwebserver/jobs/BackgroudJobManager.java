@@ -1,5 +1,6 @@
 package ru.kvaga.rss.feedaggrwebserver.jobs;
 
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ru.kvaga.monitoring.influxdb.InfluxDB;
 import ru.kvaga.rss.feedaggr.Exec;
 
 @WebListener
@@ -22,7 +24,7 @@ public class BackgroudJobManager implements ServletContextListener{
 	final static Logger log = LogManager.getLogger(BackgroudJobManager.class);
 	private static boolean jobsEnabled=true;
 	public void contextInitialized (ServletContextEvent event) {
-
+		long t1 = new Date().getTime();
 		
 		scheduler1 = Executors.newSingleThreadScheduledExecutor();
 		scheduler2 = Executors.newSingleThreadScheduledExecutor();
@@ -39,6 +41,7 @@ public class BackgroudJobManager implements ServletContextListener{
 //        scheduler.schedule("7 8-22 * * *", new Task());
 //        scheduler.start();
 //        servletContextEvent.getServletContext().setAttribute("SCHEDULER", scheduler);
+		InfluxDB.getInstance().send("response_time,method=BackgroudJobManager.contextInitialized", new Date().getTime() - t1);
 	}
 	
 

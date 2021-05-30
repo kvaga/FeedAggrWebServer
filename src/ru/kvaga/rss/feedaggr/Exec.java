@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
+import ru.kvaga.monitoring.influxdb.InfluxDB;
 import ru.kvaga.rss.feedaggr.FeedAggrException.CommonException;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetFeedsListByUser;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetURLContentException;
@@ -46,6 +47,7 @@ public class Exec {
 			int countOfPercentItemsInSearchPattern,
 			String filterWords
 			) throws FeedAggrException.SplitHTMLContent {
+		long t1 = new Date().getTime();
 		int i = 0;
 		log.debug("Filter words were set ["+filterWords+"]");
 
@@ -124,13 +126,14 @@ public class Exec {
 			}
 
 		}
+		InfluxDB.getInstance().send("response_time,method=Exec.getItems", new Date().getTime() - t1);
+
 		return ll;
 		
 	}
 
 	
 	public static synchronized int countWordsUsingSplit(String input, String splitItem) { 
-		
 		if (input == null || input.isEmpty()) { 
 			return 0; 
 		} 
@@ -140,6 +143,7 @@ public class Exec {
 
 
 	public static synchronized String getTitleFromHtmlBody(String responseHtmlBody) {
+		long t1 = new Date().getTime();
 //		Pattern pattern = Pattern.compile(".*<html.*><head.*>.*<title.*>(?<title>.*)<\\/title>.*<\\/head>");
 		Pattern pattern = Pattern.compile("<title>(?<title>.*?)<\\/title>");
 		if(responseHtmlBody==null) {
@@ -148,28 +152,37 @@ public class Exec {
 		responseHtmlBody = responseHtmlBody.replaceAll("\r\n", "").replaceAll("\n", "");
 		Matcher matcher = pattern.matcher(responseHtmlBody);
 		if(matcher.find()) {
+			InfluxDB.getInstance().send("response_time,method=Exec,getTitleFromHtmlBody", new Date().getTime() - t1);
 			return matcher.group("title");
 		}else {
+			InfluxDB.getInstance().send("response_time,method=Exec.getTitleFromHtmlBody", new Date().getTime() - t1);
+
 			return null;
 		}
 	}
 		
 	public static synchronized String getSubstringForHtmlBodySplit(String repeatableSearchPattern) throws FeedAggrException.GetSubstringForHtmlBodySplitException {
+		long t1 = new Date().getTime();
 		int index = -1;
 		int indexOfAsterisk = repeatableSearchPattern.indexOf("{*}");
 		int indexOfPercent = repeatableSearchPattern.indexOf("{%}");
 		index = indexOfAsterisk==-1? indexOfPercent:Math.min(indexOfPercent, indexOfAsterisk);
 
 		if (index == -1) {
+			InfluxDB.getInstance().send("response_time,method=Exec.getSubstringForHtmlBodySplit", new Date().getTime() - t1);
+
 			throw new FeedAggrException.GetSubstringForHtmlBodySplitException(repeatableSearchPattern);
 		}
 //		System.err.println(indexOfAsterisk);
 //		System.err.println(indexOfPercent);
 //		System.err.println(index);
+		InfluxDB.getInstance().send("response_time,method=Exec.getSubstringForHtmlBodySplit", new Date().getTime() - t1);
+
 		return repeatableSearchPattern.substring(0, index);
 	}
 
 	static synchronized String[] splitHtmlContent(String htmlBody, String substringForHtmlBodySplit) throws FeedAggrException.SplitHTMLContent {
+		long t1 = new Date().getTime();
 //		System.err.println("repeatable search: " + substringForHtmlBodySplit);
 		log.debug("Splitting html content [is html content null: " + (htmlBody==null? "null":"not null")+"]");
 		String ss = substringForHtmlBodySplit.replaceAll("\\{", "\\\\{");
@@ -177,12 +190,16 @@ public class Exec {
 		log.debug("splitted html content items.length="+splittedItems.length);
 		log.debug("substringForHtmlBodySplit="+substringForHtmlBodySplit);
 		if(splittedItems.length<2) {
-			throw new FeedAggrException.SplitHTMLContent(htmlBody,substringForHtmlBodySplit);
+			InfluxDB.getInstance().send("response_time,method=Exec.getSubstringForHtmlBodySplit", new Date().getTime() - t1);
+			throw new FeedAggrException.SplitHTMLContent(htmlBody,substringForHtmlBodySplit);			
 		}
+		InfluxDB.getInstance().send("response_time,method=Exec.getSubstringForHtmlBodySplit", new Date().getTime() - t1);
+
 		return splittedItems;
 	}
 
 	public static synchronized String getURLContent(String urlText) throws FeedAggrException.GetURLContentException {
+		long t1 = new Date().getTime();
 		String body = null;
 		String charset; // You should determine it based on response header.
 		HttpURLConnection con=null;
@@ -224,6 +241,7 @@ public class Exec {
 			}else if(con.getContentType().toLowerCase().contains("text/html")) {
 				charset = "UTF-8";
 			} else {
+				InfluxDB.getInstance().send("response_time,method=Exec.getURLContent", new Date().getTime() - t1);
 				throw new FeedAggrException.GetURLContentException(urlText,
 						String.format("Received unsupported contentType: %s. ", con.getContentType()));
 			}
@@ -254,6 +272,7 @@ public class Exec {
 				br.close();
 			}
 			con.disconnect();
+InfluxDB.getInstance().send("response_time,method=Exec.getURLContent", new Date().getTime() - t1);
 
 			return body;
 			
@@ -262,6 +281,8 @@ public class Exec {
 			if(con!=null) {
 				con.disconnect();
 			}
+			InfluxDB.getInstance().send("response_time,method=Exec.getURLContent", new Date().getTime() - t1);
+
 			throw new FeedAggrException.GetURLContentException(e.getMessage(),urlText);
 		}
 	}
@@ -275,6 +296,7 @@ public class Exec {
 									String itemContentTemplate,
 									String filterWords
 	) throws Exception {
+		long t1 = new Date().getTime();
 		log.debug("===== getRSSFromWeb ===== ");
 		int countOfPercentItemsInSearchPattern = Exec.countWordsUsingSplit(repeatableSearchPattern, "{%}");
 		String feedTitle = Exec.getTitleFromHtmlBody(responseHtmlBody);
@@ -332,20 +354,27 @@ public class Exec {
 			}
 			channel.setItem(items);
 	        rss.setChannel(channel);
+	        InfluxDB.getInstance().send("response_time,method=Exec.getURLContent", new Date().getTime() - t1);
+
 	return rss;
 	}
 	
 	public static synchronized int getNumberFromItemLink(String itemLink) throws Exception {
+		long t1 = new Date().getTime();
 		Pattern pattern = Pattern.compile(".*\\{%(\\d+)}.*");
 		Matcher m = pattern.matcher(itemLink);
 		if(m.matches()) {
 			log.debug("Found number ["+m.group(1)+"] in the item link ["+itemLink+"]");
+			InfluxDB.getInstance().send("response_time,method=Exec.getNumberFromItemLink", new Date().getTime() - t1);
+
 			return Integer.parseInt(m.group(1));
 		}
+		InfluxDB.getInstance().send("response_time,method=Exec.getNumberFromItemLink", new Date().getTime() - t1);
 		throw new Exception("Can't find number in the item link ["+itemLink+"]");
 	}
 
 public static synchronized String checkItemURLForFullness(String feedURL, String itemURL) throws CommonException {
+	long t1 = new Date().getTime();
 	String leftPathPatternText="http[s]{0,1}:\\/\\/.*?\\/";
 	String leftPathOfFeedURL=null;
 	String finalURL=null;
@@ -366,14 +395,19 @@ public static synchronized String checkItemURLForFullness(String feedURL, String
 	if(matcher.find()) {
 		leftPathOfFeedURL = matcher.group();
 	}else {
+		InfluxDB.getInstance().send("response_time,method=Exec.checkItemURLForFullness", new Date().getTime() - t1);
+
 		throw new FeedAggrException.CommonException("checkItemURLForFullness: Can't find left path in the URL ["+feedURL+"] by the regex pattern ["+leftPathPatternText+"]");
 	}
 	finalURL=leftPathOfFeedURL+itemURL;
 	log.debug("Now Item URL ["+itemURL+"] converted to ["+leftPathOfFeedURL+itemURL+"]");
+	InfluxDB.getInstance().send("response_time,method=Exec.checkItemURLForFullness", new Date().getTime() - t1);
+
 	return leftPathOfFeedURL+itemURL;
 }
 
 public static synchronized String getYoutubeChannelId(String youtubeVideosUrl) throws GetURLContentException {
+	long t1 = new Date().getTime();
 //	String regex="\"externalId\":\"(([A-Z]*[0-9]*[a-z]*)*)\",";
 	String regex="\"externalId\":\"(.*?)\",";
 //	String regex = "https://www.youtube.com/channel/(.*)/videos";
@@ -381,17 +415,26 @@ public static synchronized String getYoutubeChannelId(String youtubeVideosUrl) t
 //	String urlContent=Exec.getURLContent(youtubeVideosUrl);
 	Matcher m = p.matcher(Exec.getURLContent(youtubeVideosUrl));
 	if(m.find()) {
+		InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeChannelId", new Date().getTime() - t1);
+
 		return m.group(1);
 	}
+	InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeChannelId", new Date().getTime() - t1);
+
 	return null;
 }
 
 public static synchronized String getYoutubeFeedURL(String url) throws GetURLContentException {
+	long t1 = new Date().getTime();
 	String youtubeChannelPattern="https://www.youtube.com/feeds/videos.xml?channel_id=%s";
 	String channelId = getYoutubeChannelId(url);
 	if(channelId!=null) {
+		InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeFeedURL", new Date().getTime() - t1);
+
 		return String.format(youtubeChannelPattern, channelId);
 	}
+	InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeFeedURL", new Date().getTime() - t1);
+
 	return null;
 }
 
@@ -404,6 +447,7 @@ public static synchronized String getYoutubeMainPlaylistURL(String channelId) th
 }
 
 public static synchronized HashSet<String> getYoutubeListOfPlaylistsURLs(String mainPlaylistURL) throws GetURLContentException{
+	long t1=new Date().getTime();
 	Pattern p = Pattern.compile("\\/playlist[?]list=(.*?)\",\"webPageTyp");
 	String urlPlaylistFeedPattern="https://www.youtube.com/feeds/videos.xml?playlist_id=%s";
 //	ArrayList<String> l = new ArrayList<String>();
@@ -414,15 +458,22 @@ public static synchronized HashSet<String> getYoutubeListOfPlaylistsURLs(String 
 			l.add(String.format(urlPlaylistFeedPattern, m.group(i)));
 		}
 	}
+	InfluxDB.getInstance().send("response_time,method=getYoutubeListOfPlaylistsURLs", new Date().getTime()-t1);
 	return l;
 }
 
 public synchronized static String getDomainFromURL(String url){
+	long t1 = new Date().getTime();
 	Pattern p = Pattern.compile("http(s)?:\\/\\/(?<url>.*(\\.com|\\.ru|\\.org))(\\/)?");
 	Matcher m = p.matcher(url);
 	if(m.find()) {
+		InfluxDB.getInstance().send("response_time,method=Exec.getDomainFromURL", new Date().getTime() - t1);
+
 		return m.group("url");
+		
 	}
+	InfluxDB.getInstance().send("response_time,method=getDomainFromURL", new Date().getTime() - t1);
+
 	return null;
 }
 

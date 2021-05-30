@@ -2,6 +2,8 @@ package ru.kvaga.rss.feedaggrwebserver;
 
 import java.io.File;
 
+import ru.kvaga.monitoring.influxdb.InfluxDB;
+
 public class ConfigMap {
 	public static File configFile=null;
 	public static File dataPath=null;
@@ -13,6 +15,13 @@ public class ConfigMap {
 	public static String rssVersion="2.0";
 	public static int ttlOfFeedsInDays=90;
 	public static String prefixForlog4jJSP="ru.kvaga.feedaggrwebserver.jsps.";
+	public static String INFLUXDB_HOST,	INFLUXDB_DBNAME;
+	public static int INFLUXDB_PORT;
+	public static int INFLUXDB_THREAD_NUMBER;
+	public static boolean INFLUXDB_ENABLED;
+
+			
+
 	
 	/*
 	 regex for drive: https://www.drive2.ru/experience/kia/g3688?sort=Date

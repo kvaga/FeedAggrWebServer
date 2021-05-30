@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.Logger;
 
+import ru.kvaga.monitoring.influxdb.InfluxDB;
+
 /**
  * Servlet implementation class ICSServlet
  */
@@ -34,6 +36,7 @@ public class ICSServlet extends HttpServlet {
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		long t1 = new Date().getTime();
 		log.debug("Incoming parameters of getICS: "
 				+ "fileName ["+request.getParameter("ics_filename")+"], "
 				+ "summary ["+request.getParameter("summary")+"],"
@@ -59,9 +62,12 @@ public class ICSServlet extends HttpServlet {
 			response.getWriter().write("Exception: " + e.getMessage() + ", cause: " + e.getCause());
 		}
 		response.getWriter().close();
+		InfluxDB.getInstance().send("response_time,method=ICSServlet.service", new Date().getTime() - t1);
+
 	}
 	
 	public String getICS(String summary, String description, String dateFormat, String strDate, String incomingTimezone, String outgoingTimezone) throws ParseException {
+		long t1 = new Date().getTime();
 		// http://localhost:8080/FeedAggrWebServer/ICSServlet?ics_filename=ics.ics&summary=qqq&description=qqq&date_format=dd.MM.yyyy%20%20HH:mm&date=21.05.2021%20%2016:15
 		SimpleDateFormat sdfIncoming = new SimpleDateFormat(dateFormat);
 		sdfIncoming.setTimeZone(TimeZone.getTimeZone("GMT+3"));
@@ -100,6 +106,8 @@ public class ICSServlet extends HttpServlet {
 				""
 				;
 		log.debug(icsTemplate);
+		InfluxDB.getInstance().send("response_time,method=ICSServlet.getICS", new Date().getTime() - t1);
+
 		return icsTemplate;
 	}
 

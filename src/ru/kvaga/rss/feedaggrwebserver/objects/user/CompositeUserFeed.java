@@ -2,6 +2,9 @@ package ru.kvaga.rss.feedaggrwebserver.objects.user;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
+
+import ru.kvaga.monitoring.influxdb.InfluxDB;
 
 public class CompositeUserFeed {
 	private String id;
@@ -25,11 +28,14 @@ public class CompositeUserFeed {
 	}
 	
 	public boolean doesHaveCompositeFeedId(String compositeFeedId) {
+		long t1 = new Date().getTime();
 		for(String s : feedIds) {
 			if(s.equals(compositeFeedId)) {
+				InfluxDB.getInstance().send("response_time,method=CompositeUserFeed.doesHaveCompositeFeedId", new Date().getTime() - t1);
 				return true;
 			}
 		}
+		InfluxDB.getInstance().send("response_time,method=CompositeUserFeed.doesHaveCompositeFeedId", new Date().getTime() - t1);
 		return false;
 	}
 	

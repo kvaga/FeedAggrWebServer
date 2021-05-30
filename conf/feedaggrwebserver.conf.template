@@ -8,3 +8,10 @@ admin.login=your_user
 admin.password=password_of_user
 
 
+
+#InfluxDB parameters
+influxdb.enabled=false
+influxdb.host=localhost
+influxdb.dbname=some_db_name
+influxdb.port=8086
+influxdb.threads.numder=10

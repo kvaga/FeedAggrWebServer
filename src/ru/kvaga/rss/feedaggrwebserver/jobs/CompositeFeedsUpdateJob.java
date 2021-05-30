@@ -2,12 +2,14 @@ package ru.kvaga.rss.feedaggrwebserver.jobs;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.xml.bind.JAXBException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ru.kvaga.monitoring.influxdb.InfluxDB;
 import ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
@@ -20,11 +22,10 @@ public class CompositeFeedsUpdateJob implements Runnable {
 	private File compositeRSSFile = null;
 	private String userName = null;
 
-	public CompositeFeedsUpdateJob() {
-
-	}
+	public CompositeFeedsUpdateJob() {}
 
 	public void run() {
+		long t1 = new Date().getTime();
 //		ArrayList<String> al = new ArrayList<String>();
 //		al.add("1613078641721");
 //		al.add("1613078071148");
@@ -52,7 +53,7 @@ public class CompositeFeedsUpdateJob implements Runnable {
 		}
 
 		log.debug("CompositeFeedsUpdateJob finished");
-
+		InfluxDB.getInstance().send("response_time,method=CompositeFeedsUpdateJob.Run", new Date().getTime() - t1);
 	}
 
 }

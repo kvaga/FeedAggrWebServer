@@ -22,7 +22,9 @@ ru.kvaga.rss.feedaggr.Exec
     ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed,
         ru.kvaga.rss.feedaggrwebserver.objects.user.UserRepeatableSearchPattern,
             ru.kvaga.rss.feedaggrwebserver.ConfigMap,
-            org.apache.logging.log4j.*
+            org.apache.logging.log4j.*,
+            ru.kvaga.monitoring.influxdb.InfluxDB
+            
         
     "%>
     <%
@@ -35,6 +37,11 @@ ru.kvaga.rss.feedaggr.Exec
 <title>Insert title here</title>
 </head>
 <body>
+!!!!!!!!!!!!!!!1
+<%
+InfluxDB.getInstance().send("response_time,method=getYoutubeListOfPlaylistsURLs", 45);
+
+%>
 <%
 File userFile=new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+"kvaga"+".xml");
 User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());

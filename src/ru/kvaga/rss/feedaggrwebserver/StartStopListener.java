@@ -11,6 +11,9 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebListener;
 
 import org.apache.logging.log4j.Logger;
+
+import ru.kvaga.monitoring.influxdb.InfluxDB;
+
 import org.apache.logging.log4j.LogManager;;
 
 
@@ -38,6 +41,36 @@ public class StartStopListener implements ServletContextListener{
 			log.info("Loaded parameter admin.login="+ConfigMap.adminLogin);
 			ConfigMap.adminPassword=props.getProperty("admin.password");
 			log.info("Loaded parameter admin.password="+ConfigMap.adminPassword);
+			ConfigMap.adminPassword=props.getProperty("admin.password");
+			log.info("Loaded parameter admin.password="+ConfigMap.adminPassword);
+			
+			try {
+				ConfigMap.INFLUXDB_ENABLED=Boolean.parseBoolean(props.getProperty("influxdb.enabled"));
+				InfluxDB.ENABLED=ConfigMap.INFLUXDB_ENABLED;
+				log.info("Loaded parameter influxdb.enabled="+ConfigMap.INFLUXDB_ENABLED);
+			}catch(Exception e) {
+				log.error("Incorrect format of influxdb.enabled parameter ["+props.getProperty("influxdb.enabled")+"]. InfluxDB disabled");
+				InfluxDB.ENABLED=false;
+			}
+			ConfigMap.INFLUXDB_HOST=props.getProperty("influxdb.host");
+			log.info("Loaded parameter influxdb.host="+ConfigMap.INFLUXDB_HOST);
+			ConfigMap.INFLUXDB_DBNAME=props.getProperty("influxdb.dbname");
+			log.info("Loaded parameter influxdb.dbname="+ConfigMap.INFLUXDB_DBNAME);
+			try {
+				ConfigMap.INFLUXDB_THREAD_NUMBER=Integer.parseInt(props.getProperty("influxdb.threads.numder"));
+				log.info("Loaded parameter influxdb.threads.numder="+ConfigMap.INFLUXDB_THREAD_NUMBER);
+			}catch(Exception e) {
+				log.error("Incorrect format of influxdb.threads.numder parameter ["+props.getProperty("influxdb.threads.numder")+"]. Set default value 10");
+				InfluxDB.THREADS_NUMBER=10;
+			}
+			try {
+				ConfigMap.INFLUXDB_PORT=Integer.parseInt(props.getProperty("influxdb.port"));
+				log.info("Loaded parameter influxdb.port="+ConfigMap.INFLUXDB_PORT);
+			}catch(Exception e) {
+				log.error("Incorrect format of influxdb.port parameter ["+props.getProperty("influxdb.port")+"]. InfluxDB disabled");
+				InfluxDB.ENABLED=false;
+			}
+			InfluxDB.getInstance(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME);
 
 		} catch (IOException e) {
 			log.error("Can't get configuration parameters of servlet", e);
@@ -48,6 +81,7 @@ public class StartStopListener implements ServletContextListener{
 
 	    @Override
 	    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+	    	InfluxDB.destroy();
 	        log.info("Servlet has been stopped.");
 	    }
 	    

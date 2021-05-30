@@ -15,6 +15,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.logging.log4j.*;
 
+import ru.kvaga.monitoring.influxdb.InfluxDB;
 import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggr.FeedAggrException.CommonException;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetSubstringForHtmlBodySplitException;
@@ -51,6 +52,7 @@ public class FeedsUpdateJob implements Runnable {
 	}
 
 	void updateFeeds() throws Exception {
+		long t1 = new Date().getTime();
 //		URL urlLog = org.apache.logging.log4j.LogManager.class.getResource("/log4j.properties");
 //		log.info("==========----------------------------------------------------------------------------------------------------------------------------->>>" + urlLog);
 
@@ -75,6 +77,7 @@ public class FeedsUpdateJob implements Runnable {
 
 		File[] listOfUsersFiles = ConfigMap.usersPath.listFiles();
 		if (listOfUsersFiles == null || listOfUsersFiles.length == 0) {
+			InfluxDB.getInstance().send("response_time,method=FeedsUpdateJob.updateFeeds", new Date().getTime() - t1);
 			throw new RuntimeException("The list of files for path [" + ConfigMap.usersPath + "]=0");
 		}
 		try {
@@ -162,6 +165,7 @@ public class FeedsUpdateJob implements Runnable {
 			// TODO Auto-generated catch block
 			log.error("Exception occured", e);
 		}
+		InfluxDB.getInstance().send("response_time,method=FeedsUpdateJob.updateFeeds", new Date().getTime() - t1);
 	}
 
 	public void run() {
