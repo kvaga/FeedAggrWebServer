@@ -78,7 +78,8 @@ out.print("----------------------------<br>");
 							<% 												        
 								User user = null;
 								if(request.getSession().getAttribute("repeatableSearchPattern")==null){
-									user = (User) ObjectsUtils.getXMLObjectFromXMLFile(new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+request.getSession().getAttribute("login")+".xml"), new User());
+									//user = (User) ObjectsUtils.getXMLObjectFromXMLFile(new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+request.getSession().getAttribute("login")+".xml"), new User());
+									user = User.getXMLObjectFromXMLFile(new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+request.getSession().getAttribute("login")+".xml"));
 								}
 							%>
 								<textarea name="repeatableSearchPattern" cols="120" rows="20" wrap="soft"><%= 

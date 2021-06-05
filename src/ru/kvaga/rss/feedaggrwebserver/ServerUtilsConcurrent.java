@@ -1,6 +1,7 @@
 package ru.kvaga.rss.feedaggrwebserver;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -16,6 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.hc.client5.http.ConnectTimeoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,12 +27,18 @@ import ru.kvaga.rss.feedaggr.FeedAggrException;
 public final class ServerUtilsConcurrent {
 	private static Logger log = LogManager.getLogger(ServerUtilsConcurrent.class);
     private static ServerUtilsConcurrent instance;
-    
+    private int threadNumber=10;
     private ExecutorService executor = null;
+    private int defaultHttpConnectionConnectTimeoutInMillis=5000;
 
 	private ServerUtilsConcurrent() {
-		executor = Executors.newFixedThreadPool(10);
-		log.info("ServerUtilsConcurrent was initialized");
+		executor = Executors.newFixedThreadPool(threadNumber);
+		log.info("ServerUtilsConcurrent was initialized with ["+threadNumber+"] thread number");
+	}
+	private ServerUtilsConcurrent(int threadNumber) {
+		this.threadNumber=threadNumber;
+		executor = Executors.newFixedThreadPool(this.threadNumber);
+		log.info("ServerUtilsConcurrent was initialized with ["+this.threadNumber+"] thread number");
 	}
 	
 	public static ServerUtilsConcurrent getInstance() {
@@ -40,17 +48,30 @@ public final class ServerUtilsConcurrent {
 		return instance;
 	}
 	
+	public static ServerUtilsConcurrent getInstance(int threadNumber) {
+		if(instance==null) {
+			instance=new ServerUtilsConcurrent(threadNumber);
+		}
+		return instance;
+	}
+	
 	public String getURLContent(String urlText) throws FeedAggrException.GetURLContentException, InterruptedException, ExecutionException {
-	    Future<String> futureCall = executor.submit(new GetURLContentTask(urlText));
+	    Future<String> futureCall = executor.submit(new GetURLContentTask(urlText, defaultHttpConnectionConnectTimeoutInMillis));
 		return futureCall.get();
 	}
 
+	public String getURLContent(String urlText, int httpConnectionConnectTimeoutInMillis) throws FeedAggrException.GetURLContentException, InterruptedException, ExecutionException {
+	    Future<String> futureCall = executor.submit(new GetURLContentTask(urlText, httpConnectionConnectTimeoutInMillis));
+		return futureCall.get();
+	}
 }
 
 class GetURLContentTask implements Callable<String>{
 	private static Logger log = LogManager.getLogger(GetURLContentTask.class);
 	private String urlText;
-	GetURLContentTask(String urlText){
+	private int httpConnectionConnectTimeoutInMillis;
+	GetURLContentTask(String urlText, int httpConnectionConnectTimeoutInMillis){
+		this.httpConnectionConnectTimeoutInMillis=httpConnectionConnectTimeoutInMillis;
 		this.urlText=urlText;
 	}
 	public String call() throws Exception {
@@ -62,6 +83,8 @@ class GetURLContentTask implements Callable<String>{
 		try {
 			URL url = new URL(urlText);
 			con = (HttpURLConnection) url.openConnection();
+			con.setConnectTimeout(httpConnectionConnectTimeoutInMillis); 
+			con.setReadTimeout(httpConnectionConnectTimeoutInMillis); 
 
 			con.setRequestMethod("GET");
 			con.setRequestProperty("accept",
@@ -123,7 +146,7 @@ class GetURLContentTask implements Callable<String>{
 			con.disconnect();
 
 			
-		} catch (Exception e) {
+		}catch (Exception e) {
 			log.error("GetURLContentException: couldn't get a content for the ["+urlText+"] URL", e);
 			if(con!=null) {
 				con.disconnect();
@@ -134,5 +157,7 @@ class GetURLContentTask implements Callable<String>{
 		InfluxDB.getInstance().send("response_time,method=GetURLContentTask.call", new Date().getTime() - t1);
 		return body;
 	}
-
+	
+	
+	
 }

@@ -39,7 +39,8 @@ CompositeUserFeed compositeUserFeed=null;
 if(request.getParameter("feedId")!=null){
 	out.println("<input type=\"hidden\" name=\"feedId\" value=\""+request.getParameter("feedId")+"\">");
 	userFile=new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + request.getSession().getAttribute("login") + ".xml");
-	user=(User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+	//user=(User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+	user=User.getXMLObjectFromXMLFile(userFile);
 	compositeUserFeed=user.getCompositeUserFeedById(request.getParameter("feedId"));
 }
 
@@ -49,7 +50,7 @@ ArrayList<RSS> rssListForPrinting = new ArrayList<RSS>();
 HashMap<RSS,String> mapRssStringForPrinting = new HashMap<RSS, String>();
 for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
 	if(feedOnServer.getId().startsWith("composite")) continue;
-	RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
+	RSS rssFeed = RSS.getRSSObjectFromXMLFile(feedOnServer.getXmlFile());
 	rssListForPrinting.add(rssFeed);
 	mapRssStringForPrinting.put(rssFeed, feedOnServer.getId());
 }

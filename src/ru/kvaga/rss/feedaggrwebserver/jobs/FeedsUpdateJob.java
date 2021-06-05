@@ -87,7 +87,9 @@ public class FeedsUpdateJob implements Runnable {
 					continue;
 				}
 				log.debug("Found user file [" + userFile + "]");
-				User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+//				User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+				User user = User.getXMLObjectFromXMLFile(userFile);
+
 				// Находим у каждого пользователя список feed id и соответствующие им
 				// item*Templates
 
@@ -102,7 +104,8 @@ public class FeedsUpdateJob implements Runnable {
 
 						log.debug("Found rssXmlFile [" + rssXmlFile + "] for users file [" + userFile + "]");
 						// Получаем feed объект из файла
-						RSS rssFromFile = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(rssXmlFile, new RSS());
+//						RSS rssFromFile = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(rssXmlFile, new RSS());
+						RSS rssFromFile = RSS.getRSSObjectFromXMLFile(rssXmlFile);
 						rssFromFile.removeItemsOlderThanXDays(ConfigMap.ttlOfFeedsInDays);
 //				ObjectsUtils.printXMLObject(rssFromFile);
 
@@ -153,7 +156,8 @@ public class FeedsUpdateJob implements Runnable {
 							}
 						}
 						rssFromFile.getChannel().setLastBuildDate(new Date());
-						ObjectsUtils.saveXMLObjectToFile(rssFromFile, rssFromFile.getClass(), new File(rssXmlFile));
+//						ObjectsUtils.saveXMLObjectToFile(rssFromFile, rssFromFile.getClass(), new File(rssXmlFile));
+						rssFromFile.saveXMLObjectToFile(new File(rssXmlFile));
 						log.debug("Объект rssFromFile сохранен в файл [" + rssXmlFile + "]");
 
 					} catch (Exception e) {

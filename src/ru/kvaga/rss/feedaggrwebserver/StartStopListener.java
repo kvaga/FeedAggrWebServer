@@ -58,7 +58,8 @@ public class StartStopListener implements ServletContextListener{
 			log.info("Loaded parameter influxdb.dbname="+ConfigMap.INFLUXDB_DBNAME);
 			try {
 				ConfigMap.INFLUXDB_THREAD_NUMBER=Integer.parseInt(props.getProperty("influxdb.threads.numder"));
-				log.info("Loaded parameter influxdb.threads.numder="+ConfigMap.INFLUXDB_THREAD_NUMBER);
+				log.info("Loaded parameter influxdb.threads.numder="+ConfigMap.INFLUXDB_THREAD_NUMBER + " and set to the InfluxDB");
+				InfluxDB.THREADS_NUMBER=ConfigMap.INFLUXDB_THREAD_NUMBER;
 			}catch(Exception e) {
 				log.error("Incorrect format of influxdb.threads.numder parameter ["+props.getProperty("influxdb.threads.numder")+"]. Set default value 10");
 				InfluxDB.THREADS_NUMBER=10;
@@ -70,7 +71,7 @@ public class StartStopListener implements ServletContextListener{
 				log.error("Incorrect format of influxdb.port parameter ["+props.getProperty("influxdb.port")+"]. InfluxDB disabled");
 				InfluxDB.ENABLED=false;
 			}
-			InfluxDB.getInstance(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME);
+			InfluxDB.getInstance(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME, InfluxDB.THREADS_NUMBER);
 
 		} catch (IOException e) {
 			log.error("Can't get configuration parameters of servlet", e);

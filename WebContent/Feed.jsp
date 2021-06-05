@@ -24,8 +24,10 @@ if(request.getParameter("action")!=null && request.getParameter("action").equals
 		request.getSession().setAttribute("feedId", request.getParameter("feedId"));
 		File xmlFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + request.getSession().getAttribute("feedId") + ".xml");
 		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + request.getSession().getAttribute("login") + ".xml");
-		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
-		RSS rss = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(xmlFile, new RSS());
+		//User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+		User user = User.getXMLObjectFromXMLFile(userFile);
+		//RSS rss = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(xmlFile, new RSS());
+		RSS rss = RSS.getRSSObjectFromXMLFile(xmlFile);
 		request.getSession().setAttribute("feedTitle", rss.getChannel().getTitle());
 		request.getSession().setAttribute("url", rss.getChannel().getLink());
 		request.getSession().setAttribute("repeatableSearchPattern",user.getRepeatableSearchPatternByFeedId((String)request.getSession().getAttribute("feedId")));

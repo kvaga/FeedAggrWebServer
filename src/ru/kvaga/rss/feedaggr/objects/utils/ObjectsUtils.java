@@ -25,6 +25,7 @@ public class ObjectsUtils {
 
 
 	// Save xml file from Object
+	/*
 	public static synchronized void saveXMLObjectToFile(Object object, Class _class, File file) throws JAXBException {
 		long t1 = new Date().getTime();
 //		ObjectsUtils.saveXMLObjectToFile(rss, rss.getClass(), file);
@@ -34,12 +35,15 @@ public class ObjectsUtils {
         m.marshal(object, file);
         InfluxDB.getInstance().send("response_time,method=ObjectsUtils.saveXMLObjectToFile", new Date().getTime() - t1);
 	}
+	*/
 	// Read XML object from file, then print this object
+	/*
     public static synchronized Object getXMLObjectFromXMLFile(String xmlFile, Object object) throws JAXBException {
 	    return getXMLObjectFromXMLFile(new File(xmlFile), object);
 	}
-    
+    */
  // Read XML object from file, then print this object
+    /*
     public static synchronized Object getXMLObjectFromXMLFile(File xmlFile, Object object) throws JAXBException {
 		long t1 = new Date().getTime();
 
@@ -52,7 +56,7 @@ public class ObjectsUtils {
 
 	    return obj;
 	}
-    
+    */
 	public static synchronized void printXMLObject(Object object) throws JAXBException {
 		long t1 = new Date().getTime();
 

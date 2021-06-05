@@ -39,7 +39,8 @@ HashMap<RSS,String> mapRssStringForPrinting = new HashMap<RSS, String>();
 log.debug("=======================> " + ConfigMap.feedsPath);
 for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
 //	log.debug(feedOnServer.getXmlFile());
-	RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
+	//RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
+	RSS rssFeed = RSS.getRSSObjectFromXMLFile(feedOnServer.getXmlFile());
 	if(feedOnServer.getId().startsWith("composite")) {
 		rssCompositeListForPrinting.add(rssFeed);
 	}else{

@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -59,7 +60,8 @@ public class ServerUtils {
 		log.debug("Trying to delete feed id [" + feedId + "] for user [" + userName + "]");
 		HashSet<UserFeed> userFeedNew = new HashSet<UserFeed>();
 		File userConfigFile = new File(ConfigMap.usersPath + "/" + userName + ".xml");
-		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userConfigFile, new User());
+//		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userConfigFile, new User());
+		User user = User.getXMLObjectFromXMLFile(userConfigFile);
 		log.debug("Successfully read file [" + userConfigFile + "]");
 		for (UserFeed feed : user.getUserFeeds()) {
 			if (feed.getId().equals(feedId)) {
@@ -69,7 +71,7 @@ public class ServerUtils {
 		}
 		log.debug("Created new list without [" + feedId + "] feed");
 		user.setUserFeeds(userFeedNew);
-		ObjectsUtils.saveXMLObjectToFile(user, user.getClass(), userConfigFile);
+		user.saveXMLObjectToFile(userConfigFile);
 		log.debug("File [" + userConfigFile + "] successfully updated");
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.deleteUserFeedByIdFromUser", new Date().getTime() - t1);
 	}
@@ -78,7 +80,8 @@ public class ServerUtils {
 		log.debug("Trying to delete composite feed id [" + compositeFeedId + "] for user [" + userName + "]");
 		HashSet<CompositeUserFeed> userFeedNew = new HashSet<CompositeUserFeed>();
 		File userConfigFile = new File(ConfigMap.usersPath + "/" + userName + ".xml");
-		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userConfigFile, new User());
+//		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userConfigFile, new User());
+		User user = User.getXMLObjectFromXMLFile(userConfigFile);
 		log.debug("Successfully read file [" + userConfigFile + "]");
 		for (CompositeUserFeed feed : user.getCompositeUserFeeds()) {
 			if (feed.getId().equals(compositeFeedId)) {
@@ -88,7 +91,7 @@ public class ServerUtils {
 		}
 		log.debug("Created new composite list without [" + compositeFeedId + "] feed");
 		user.setCompositeUserFeeds(userFeedNew);
-		ObjectsUtils.saveXMLObjectToFile(user, user.getClass(), userConfigFile);
+		user.saveXMLObjectToFile(userConfigFile);
 		log.debug("File [" + userConfigFile + "] successfully updated");
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.deleteCompositeUserFeedByIdFromUser", new Date().getTime() - t1);
 
@@ -131,12 +134,13 @@ public class ServerUtils {
 		log.debug("Getting user configuration file");
 		File userConfigFile = new File(ConfigMap.usersPath.getAbsolutePath() + "/" + userName + ".xml");
 		if (!userConfigFile.exists()) {
-			InfluxDB.getInstance().send("response_time,method=ServerUtils.getUserFeedListByUser", new Date().getTime() - t1);
+			InfluxDB.getInstance().send("response_time,method=ServerUtils.getUserFeedListByUserException", new Date().getTime() - t1);
 			throw new Exception("Configuration file of user [" + userName + "] doesn't exist");
 		}
 		log.debug("Getting Feeds list from the file [" + userConfigFile.getAbsolutePath() + "]");
 
-		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userConfigFile, new User());
+//		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userConfigFile, new User());
+		User user = User.getXMLObjectFromXMLFile(userConfigFile);
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.getUserFeedListByUser", new Date().getTime() - t1);
 
 		return (ArrayList<UserFeed>) user.getUserFeeds();
@@ -170,7 +174,7 @@ public class ServerUtils {
 		ArrayList<Feed> al = new ArrayList<Feed>();
 		log.debug("Searching Feed in the [" + dir + "] directory");
 		if (!dir.isDirectory()) {
-			InfluxDB.getInstance().send("response_time,method=ServerUtils.getFeedsList", new Date().getTime() - t1);
+			InfluxDB.getInstance().send("response_time,method=ServerUtils.getFeedsListException", new Date().getTime() - t1);
 
 			throw new FeedAggrException.GetFeedsListByUser(String.format(
 					"Couldn't find feeds [%s] directory because [path: %s, absolutePath: %s] is not a directory. Current directory: %s",
@@ -495,7 +499,8 @@ public class ServerUtils {
 			throws Exception {
 		long t1 = new Date().getTime();
 		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + userName + ".xml");
-		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+//		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+		User user = User.getXMLObjectFromXMLFile(userFile);
 		String compositeFeedId = null;
 		if(feedId==null) {
 			compositeFeedId="composite_" + ServerUtils.getNewFeedId();
@@ -507,7 +512,7 @@ public class ServerUtils {
 		// Check does user have all needed feed ids
 		for (String feedIdFromList : feedIdList) {
 			if (!user.containsFeedId(feedIdFromList)) {
-				InfluxDB.getInstance().send("response_time,method=ServerUtils.createCompositeRSS", new Date().getTime() - t1);
+				InfluxDB.getInstance().send("response_time,method=ServerUtils.createCompositeRSSException", new Date().getTime() - t1);
 				throw new Exception("User [" + userName + "] doesn't have feed id [" + feedIdFromList + "]");
 			}
 		}
@@ -523,9 +528,7 @@ public class ServerUtils {
 		
 		if(user.removeCompositeUserFeedById(compositeFeedId)) {
 				log.debug("Removed previous version of composite feed ["+compositeFeedId+"]");
-				System.err.println("Removed previous version of composite feed ["+compositeFeedId+"]");
-				
-				
+				//System.err.println("Removed previous version of composite feed ["+compositeFeedId+"]");		
 		}
 //		for(CompositeUserFeed f : user.getCompositeUserFeeds()) {
 //			System.err.println("f:" + f.getId());
@@ -562,9 +565,9 @@ public class ServerUtils {
 			log.debug("Updated compositeRSSFile [" + compositeRSSFile.getAbsolutePath() + "]");
 		}
 		// Storing composite RSS and USer to files
-		ObjectsUtils.saveXMLObjectToFile(compositeRSS, compositeRSS.getClass(), compositeRSSFile);
+		compositeRSS.saveXMLObjectToFile(compositeRSSFile);
 		log.debug("Composite RSS was successfully saved to the file [" + compositeRSSFile.getAbsolutePath() + "]");
-		ObjectsUtils.saveXMLObjectToFile(user, user.getClass(), userFile);
+		user.saveXMLObjectToFile(userFile);
 		log.debug("User's ["+userName+"] configuration was successfully saved to the file [" + userFile.getAbsolutePath() + "]");
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.createCompositeRSS", new Date().getTime() - t1);
 	}
@@ -573,15 +576,18 @@ public class ServerUtils {
 		long t1 = new Date().getTime();
 		log.info("Started proccess updateCompositeRSSFilesOfUser for user ["+userName+"]");
 		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + userName + ".xml");
-		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+//		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+		User user = User.getXMLObjectFromXMLFile(userFile);
 
 		for (CompositeUserFeed compositeUserFeed : user.getCompositeUserFeeds()) {
 			File compositeRSSFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + compositeUserFeed.getId() + ".xml");
-			RSS compositeRSS = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(compositeRSSFile, new RSS());
+//			RSS compositeRSS = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(compositeRSSFile, new RSS());
+			RSS compositeRSS = RSS.getRSSObjectFromXMLFile(compositeRSSFile);
 			try {
 				for (String feedId : compositeUserFeed.getFeedIds()) {
 					File xmlFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + feedId + ".xml");
-					RSS rss = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(xmlFile, new RSS());
+//					RSS rss = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(xmlFile, new RSS());
+					RSS rss = RSS.getRSSObjectFromXMLFile(xmlFile);
 					log.debug("Got rss from the file [" + xmlFile.getAbsolutePath() + "] with ["+ rss.getChannel().getItem().size() + "] items");
 					for (Item item : rss.getChannel().getItem()) {
 						item.setTitle("["+rss.getChannel().getTitle()+"] "+item.getTitle());
@@ -594,9 +600,10 @@ public class ServerUtils {
 				compositeRSS.getChannel().setLastBuildDate(new Date());
 			} catch (Exception e) {
 				log.error("Exception", e);
+				InfluxDB.getInstance().send("response_time,method=ServerUtils.updateCompositeRSSFilesOfUserException", new Date().getTime() - t1);
 				continue;
 			}
-			ObjectsUtils.saveXMLObjectToFile(compositeRSS, compositeRSS.getClass(), compositeRSSFile);
+			compositeRSS.saveXMLObjectToFile(compositeRSSFile);
 		}
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.updateCompositeRSSFilesOfUser", new Date().getTime() - t1);
 	}
@@ -607,7 +614,8 @@ public class ServerUtils {
 		long t1 = new Date().getTime();
 		log.debug("Merge RSS request for feed id list: " + feedIdList + " and user [" + userName + "]");
 		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + userName + ".xml");
-		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+//		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+		User user = User.getXMLObjectFromXMLFile(userFile);
 		log.debug("Got configuration of user [" + userName + "]");
 		RSS compositeRSS = null;
 		String compositeFeedId = null;
@@ -627,12 +635,13 @@ public class ServerUtils {
 
 			log.debug("Created new compositeRSSFile [" + compositeRSSFile.getAbsolutePath() + "]");
 		} else {
-			compositeRSS = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(compositeRSSFile, new RSS());
+//			compositeRSS = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(compositeRSSFile, new RSS());
+			compositeRSS = RSS.getRSSObjectFromXMLFile(compositeRSSFile);
 			compositeFeedId = compositeRSSFile.getName().replace(".xml", "");
 			log.debug("compositeRSSFile [" + compositeRSSFile.getAbsolutePath() + "] already exists. Use this file");
 		}
 		if (compositeRSS.getChannel() == null) {
-			InfluxDB.getInstance().send("response_time,method=ServerUtils.mergeRSS", new Date().getTime() - t1);
+			InfluxDB.getInstance().send("response_time,method=ServerUtils.mergeRSSException", new Date().getTime() - t1);
 			throw new Exception(
 					"Unable to find channel in the compositeRSS and file [" + compositeRSSFile.getAbsolutePath() + "]");
 		}
@@ -641,7 +650,7 @@ public class ServerUtils {
 		/* TODO: implement checking each feed id belongs to user */
 
 		if (compositeFeedId == null) {
-			InfluxDB.getInstance().send("response_time,method=ServerUtils.mergeRSS", new Date().getTime() - t1);
+			InfluxDB.getInstance().send("response_time,method=ServerUtils.mergeRSSException", new Date().getTime() - t1);
 			throw new Exception("compositeFeedId can't be null");
 		}
 
@@ -649,13 +658,14 @@ public class ServerUtils {
 		log.debug("Start of feedIdList processing");
 		for (String feedId : feedIdList) {
 			if (!user.containsFeedId(feedId)) {
-				InfluxDB.getInstance().send("response_time,method=ServerUtils.mergeRSS", new Date().getTime() - t1);
+				InfluxDB.getInstance().send("response_time,method=ServerUtils.mergeRSSException", new Date().getTime() - t1);
 				throw new Exception("User [" + userName + "] doesn't have feed id [" + feedId + "]");
 			}
 			File xmlFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + feedId + ".xml");
 			RSS rss;
 			try {
-				rss = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(xmlFile, new RSS());
+//				rss = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(xmlFile, new RSS());
+				rss = RSS.getRSSObjectFromXMLFile(xmlFile);
 				log.debug("Got rss from the file [" + xmlFile.getAbsolutePath() + "] with ["
 						+ rss.getChannel().getItem().size() + "] items");
 			} catch (JAXBException e) {
@@ -686,8 +696,8 @@ public class ServerUtils {
 		 * log.debug("Added feedId ["+feedId+"] to compositeUserFeed ["
 		 * +compositeUserFeed.getId()+"]"); } } } }
 		 */
-		ObjectsUtils.saveXMLObjectToFile(compositeRSS, compositeRSS.getClass(), compositeRSSFile);
-		ObjectsUtils.saveXMLObjectToFile(user, user.getClass(), userFile);
+		compositeRSS.saveXMLObjectToFile(compositeRSSFile);
+		user.saveXMLObjectToFile(userFile);
 
 		log.debug("Composite RSS was successfully saved to the file [" + compositeRSSFile.getAbsolutePath() + "]");
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.mergeRSS", new Date().getTime() - t1);
@@ -701,7 +711,8 @@ public class ServerUtils {
 	 * @return - count of items that were found
 	 * @throws Exception
 	 */
-	public static int addRSSFeedByURLAutomaticly(String url, String login, String titlePrefixForYoutubePlaylist) throws Exception {
+	
+	public synchronized static int addRSSFeedByURLAutomaticly(String url, String login, String titlePrefixForYoutubePlaylist, HashMap<String, String> cache) throws Exception {
 		long t1 = new Date().getTime();
 
 		// javax.servlet.http.HttpServletRequest request
@@ -719,12 +730,13 @@ public class ServerUtils {
 		File xmlFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + feedId + ".xml");
 		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + login + ".xml");
 		User user = User.getXMLObjectFromXMLFile(userFile);
-		String existingFeedIdWithCurrentURL=null;
-		if((existingFeedIdWithCurrentURL=user.containsFeedIdByUrl(url))!=null) {
-			InfluxDB.getInstance().send("response_time,method=ServerUtils.addRSSFeedByURLAutomaticly", new Date().getTime() - t1);
-			throw new Exception("User already has feed id ["+existingFeedIdWithCurrentURL+"] with such URL ["+url+"]");
+		String existingFeedIdWithCurrentURL = null;
+
+		if ((existingFeedIdWithCurrentURL = user.containsFeedIdByUrl(url, cache)) != null) {
+			InfluxDB.getInstance().send("response_time,method=ServerUtils.addRSSFeedByURLAutomaticlyException",	new Date().getTime() - t1);
+			throw new Exception("User already has feed id [" + existingFeedIdWithCurrentURL + "] with such URL [" + url + "]");
 		}
-		
+
 		String repeatableSearchPattern = user.getRepeatableSearchPatternByDomain(Exec.getDomainFromURL(url));
 		String substringForHtmlBodySplit=Exec.getSubstringForHtmlBodySplit(repeatableSearchPattern);
 		int countOfPercentItemsInSearchPattern = Exec.countWordsUsingSplit(repeatableSearchPattern, "{%}");
@@ -735,21 +747,21 @@ public class ServerUtils {
 		if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(Exec.getDomainFromURL(url))!=null){
 			itemTitleTemplate = user.getRssItemPropertiesPatternByDomain(Exec.getDomainFromURL(url)).getPatternTitle();
 		}else{
-			InfluxDB.getInstance().send("response_time,method=ServerUtils.addRSSFeedByURLAutomaticly", new Date().getTime() - t1);
+			InfluxDB.getInstance().send("response_time,method=ServerUtils.addRSSFeedByURLAutomaticlyException", new Date().getTime() - t1);
 			throw new Exception("Couldn't find existing item Title template for URL ["+url+"] and domain ["+Exec.getDomainFromURL(url)+"]");
 		}
 		
 		if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(Exec.getDomainFromURL(url))!=null){
 			itemLinkTemplate = user.getRssItemPropertiesPatternByDomain(Exec.getDomainFromURL(url)).getPatternLink();
 		}else {
-			InfluxDB.getInstance().send("response_time,method=ServerUtils.addRSSFeedByURLAutomaticly", new Date().getTime() - t1);
+			InfluxDB.getInstance().send("response_time,method=ServerUtils.addRSSFeedByURLAutomaticlyException", new Date().getTime() - t1);
 			throw new Exception("Couldn't find existing item link template for URL ["+url+"] and domain ["+Exec.getDomainFromURL(url)+"]");
 		}
 		
 		if(user.getRssItemPropertiesPatterns()!=null && user.getRssItemPropertiesPatternByDomain(Exec.getDomainFromURL(url))!=null){
 			itemContentTemplate = user.getRssItemPropertiesPatternByDomain(Exec.getDomainFromURL(url)).getPatternDescription();
 		}else{
-			InfluxDB.getInstance().send("response_time,method=ServerUtils.addRSSFeedByURLAutomaticly", new Date().getTime() - t1);
+			InfluxDB.getInstance().send("response_time,method=ServerUtils.addRSSFeedByURLAutomaticlyException", new Date().getTime() - t1);
 			throw new Exception("Couldn't find existing item content template for URL ["+url+"] and domain ["+Exec.getDomainFromURL(url)+"]");
 		}
 
@@ -773,8 +785,7 @@ public class ServerUtils {
 			uf.setItemContentTemplate(itemContentTemplate);
 			uf.setRepeatableSearchPattern(repeatableSearchPattern);
 		}else{
-			user.getUserFeeds().add(new UserFeed(
-						feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern, ""));
+			user.getUserFeeds().add(new UserFeed(feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern, ""));
 		}
 		// save repeatable search patterns
 		user.getRepeatableSearchPatterns()
@@ -788,13 +799,29 @@ public class ServerUtils {
 		//----------------------
 		user.saveXMLObjectToFile(userFile);
 		
-
+		if(cache!=null)
+			cache.put(url, feedId);
 		// ---
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.addRSSFeedByURLAutomaticly", new Date().getTime() - t1);
 		return items.size();
 	}
 	
-	public static int addRSSFeedByURLAutomaticly(String url, String login) throws Exception {
-		return addRSSFeedByURLAutomaticly(url, login, null);
+	public synchronized static int addRSSFeedByURLAutomaticly(String url, String login, String titlePrefixForYoutubePlaylist) throws Exception {
+		return addRSSFeedByURLAutomaticly(url, login, titlePrefixForYoutubePlaylist, null);
+	}
+
+	public synchronized static int addRSSFeedByURLAutomaticly(String url, String login) throws Exception {
+		return addRSSFeedByURLAutomaticly(url, login, null, null);
+	}
+	
+	public synchronized static int addRSSFeedByURLAutomaticly(String url, String login, HashMap<String, String> cache) throws Exception {
+		return addRSSFeedByURLAutomaticly(url, login, null, cache);
+	}
+	
+	public synchronized static File getUserFileByLogin(String login) {
+		return new File(ConfigMap.usersPath + File.separator + login + ".xml");
+	}
+	public synchronized static File getRssFeedFileByFeedId(String feedId) {
+		return new File(ConfigMap.feedsPath + File.separator + feedId + ".xml");
 	}
 }

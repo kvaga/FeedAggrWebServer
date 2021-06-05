@@ -56,17 +56,21 @@ public class RSS {
 		this.channel = channel;
 	}
 	
+	
 	// Read XML object from file, then print this object
-    public static RSS getRSSObjectFromXMLFile(String xmlFile) throws JAXBException {
+	public static RSS getRSSObjectFromXMLFile(File xmlFile) throws JAXBException {
     	long t1 = new Date().getTime();
     	JAXBContext jaxbContext;
-		File feedXml = new File(xmlFile);
 	    jaxbContext = JAXBContext.newInstance(RSS.class);              
 	    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-	    RSS rss = (RSS) jaxbUnmarshaller.unmarshal(feedXml);
+	    RSS rss = (RSS) jaxbUnmarshaller.unmarshal(xmlFile);
 	    InfluxDB.getInstance().send("response_time,method=RSS.getRSSObjectFromXMLFile", new Date().getTime() - t1);
-
 	    return rss;
+	}
+    public static RSS getRSSObjectFromXMLFile(String xmlFile) throws JAXBException {
+    	long t1 = new Date().getTime();
+	    InfluxDB.getInstance().send("response_time,method=RSS.getRSSObjectFromXMLFile", new Date().getTime() - t1);
+		return getRSSObjectFromXMLFile(new File(xmlFile));
 	}
     
     public void removeItemsOlderThanXDays(int xDays) {
@@ -93,6 +97,9 @@ public class RSS {
         log.debug("Object rss [" + getChannel().getTitle() + "] successfully saved to the [" + file + "] file");
 	    InfluxDB.getInstance().send("response_time,method=RSS.saveXMLObjectToFile", new Date().getTime() - t1);
 
+	}
+    public synchronized void saveXMLObjectToFile(String file) throws JAXBException {
+    	saveXMLObjectToFile(new File(file));
 	}
    
 }

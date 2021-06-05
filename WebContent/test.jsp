@@ -44,7 +44,8 @@ InfluxDB.getInstance().send("response_time,method=getYoutubeListOfPlaylistsURLs"
 %>
 <%
 File userFile=new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+"kvaga"+".xml");
-User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+//User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+User user = User.getXMLObjectFromXMLFile(userFile);
 request.getSession().setAttribute("url", "https://www.youtube.com/asdasdlj");
 %>
 <%

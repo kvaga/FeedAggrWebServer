@@ -4,8 +4,11 @@
 org.apache.logging.log4j.*,
 ru.kvaga.rss.feedaggrwebserver.ConfigMap,
 ru.kvaga.rss.feedaggr.Exec,
+ru.kvaga.rss.feedaggrwebserver.objects.user.User,
 ru.kvaga.rss.feedaggrwebserver.ServerUtilsConcurrent,
 java.util.ArrayList,
+java.io.File,
+java.util.HashMap,
 java.util.HashSet
 "%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -30,8 +33,11 @@ java.util.HashSet
 	</form>
 	<%
 		if (request.getParameter("listOfURLs") != null) {
+			User user = User.getXMLObjectFromXMLFile(ServerUtils.getUserFileByLogin((String) request.getSession().getAttribute("login")));
+			HashMap<String, String> localUrlsCache = user.getAllUserFeedUrls();
 			request.getSession().setAttribute("listOfURLs", request.getParameter("listOfURLs"));
 			out.write("<table border=\"1\"><tr><td>URL</td><td>Status</td></tr>");
+			
 			for (String url : ((String) request.getParameter("listOfURLs")).split("\r\n")) {
 				try {
 					// Checking for existence of playlists and adding playlists feeds
@@ -40,14 +46,14 @@ java.util.HashSet
 					if (channelId == null) {
 						log.warn("ChannelId can't be null for url [" + url + "]");
 					} else {
-						log.debug("Found channelId []" + channelId + "] for URL [" + url + "]");
+						log.debug("Found channelId [" + channelId + "] for URL [" + url + "]");
 						String mainPlaylistUrl = Exec.getYoutubeMainPlaylistURL(channelId);
 						log.debug("Found main playlist url [" + mainPlaylistUrl	+ "] and getting list of playlists urls");
 						HashSet<String> l = Exec.getYoutubeListOfPlaylistsURLs(mainPlaylistUrl);
 						String titleOfMainUrl = Exec.getTitleFromHtmlBody(ServerUtilsConcurrent.getInstance().getURLContent(url));
 						for (String playlistUrl : l) {
 							try {
-								int size = ServerUtils.addRSSFeedByURLAutomaticly(playlistUrl,	(String) request.getSession().getAttribute("login"), titleOfMainUrl);
+								int size = ServerUtils.addRSSFeedByURLAutomaticly(playlistUrl,	(String) request.getSession().getAttribute("login"), titleOfMainUrl, localUrlsCache);
 								if (size > 0) {
 									out.write("<tr><td>" + playlistUrl + "</td><td>" + size + "</td></tr>");
 								} else {
@@ -63,7 +69,7 @@ java.util.HashSet
 
 					log.debug("Adding main feed");
 					// Adding feeds from main videos URLs
-					int size = ServerUtils.addRSSFeedByURLAutomaticly(url,(String) request.getSession().getAttribute("login"));
+					int size = ServerUtils.addRSSFeedByURLAutomaticly(url,(String) request.getSession().getAttribute("login"), localUrlsCache);
 					if (size > 0) {
 						out.write("<tr><td>" + url + "</td><td>" + size + "</td></tr>");
 					} else {

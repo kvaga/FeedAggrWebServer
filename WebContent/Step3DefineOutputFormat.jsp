@@ -42,8 +42,11 @@ out.print("----------------------------<br>");
 <h2>Step 3. Define output format</h2>
 <%
 File userFile=new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+request.getSession().getAttribute("login")+".xml");
-User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+//User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+User user = User.getXMLObjectFromXMLFile(userFile);
+
 %>
+
 
 				<form method="post" action="Feed.jsp">
 				<input type="hidden" name="enableStep4FeedPreview" value="true">

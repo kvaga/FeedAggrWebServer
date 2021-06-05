@@ -142,15 +142,15 @@ public class Exec {
 	}
 
 
+	private static Pattern getTitleFromHtmlBodyPattern = Pattern.compile("<title>(?<title>.*?)<\\/title>");
 	public static synchronized String getTitleFromHtmlBody(String responseHtmlBody) {
 		long t1 = new Date().getTime();
 //		Pattern pattern = Pattern.compile(".*<html.*><head.*>.*<title.*>(?<title>.*)<\\/title>.*<\\/head>");
-		Pattern pattern = Pattern.compile("<title>(?<title>.*?)<\\/title>");
 		if(responseHtmlBody==null) {
 			return null;
 		}
 		responseHtmlBody = responseHtmlBody.replaceAll("\r\n", "").replaceAll("\n", "");
-		Matcher matcher = pattern.matcher(responseHtmlBody);
+		Matcher matcher = getTitleFromHtmlBodyPattern.matcher(responseHtmlBody);
 		if(matcher.find()) {
 			InfluxDB.getInstance().send("response_time,method=Exec,getTitleFromHtmlBody", new Date().getTime() - t1);
 			return matcher.group("title");
@@ -272,7 +272,7 @@ public class Exec {
 				br.close();
 			}
 			con.disconnect();
-InfluxDB.getInstance().send("response_time,method=Exec.getURLContent", new Date().getTime() - t1);
+			InfluxDB.getInstance().send("response_time,method=Exec.getURLContent", new Date().getTime() - t1);
 
 			return body;
 			
@@ -359,10 +359,10 @@ InfluxDB.getInstance().send("response_time,method=Exec.getURLContent", new Date(
 	return rss;
 	}
 	
+	private static Pattern getNumberFromItemLinkPattern = Pattern.compile(".*\\{%(\\d+)}.*");
 	public static synchronized int getNumberFromItemLink(String itemLink) throws Exception {
 		long t1 = new Date().getTime();
-		Pattern pattern = Pattern.compile(".*\\{%(\\d+)}.*");
-		Matcher m = pattern.matcher(itemLink);
+		Matcher m = getNumberFromItemLinkPattern.matcher(itemLink);
 		if(m.matches()) {
 			log.debug("Found number ["+m.group(1)+"] in the item link ["+itemLink+"]");
 			InfluxDB.getInstance().send("response_time,method=Exec.getNumberFromItemLink", new Date().getTime() - t1);
@@ -373,6 +373,7 @@ InfluxDB.getInstance().send("response_time,method=Exec.getURLContent", new Date(
 		throw new Exception("Can't find number in the item link ["+itemLink+"]");
 	}
 
+private static Pattern checkItemURLForFullnessPattern = Pattern.compile("http[s]{0,1}:\\/\\/.*?\\/");
 public static synchronized String checkItemURLForFullness(String feedURL, String itemURL) throws CommonException {
 	long t1 = new Date().getTime();
 	String leftPathPatternText="http[s]{0,1}:\\/\\/.*?\\/";
@@ -390,13 +391,11 @@ public static synchronized String checkItemURLForFullness(String feedURL, String
 	}
 	
 	// getting url left path
-	Pattern pattern = Pattern.compile(leftPathPatternText);
-	Matcher matcher = pattern.matcher(feedURL);
+	Matcher matcher = checkItemURLForFullnessPattern.matcher(feedURL);
 	if(matcher.find()) {
 		leftPathOfFeedURL = matcher.group();
 	}else {
 		InfluxDB.getInstance().send("response_time,method=Exec.checkItemURLForFullness", new Date().getTime() - t1);
-
 		throw new FeedAggrException.CommonException("checkItemURLForFullness: Can't find left path in the URL ["+feedURL+"] by the regex pattern ["+leftPathPatternText+"]");
 	}
 	finalURL=leftPathOfFeedURL+itemURL;
@@ -406,35 +405,49 @@ public static synchronized String checkItemURLForFullness(String feedURL, String
 	return leftPathOfFeedURL+itemURL;
 }
 
-public static synchronized String getYoutubeChannelId(String youtubeVideosUrl) throws GetURLContentException {
-	long t1 = new Date().getTime();
-//	String regex="\"externalId\":\"(([A-Z]*[0-9]*[a-z]*)*)\",";
-	String regex="\"externalId\":\"(.*?)\",";
-//	String regex = "https://www.youtube.com/channel/(.*)/videos";
-	Pattern p = Pattern.compile(regex);
-//	String urlContent=Exec.getURLContent(youtubeVideosUrl);
-	Matcher m = p.matcher(Exec.getURLContent(youtubeVideosUrl));
+private static Pattern getChannelIdFromXMLURLPattern = Pattern.compile("https://www.youtube.com/feeds/videos.xml[?]channel_id=(?<channelId>.*)");
+public synchronized static String getChannelIdFromXMLURL(String url) throws Exception {
+	Matcher m = getChannelIdFromXMLURLPattern.matcher(url);
 	if(m.find()) {
-		InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeChannelId", new Date().getTime() - t1);
+		return m.group("channelId");
+	}
+	throw new Exception("Didnt' find any channel id for url ["+url+"]");
+}
 
+private static Pattern youtubeUrlChannelVideosPattern=Pattern.compile("https://www.youtube.com/channel/(?<channleId>.*)/videos");
+private static Pattern yutubeUrlContentExternalId = Pattern.compile("\"externalId\":\"(.*?)\",");
+public static synchronized String getYoutubeChannelId(String youtubeVideosUrl) throws Exception {
+	long t1 = new Date().getTime();
+	Matcher m1 = youtubeUrlChannelVideosPattern.matcher(youtubeVideosUrl);
+	if(m1.find()) {
+		InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeChannelId.part1", new Date().getTime() - t1);
+		return m1.group("channleId");
+	}
+	if(youtubeVideosUrl.contains("feeds/videos.xml")) {
+		InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeChannelId.part2", new Date().getTime() - t1);
+		return Exec.getChannelIdFromXMLURL(youtubeVideosUrl);
+	}
+//	String regex="\"externalId\":\"(([A-Z]*[0-9]*[a-z]*)*)\",";
+//	String regex = "https://www.youtube.com/channel/(.*)/videos";
+//	String urlContent=Exec.getURLContent(youtubeVideosUrl);
+	Matcher m = yutubeUrlContentExternalId.matcher(Exec.getURLContent(youtubeVideosUrl));
+	if(m.find()) {
+		InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeChannelId.part3", new Date().getTime() - t1);
 		return m.group(1);
 	}
 	InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeChannelId", new Date().getTime() - t1);
-
 	return null;
 }
 
-public static synchronized String getYoutubeFeedURL(String url) throws GetURLContentException {
+public static synchronized String getYoutubeFeedURL(String url) throws Exception {
 	long t1 = new Date().getTime();
 	String youtubeChannelPattern="https://www.youtube.com/feeds/videos.xml?channel_id=%s";
 	String channelId = getYoutubeChannelId(url);
 	if(channelId!=null) {
-		InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeFeedURL", new Date().getTime() - t1);
-
+		InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeFeedURL.part1", new Date().getTime() - t1);
 		return String.format(youtubeChannelPattern, channelId);
 	}
 	InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeFeedURL", new Date().getTime() - t1);
-
 	return null;
 }
 
@@ -446,13 +459,13 @@ public static synchronized String getYoutubeMainPlaylistURL(String channelId) th
 	return null;
 }
 
+private static Pattern getYoutubeListOfPlaylistsURLsPattern = Pattern.compile("\\/playlist[?]list=(.*?)\",\"webPageTyp");
 public static synchronized HashSet<String> getYoutubeListOfPlaylistsURLs(String mainPlaylistURL) throws GetURLContentException{
 	long t1=new Date().getTime();
-	Pattern p = Pattern.compile("\\/playlist[?]list=(.*?)\",\"webPageTyp");
 	String urlPlaylistFeedPattern="https://www.youtube.com/feeds/videos.xml?playlist_id=%s";
 //	ArrayList<String> l = new ArrayList<String>();
 	HashSet<String> l = new HashSet<String>();
-	Matcher m = p.matcher(Exec.getURLContent(mainPlaylistURL));
+	Matcher m = getYoutubeListOfPlaylistsURLsPattern.matcher(Exec.getURLContent(mainPlaylistURL));
 	while(m.find()) {
 		for(int i = 1; i<=m.groupCount(); i++) {
 			l.add(String.format(urlPlaylistFeedPattern, m.group(i)));
@@ -462,18 +475,15 @@ public static synchronized HashSet<String> getYoutubeListOfPlaylistsURLs(String 
 	return l;
 }
 
+private static Pattern getDomainFromURLPattern = Pattern.compile("http(s)?:\\/\\/(?<url>.*(\\.com|\\.ru|\\.org))(\\/)?");
 public synchronized static String getDomainFromURL(String url){
 	long t1 = new Date().getTime();
-	Pattern p = Pattern.compile("http(s)?:\\/\\/(?<url>.*(\\.com|\\.ru|\\.org))(\\/)?");
-	Matcher m = p.matcher(url);
+	Matcher m = getDomainFromURLPattern.matcher(url);
 	if(m.find()) {
 		InfluxDB.getInstance().send("response_time,method=Exec.getDomainFromURL", new Date().getTime() - t1);
-
 		return m.group("url");
-		
 	}
 	InfluxDB.getInstance().send("response_time,method=getDomainFromURL", new Date().getTime() - t1);
-
 	return null;
 }
 

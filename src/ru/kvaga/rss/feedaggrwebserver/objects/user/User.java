@@ -4,6 +4,7 @@ import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -107,6 +108,24 @@ public class User {
 		}
 		return false;
 	}
+	
+	/**
+	 * 
+	 * @return a map of urls and feedIds
+	 * @throws JAXBException
+	 */
+	public HashMap<String, String> getAllUserFeedUrls() throws JAXBException {
+		 long t1 = new Date().getTime();
+		 HashMap<String, String> map = new HashMap<String, String>();
+		for(UserFeed userFeed : getUserFeeds()) {
+			RSS rss = RSS.getRSSObjectFromXMLFile(ConfigMap.feedsPath.getAbsoluteFile() + "/" + userFeed.getId() + ".xml");
+			map.put(rss.getChannel().getLink(), userFeed.getId());
+		}
+		log.debug("Found ["+map.size()+"] urls of user ["+name+"]");
+		InfluxDB.getInstance().send("response_time,method=User.containsFeedIdByUrl", new Date().getTime() - t1);
+		return map;
+	}
+	
 	/**
 	 * 
 	 * @param url
@@ -114,7 +133,9 @@ public class User {
 	 * @throws JAXBException 
 	 */
 	public String containsFeedIdByUrl(String url) throws JAXBException {
-		 long t1 = new Date().getTime();
+		return containsFeedIdByUrl(url, null);
+		/*
+		long t1 = new Date().getTime();
 		for(UserFeed userFeed : getUserFeeds()) {
 			RSS rss = RSS.getRSSObjectFromXMLFile(ConfigMap.feedsPath.getAbsoluteFile() + "/" + userFeed.getId() + ".xml");
 			if(rss.getChannel().getLink().equals(url)) {
@@ -124,8 +145,29 @@ public class User {
 		}
 		InfluxDB.getInstance().send("response_time,method=User.containsFeedIdByUrl", new Date().getTime() - t1);
 		return null;
+		*/
 	}
 	
+	public String containsFeedIdByUrl(String url, HashMap<String, String> localUrlsCache) throws JAXBException {
+		long t1 = new Date().getTime();
+		if (localUrlsCache != null) {
+			if (localUrlsCache.containsKey(url)) {
+				InfluxDB.getInstance().send("response_time,method=User.containsFeedIdByUrl", new Date().getTime() - t1);
+				return localUrlsCache.get(url);
+			}
+		} else {
+			for(UserFeed userFeed : getUserFeeds()) {
+				RSS rss = RSS.getRSSObjectFromXMLFile(ConfigMap.feedsPath.getAbsoluteFile() + "/" + userFeed.getId() + ".xml");
+				if(rss.getChannel().getLink().equals(url)) {
+					InfluxDB.getInstance().send("response_time,method=User.containsFeedIdByUrl", new Date().getTime() - t1);
+					return userFeed.getId();
+				}
+			}
+		}
+		InfluxDB.getInstance().send("response_time,method=User.containsFeedIdByUrl", new Date().getTime() - t1);
+		return null;
+	}
+
 	public boolean containsCompositeFeedId(String compositeFeedId) {
 		 long t1 = new Date().getTime();
 		for(CompositeUserFeed userFeed : getCompositeUserFeeds()) {
@@ -264,12 +306,14 @@ public class User {
 	    jaxbContext = JAXBContext.newInstance(User.class);              
 	    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 	    User obj = (User) jaxbUnmarshaller.unmarshal(xmlFile);
+	    obj.setName(xmlFile.getName().replaceFirst("[.][^.]+$", ""));
 		InfluxDB.getInstance().send("response_time,method=User.getXMLObjectFromXMLFile", new Date().getTime() - t1);
 	    return obj;
 	}
 	
 	public static synchronized User getXMLObjectFromXMLFileByUserName(String login) throws JAXBException {
 		 long t1 = new Date().getTime();
+		 log.debug("Loading xml file file by user id ["+login+"]");
 		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + login + ".xml");
     	JAXBContext jaxbContext;
 	    jaxbContext = JAXBContext.newInstance(User.class);              
