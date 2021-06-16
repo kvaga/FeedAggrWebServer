@@ -31,7 +31,7 @@ public class CompositeFeedsUpdateJob implements Runnable {
 //		al.add("1613078071148");
 		log.debug("CompositeFeedsUpdateJob started");
 
-		for (File userFile : ServerUtils.getAllUserFiles()) {
+		for (File userFile : User.getAllUserFiles()) {
 			if(!userFile.getName().endsWith(".xml")) {
 				continue;
 			}

@@ -60,11 +60,13 @@ public class UserRssItemPropertiesPatterns {
 	}
 	public boolean equals(Object object) {
 		if(object instanceof UserRssItemPropertiesPatterns) {
-			return object.hashCode()==this.hashCode();
+			return ((UserRssItemPropertiesPatterns)object).equals(this);
 		}else {
 			return false;
 		}
 	}
-	
+	public boolean equals(UserRssItemPropertiesPatterns object) {
+		return object.domain.equals(this.domain);
+	}
 }
 

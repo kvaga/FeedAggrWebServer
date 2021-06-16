@@ -25,6 +25,13 @@ java.util.HashSet
 <body>
 	<jsp:include page="Header.jsp"></jsp:include>
 
+<%
+if (request.getParameter("listOfURLs") == null) {
+	request.getSession().removeAttribute("listOfURLs");
+}else{
+	request.getSession().setAttribute("listOfURLs", request.getParameter("listOfURLs"));
+}
+%>
 	<form>
 		Specify the list of URLs (each URL on next line)
 		<textarea rows="12" cols="120" name="listOfURLs"><%=request.getSession().getAttribute("listOfURLs") == null ? ""
@@ -34,8 +41,7 @@ java.util.HashSet
 	<%
 		if (request.getParameter("listOfURLs") != null) {
 			User user = User.getXMLObjectFromXMLFile(ServerUtils.getUserFileByLogin((String) request.getSession().getAttribute("login")));
-			HashMap<String, String> localUrlsCache = user.getAllUserFeedUrls();
-			request.getSession().setAttribute("listOfURLs", request.getParameter("listOfURLs"));
+			HashMap<String, String> localUrlsCache = user.getAllUserUrlsAndFeedIdsMap();
 			out.write("<table border=\"1\"><tr><td>URL</td><td>Status</td></tr>");
 			
 			for (String url : ((String) request.getParameter("listOfURLs")).split("\r\n")) {

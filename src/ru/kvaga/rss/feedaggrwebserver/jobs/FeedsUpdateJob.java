@@ -173,7 +173,7 @@ public class FeedsUpdateJob implements Runnable {
 	}
 
 	public void run() {
-		log.info("Try to start Job ");
+		log.info("Job started");
 
 		try {
 			updateFeeds();

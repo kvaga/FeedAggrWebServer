@@ -46,11 +46,15 @@ public class StartStopListener implements ServletContextListener{
 			
 			try {
 				ConfigMap.INFLUXDB_ENABLED=Boolean.parseBoolean(props.getProperty("influxdb.enabled"));
-				InfluxDB.ENABLED=ConfigMap.INFLUXDB_ENABLED;
+				if(ConfigMap.INFLUXDB_ENABLED) {
+					InfluxDB.enable();
+				}else {
+					InfluxDB.disable();
+				}
 				log.info("Loaded parameter influxdb.enabled="+ConfigMap.INFLUXDB_ENABLED);
 			}catch(Exception e) {
 				log.error("Incorrect format of influxdb.enabled parameter ["+props.getProperty("influxdb.enabled")+"]. InfluxDB disabled");
-				InfluxDB.ENABLED=false;
+				InfluxDB.disable();
 			}
 			ConfigMap.INFLUXDB_HOST=props.getProperty("influxdb.host");
 			log.info("Loaded parameter influxdb.host="+ConfigMap.INFLUXDB_HOST);
@@ -59,19 +63,41 @@ public class StartStopListener implements ServletContextListener{
 			try {
 				ConfigMap.INFLUXDB_THREAD_NUMBER=Integer.parseInt(props.getProperty("influxdb.threads.numder"));
 				log.info("Loaded parameter influxdb.threads.numder="+ConfigMap.INFLUXDB_THREAD_NUMBER + " and set to the InfluxDB");
-				InfluxDB.THREADS_NUMBER=ConfigMap.INFLUXDB_THREAD_NUMBER;
 			}catch(Exception e) {
 				log.error("Incorrect format of influxdb.threads.numder parameter ["+props.getProperty("influxdb.threads.numder")+"]. Set default value 10");
-				InfluxDB.THREADS_NUMBER=10;
 			}
 			try {
 				ConfigMap.INFLUXDB_PORT=Integer.parseInt(props.getProperty("influxdb.port"));
 				log.info("Loaded parameter influxdb.port="+ConfigMap.INFLUXDB_PORT);
 			}catch(Exception e) {
 				log.error("Incorrect format of influxdb.port parameter ["+props.getProperty("influxdb.port")+"]. InfluxDB disabled");
-				InfluxDB.ENABLED=false;
+				InfluxDB.disable();
 			}
-			InfluxDB.getInstance(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME, InfluxDB.THREADS_NUMBER);
+			
+			try {
+				ConfigMap.INFLUXDB_COUNT_OF_ATTEMPTS_IF_FAILS=Integer.parseInt(props.getProperty("influxdb.attempts"));
+				log.info("Loaded parameter influxdb.attempts="+ConfigMap.INFLUXDB_COUNT_OF_ATTEMPTS_IF_FAILS);
+			}catch(Exception e) {
+				log.error("Incorrect format of influxdb.attempts parameter ["+props.getProperty("influxdb.attempts")+"]. InfluxDB disabled");
+				InfluxDB.disable();
+			}
+			try {
+				ConfigMap.INFLUXDB_TIMEOUT=Long.parseLong(props.getProperty("influxdb.timeout"));
+				log.info("Loaded parameter influxdb.timeout="+ConfigMap.INFLUXDB_TIMEOUT);
+			}catch(Exception e) {
+				log.error("Incorrect format of influxdb.timeout parameter ["+props.getProperty("influxdb.timeout")+"]. InfluxDB disabled");
+				InfluxDB.disable();
+			}
+			
+			try {
+				InfluxDB.setCountOfAttemptsIfFails(10);
+				InfluxDB.setTimeoutInMillis(1000);
+				InfluxDB.getInstance(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME, ConfigMap.INFLUXDB_THREAD_NUMBER);
+				log.debug("InfluXDB successfully started");
+			}catch(Exception e) {
+				log.error("Couldn't start InfluxDB monitoring sending", e);
+			}
+			log.info("InfluxDB: " + InfluxDB.getInstance());
 
 		} catch (IOException e) {
 			log.error("Can't get configuration parameters of servlet", e);

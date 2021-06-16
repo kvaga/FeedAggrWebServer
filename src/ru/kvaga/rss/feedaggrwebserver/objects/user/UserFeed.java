@@ -65,9 +65,14 @@ public class UserFeed {
 	}
 	public boolean equals(Object object) {
 		if(object instanceof UserFeed) {
-			return object.hashCode()==this.hashCode();
+			return equals((UserFeed) object);
 		}else {
 			return false;
 		}
 	}
+	public boolean equals(UserFeed object) {
+		return object.id.equals(this.getId());
+	}
+	
+	
 }

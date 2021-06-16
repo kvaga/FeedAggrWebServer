@@ -16,6 +16,8 @@
 <br/>
 	<a href="Test">Test page</a>
 <br/>
+	<a href="HealthCheck.jsp">Health Check page</a>
+<br/>
 <hr/>
 </body>
 </html>

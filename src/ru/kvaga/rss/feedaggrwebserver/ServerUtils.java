@@ -166,7 +166,11 @@ public class ServerUtils {
 		 */
 		return getFeedsList(new File(realPath));
 	}
-
+	
+	public static synchronized ArrayList<Feed> getFeedsList() throws GetFeedsListByUser, JAXBException {
+		return getFeedsList(ConfigMap.feedsPath);
+	}
+	
 	public static synchronized ArrayList<Feed> getFeedsList(File dir) throws GetFeedsListByUser, JAXBException {
 		long t1 = new Date().getTime();
 //		String dataDirText="WebContent/data";
@@ -186,9 +190,10 @@ public class ServerUtils {
 			al.add(feed);
 		}
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.getFeedsList", new Date().getTime() - t1);
-
 		return al;
 	}
+	
+	
 
 	public static synchronized Feed getFeedById(String feedId) throws GetFeedsListByUser, JAXBException {
 		long t1 = new Date().getTime();
@@ -267,7 +272,7 @@ public class ServerUtils {
 			case '"':
 				sb.append("&quot;");
 				break;
-			case 'à':
+			/*case 'à':
 				sb.append("&agrave;");
 				break;
 			case 'À':
@@ -380,7 +385,7 @@ public class ServerUtils {
 				break;
 			case '€':
 				sb.append("&euro;");
-				break;
+				break;*/
 			// be carefull with this one (non-breaking whitee space)
 			case ' ':
 				sb.append("&nbsp;");
@@ -479,15 +484,7 @@ public class ServerUtils {
 		return new String(bytes, StandardCharsets.UTF_8);
 	}
 
-	public static synchronized  ArrayList<File> getAllUserFiles() {
-		long t1 = new Date().getTime();
-		ArrayList<File> al = new ArrayList<File>();
-		for (File file : ConfigMap.usersPath.listFiles()) {
-			al.add(file);
-		}
-		InfluxDB.getInstance().send("response_time,method=ServerUtils.getAllUserFiles", new Date().getTime() - t1);
-		return al;
-	}
+	
 
 	public static synchronized void updateCompositeRSS(String feedId, String userName, String compositeRSSTitle, ArrayList<String> feedIdList) throws Exception {
 		createCompositeRSS(feedId, userName, compositeRSSTitle, feedIdList);
@@ -740,7 +737,8 @@ public class ServerUtils {
 		String repeatableSearchPattern = user.getRepeatableSearchPatternByDomain(Exec.getDomainFromURL(url));
 		String substringForHtmlBodySplit=Exec.getSubstringForHtmlBodySplit(repeatableSearchPattern);
 		int countOfPercentItemsInSearchPattern = Exec.countWordsUsingSplit(repeatableSearchPattern, "{%}");
-		LinkedList<ru.kvaga.rss.feedaggr.Item> items = Exec.getItems(htmlContent, substringForHtmlBodySplit, repeatableSearchPattern, countOfPercentItemsInSearchPattern);					
+//		LinkedList<ru.kvaga.rss.feedaggr.Item> items = Exec.getItems(htmlContent, substringForHtmlBodySplit, repeatableSearchPattern, countOfPercentItemsInSearchPattern);					
+		LinkedList<ru.kvaga.rss.feedaggr.Item> items = ServerUtilsConcurrent.getInstance().getItems(htmlContent, substringForHtmlBodySplit, repeatableSearchPattern, countOfPercentItemsInSearchPattern);
 		String 	itemTitleTemplate = null, 
 				itemLinkTemplate = null, 
 				itemContentTemplate = null;

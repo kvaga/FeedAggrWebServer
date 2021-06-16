@@ -19,6 +19,8 @@ public class ConfigMap {
 	public static int INFLUXDB_PORT;
 	public static int INFLUXDB_THREAD_NUMBER;
 	public static boolean INFLUXDB_ENABLED;
+	public static int INFLUXDB_COUNT_OF_ATTEMPTS_IF_FAILS;
+	public static long INFLUXDB_TIMEOUT;
 
 			
 
@@ -58,4 +60,5 @@ public class ConfigMap {
 	<title>{%}</title><link>{%}</link>{*}<description><!\[CDATA\[{%}\]\]></description>{*}</item>
 	*/
 
+	
 }

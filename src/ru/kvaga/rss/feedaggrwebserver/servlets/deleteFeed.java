@@ -41,7 +41,11 @@ public class deleteFeed extends HttpServlet {
 		String userName=(String) request.getSession().getAttribute("login");
 		try {
 			ServerUtils.deleteFeed(feedId, userName);
-			response.sendRedirect("LoginSuccess.jsp");
+			if(request.getParameter("redirectTo")!=null) {
+				response.sendRedirect(request.getParameter("redirectTo"));
+			}else {
+				response.sendRedirect("LoginSuccess.jsp");
+			}
 		} catch (Exception e) {
 			log.error("DeleteFeed exception", e);
 			RequestDispatcher rd = getServletContext().getRequestDispatcher("/showFeed");

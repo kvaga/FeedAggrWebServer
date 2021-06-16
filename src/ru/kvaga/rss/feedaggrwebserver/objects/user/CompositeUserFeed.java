@@ -50,4 +50,11 @@ public class CompositeUserFeed {
 			return false;
 		}
 	}
+	
+	public boolean equals(CompositeUserFeed object) {
+		return object.id.equals(this.id);
+	}
+	
+	
+	
 }

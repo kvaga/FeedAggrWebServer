@@ -73,6 +73,12 @@ public class RSS {
 		return getRSSObjectFromXMLFile(new File(xmlFile));
 	}
     
+    public static RSS getRSSObjectByFeedId(String feedId) throws JAXBException {
+    	long t1 = new Date().getTime();
+	    InfluxDB.getInstance().send("response_time,method=RSS.getRSSObjectByFeedId", new Date().getTime() - t1);
+		return getRSSObjectFromXMLFile(new File(ConfigMap.feedsPath + File.separator + feedId + ".xml"));
+	}
+    
     public void removeItemsOlderThanXDays(int xDays) {
     	long t1 = new Date().getTime();
     	ArrayList<Item> updatedListOfItems = new ArrayList<Item>();

@@ -10,11 +10,14 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.hc.client5.http.ConnectTimeoutException;
@@ -23,6 +26,8 @@ import org.apache.logging.log4j.Logger;
 
 import ru.kvaga.monitoring.influxdb.InfluxDB;
 import ru.kvaga.rss.feedaggr.FeedAggrException;
+import ru.kvaga.rss.feedaggr.Item;
+import ru.kvaga.rss.feedaggr.FeedAggrException.SplitHTMLContent;
 
 public final class ServerUtilsConcurrent {
 	private static Logger log = LogManager.getLogger(ServerUtilsConcurrent.class);
@@ -64,6 +69,19 @@ public final class ServerUtilsConcurrent {
 	    Future<String> futureCall = executor.submit(new GetURLContentTask(urlText, httpConnectionConnectTimeoutInMillis));
 		return futureCall.get();
 	}
+	
+	public LinkedList<Item> getItems(String responseHtmlBody, String substringForHtmlBodySplit,
+			String repeatableSearchPattern, int countOfPercentItemsInSearchPattern, String filterWords) throws InterruptedException, ExecutionException {
+	    Future<LinkedList<Item>> futureCall = executor.submit(new GetItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern, countOfPercentItemsInSearchPattern,filterWords));
+		return futureCall.get();
+	}
+	
+	public LinkedList<Item> getItems(String responseHtmlBody, String substringForHtmlBodySplit,
+			String repeatableSearchPattern, int countOfPercentItemsInSearchPattern) throws InterruptedException, ExecutionException {
+	    Future<LinkedList<Item>> futureCall = executor.submit(new GetItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern, countOfPercentItemsInSearchPattern));
+		return futureCall.get();
+	}
+	
 }
 
 class GetURLContentTask implements Callable<String>{

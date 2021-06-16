@@ -1,3 +1,4 @@
+<%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtilsConcurrent"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="UTF-8"%>
     <%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtils,
@@ -65,8 +66,16 @@ out.print("----------------------------<br>");
 				}
 				log.debug("repeatableSearchPattern: " + (String) request.getSession().getAttribute("repeatableSearchPattern"));
 				//LinkedList<Item> items = new LinkedList<Item>();
-				LinkedList<Item> items = Exec.getItems((String)request.getSession().getAttribute("responseHtmlBody"), substringForHtmlBodySplit, (String) request.getSession().getAttribute("repeatableSearchPattern"),countOfPercentItemsInSearchPattern);					
-					%>
+				LinkedList<Item> items = null;
+				try{
+					//Exec.getItems((String)request.getSession().getAttribute("responseHtmlBody"), substringForHtmlBodySplit, (String) request.getSession().getAttribute("repeatableSearchPattern"),countOfPercentItemsInSearchPattern);					
+					items = ServerUtilsConcurrent.getInstance().getItems((String)request.getSession().getAttribute("responseHtmlBody"), substringForHtmlBodySplit, (String) request.getSession().getAttribute("repeatableSearchPattern"),countOfPercentItemsInSearchPattern);					
+				}catch(Exception e){
+					log.error("Exception", e);
+					out.write("<font color=red>The Exception: " + ServerUtils.escapeHTML(e.getMessage()) + "</font>");
+					//throw new JspException("Error");
+				}
+				%>
 					
 				<table class="w100">
 					<tbody>
@@ -79,7 +88,7 @@ out.print("----------------------------<br>");
 													out.println("OK");
 													
 													request.getSession().setAttribute("dataClippedBol", true);
-													log.debug("[point 2.1] request.getSession().getAttribute(\"dataClippedBol\", true)="+request.getSession().getAttribute("dataClippedBol"));
+													//log.debug("[point 2.1] request.getSession().getAttribute(\"dataClippedBol\", true)="+request.getSession().getAttribute("dataClippedBol"));
 												} else {
 													out.println("FAIL");
 												}

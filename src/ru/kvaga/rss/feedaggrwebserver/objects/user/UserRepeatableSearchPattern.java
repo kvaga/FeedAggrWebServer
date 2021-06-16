@@ -37,12 +37,22 @@ public class UserRepeatableSearchPattern {
 	public int hashCode() {
 		return new BigInteger(domain.getBytes()).intValue();
 	}
+	
 	public boolean equals(Object object) {
 		if(object instanceof UserRepeatableSearchPattern) {
-			return object.hashCode()==this.hashCode();
+			return ((UserRepeatableSearchPattern)object).equals(this);
 		}else {
 			return false;
 		}
+	}
+	public boolean equals(UserRepeatableSearchPattern object) {
+		return object.domain.equals(this.domain);
+//		if(object instanceof UserRepeatableSearchPattern) {
+//			System.err.println("["+(object.hashCode()==this.hashCode())+"]["+(object.domain+"]: " + object.hashCode() + " is equal ["+this.domain+"]: " + this.hashCode()));
+//			return object.hashCode()==this.hashCode();
+//		}else {
+//			return false;
+//		}
 	}
 	
 }

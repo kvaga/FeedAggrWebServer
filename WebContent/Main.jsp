@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ page
 	import="ru.kvaga.rss.feedaggr.Item,ru.kvaga.rss.feedaggr.Exec,
+	ru.kvaga.rss.feedaggrwebserver.ServerUtilsConcurrent,
 	ru.kvaga.rss.feedaggr.FeedAggrException,java.util.LinkedList,
 	org.apache.logging.log4j.*,
 	ru.kvaga.rss.feedaggrwebserver.ConfigMap
@@ -253,8 +254,13 @@ final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClas
 									String.format("The repeatable search pattern [%s] doesn't contain any{%}"));
 						}
 
-						LinkedList<Item> items = Exec.getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,
+						//LinkedList<Item> items = Exec.getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,
+						//		countOfPercentItemsInSearchPattern);
+						
+						LinkedList<Item> items = ServerUtilsConcurrent.getInstance().getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,
 								countOfPercentItemsInSearchPattern);
+						
+						
 					%>
 				</p>
 				<table class="w100">

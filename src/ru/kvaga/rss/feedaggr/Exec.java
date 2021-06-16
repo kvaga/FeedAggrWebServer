@@ -26,12 +26,13 @@ import ru.kvaga.rss.feedaggr.objects.Channel;
 import ru.kvaga.rss.feedaggr.objects.GUID;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
+import ru.kvaga.rss.feedaggrwebserver.ServerUtilsConcurrent;
 
 public class Exec {
 
 	final static org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(Exec.class);
 
-
+/*
 	public static synchronized LinkedList<Item> getItems(
 			String responseHtmlBody, 
 			String substringForHtmlBodySplit, 
@@ -106,7 +107,8 @@ public class Exec {
 				
 				log.debug("GetItems: matcher groups: ");
 
-				for(int j=1;j<=/*countOfPercentItemsInSearchPattern*/ matcher.groupCount();j++) {
+				for(int j=1;j<=//countOfPercentItemsInSearchPattern 
+							matcher.groupCount();j++) {
 					log.debug("GetItems: matcher group["+j+"]: " + matcher.group(j));
 
 					item.add(j,matcher.group(j).replaceAll("\\$", "(dollar sign)"));
@@ -132,7 +134,7 @@ public class Exec {
 		
 	}
 
-	
+*/	
 	public static synchronized int countWordsUsingSplit(String input, String splitItem) { 
 		if (input == null || input.isEmpty()) { 
 			return 0; 
@@ -180,7 +182,7 @@ public class Exec {
 
 		return repeatableSearchPattern.substring(0, index);
 	}
-
+/*
 	static synchronized String[] splitHtmlContent(String htmlBody, String substringForHtmlBodySplit) throws FeedAggrException.SplitHTMLContent {
 		long t1 = new Date().getTime();
 //		System.err.println("repeatable search: " + substringForHtmlBodySplit);
@@ -197,7 +199,7 @@ public class Exec {
 
 		return splittedItems;
 	}
-
+*/
 	public static synchronized String getURLContent(String urlText) throws FeedAggrException.GetURLContentException {
 		long t1 = new Date().getTime();
 		String body = null;
@@ -313,7 +315,11 @@ public class Exec {
         ArrayList<ru.kvaga.rss.feedaggr.objects.Item> items = new ArrayList<ru.kvaga.rss.feedaggr.objects.Item>();
 
         // список полученных из html body элементов
-		LinkedList<Item> itemsFromHtmlBody = Exec.getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,countOfPercentItemsInSearchPattern, filterWords);					
+        long t2 = new Date().getTime();
+//		LinkedList<Item> itemsFromHtmlBody = Exec.getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,countOfPercentItemsInSearchPattern, filterWords);					
+		LinkedList<Item> itemsFromHtmlBody = ServerUtilsConcurrent.getInstance().getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,countOfPercentItemsInSearchPattern, filterWords);					
+
+		log.debug("getRSSFromWeb: Exec.getItems url=["+url+"] t=["+ (new Date().getTime()-t1)+"]");
 		String itemTitle=null;
 		String itemLink=null;
 		String itemContent=null;
@@ -400,6 +406,7 @@ public static synchronized String checkItemURLForFullness(String feedURL, String
 	}
 	finalURL=leftPathOfFeedURL+itemURL;
 	log.debug("Now Item URL ["+itemURL+"] converted to ["+leftPathOfFeedURL+itemURL+"]");
+	log.debug("checkItemURLForFullness feedURL=["+feedURL+"] itemURL=["+itemURL+"] t=["+(new Date().getTime()-t1)+"]");
 	InfluxDB.getInstance().send("response_time,method=Exec.checkItemURLForFullness", new Date().getTime() - t1);
 
 	return leftPathOfFeedURL+itemURL;
@@ -480,9 +487,11 @@ public synchronized static String getDomainFromURL(String url){
 	long t1 = new Date().getTime();
 	Matcher m = getDomainFromURLPattern.matcher(url);
 	if(m.find()) {
+		log.debug("Found domain ["+m.group("url")+"] in the url ["+url+"]");
 		InfluxDB.getInstance().send("response_time,method=Exec.getDomainFromURL", new Date().getTime() - t1);
 		return m.group("url");
 	}
+	log.error("Didn't find domain in the url ["+url+"]");
 	InfluxDB.getInstance().send("response_time,method=getDomainFromURL", new Date().getTime() - t1);
 	return null;
 }

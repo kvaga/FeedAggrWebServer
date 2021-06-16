@@ -1,3 +1,4 @@
+<%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtilsConcurrent"%>
 <%@page
 	import="ru.kvaga.rss.feedaggrwebserver.objects.user.UserRssItemPropertiesPatterns"%>
 <%@page import="ru.kvaga.rss.feedaggrwebserver.ConfigMap"%>
@@ -112,7 +113,12 @@
 								channel.setDescription((String) request.getSession().getAttribute("feedDescription"));
 
 								// список полученных из html body элементов
-								LinkedList<Item> itemsFromHtmlBody = Exec.getItems(
+								//LinkedList<Item> itemsFromHtmlBody = Exec.getItems(
+								//		(String) request.getSession().getAttribute("responseHtmlBody"), substringForHtmlBodySplit,
+								//		(String) request.getSession().getAttribute("repeatableSearchPattern"),
+								//		countOfPercentItemsInSearchPattern, (String) request.getSession().getAttribute("filterWords"));
+
+								LinkedList<Item> itemsFromHtmlBody = ServerUtilsConcurrent.getInstance().getItems(
 										(String) request.getSession().getAttribute("responseHtmlBody"), substringForHtmlBodySplit,
 										(String) request.getSession().getAttribute("repeatableSearchPattern"),
 										countOfPercentItemsInSearchPattern, (String) request.getSession().getAttribute("filterWords"));
@@ -225,17 +231,19 @@
 													(String) request.getSession().getAttribute("repeatableSearchPattern"),
 													(String) request.getSession().getAttribute("filterWords")));
 								}
+								// Getting domain from url
+								String domain = Exec.getDomainFromURL((String) request.getSession().getAttribute("url"));
 								// save repeatable search patterns
-								user.getRepeatableSearchPatterns()
-										.add(new UserRepeatableSearchPattern(
-												Exec.getDomainFromURL((String) request.getSession().getAttribute("url")),
+								user.updateRepeatableSearchPatterns(
+										new UserRepeatableSearchPattern(
+												domain,
 												//"<entry>{*}<title>{%}</title>{*}<link rel=\"alternate\" href=\"{%}\"/>{*}<author>{*}<media:description>{%}</media:description>{*}</entry>"
 												(String) request.getSession().getAttribute("repeatableSearchPattern")));
-
+								
 								// save rss output properties templates
 								user.updateRssItemPropertiesPatterns(/*getRssItemPropertiesPatterns().update(*/
 										new UserRssItemPropertiesPatterns(
-												Exec.getDomainFromURL((String) request.getSession().getAttribute("url")),
+												domain,
 												(String) request.getSession().getAttribute("itemTitleTemplate"),
 												(String) request.getSession().getAttribute("itemLinkTemplate"),
 												(String) request.getSession().getAttribute("itemContentTemplate")));
