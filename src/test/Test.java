@@ -14,12 +14,22 @@ import java.util.regex.Pattern;
 import ru.kvaga.monitoring.influxdb.InfluxDB;
 import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetURLContentException;
+import ru.kvaga.rss.feedaggrwebserver.DurationMillisecondsForUpdatingFeeds;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 
 public class Test {
 
 	public static void main(String[] args) throws Exception {
+		System.out.println("EACH_4_HOURS " +DurationMillisecondsForUpdatingFeeds.EACH_4_HOURS);
+		System.out.println("EACH_DAY " + DurationMillisecondsForUpdatingFeeds.EACH_DAY);
+		System.out.println("EACH_WEEK " + DurationMillisecondsForUpdatingFeeds.EACH_WEEK);
+		System.out.println("EACH_2_WEEKS " + DurationMillisecondsForUpdatingFeeds.EACH_2_WEEKS);
+		System.out.println("EACH_MONTH " + DurationMillisecondsForUpdatingFeeds.EACH_MONTH);
+		
 
+		if(true) {
+			System.exit(1);
+		}
 //		InfluxDB influxDB = InfluxDB.getInstance("", 8086, "system_monitoring");
 //		InfluxDB influxDB = InfluxDB.getInstance("", 8086, "feedaggrwebserver");
 

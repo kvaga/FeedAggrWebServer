@@ -21,6 +21,7 @@ public class ConfigMap {
 	public static boolean INFLUXDB_ENABLED;
 	public static int INFLUXDB_COUNT_OF_ATTEMPTS_IF_FAILS;
 	public static long INFLUXDB_TIMEOUT;
+	public static long DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE=DurationMillisecondsForUpdatingFeeds.EACH_DAY;
 
 			
 

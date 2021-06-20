@@ -9,15 +9,18 @@ public class UserFeed {
 	private String itemContentTemplate;
 	private String repeatableSearchPattern;
 	private String filterWords;
+	private Long durationInMillisForUpdate;
+
 	
 	public UserFeed() {}
-	public UserFeed(String id, String itemTitleTemplate, String itemLinkTemplate, String itemContentTemplate, String repeatableSearchPattern, String filterWords) {
+	public UserFeed(String id, String itemTitleTemplate, String itemLinkTemplate, String itemContentTemplate, String repeatableSearchPattern, String filterWords, long durationInMillisForUpdate) {
 		this.id=id;
 		this.itemTitleTemplate=itemTitleTemplate;
 		this.itemLinkTemplate=itemLinkTemplate;
 		this.itemContentTemplate=itemContentTemplate;
 		this.repeatableSearchPattern=repeatableSearchPattern;
 		this.filterWords=filterWords;
+		this.durationInMillisForUpdate=durationInMillisForUpdate;
 	}
 	public String getId() {
 		return id;
@@ -58,6 +61,12 @@ public class UserFeed {
 		this.filterWords = filterWords;
 	}
 	
+	public Long getDurationInMillisForUpdate() {
+		return durationInMillisForUpdate;
+	}
+	public long setDurationInMillisForUpdate(Long durationInMillisForUpdate) {
+		return this.durationInMillisForUpdate = durationInMillisForUpdate;
+	}
 	
 	// Переопределяем hashCode и equals для корректного сравнения и поиска уникальнх объектов в HashSet
 	public int hashCode() {

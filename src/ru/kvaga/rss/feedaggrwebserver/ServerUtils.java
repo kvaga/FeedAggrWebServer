@@ -55,9 +55,11 @@ public class ServerUtils {
 		return "" + new Date().getTime();
 	}
 
-	public static synchronized void deleteUserFeedByIdFromUser(String feedId, String userName) throws Exception {
+	public static synchronized boolean deleteUserFeedByIdFromUser(String feedId, String userName) throws Exception {
 		long t1 = new Date().getTime();
 		log.debug("Trying to delete feed id [" + feedId + "] for user [" + userName + "]");
+		boolean deletedFeedId = false;
+		boolean deletedFeedIdFromAllComposites = false;
 		HashSet<UserFeed> userFeedNew = new HashSet<UserFeed>();
 		File userConfigFile = new File(ConfigMap.usersPath + "/" + userName + ".xml");
 //		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userConfigFile, new User());
@@ -65,18 +67,22 @@ public class ServerUtils {
 		log.debug("Successfully read file [" + userConfigFile + "]");
 		for (UserFeed feed : user.getUserFeeds()) {
 			if (feed.getId().equals(feedId)) {
+				deletedFeedId=true;
 				continue;
 			}
 			userFeedNew.add(feed);
 		}
+		deletedFeedIdFromAllComposites = user.removeFeedFromAllCompositeUserFeeds(feedId);
 		log.debug("Created new list without [" + feedId + "] feed");
 		user.setUserFeeds(userFeedNew);
 		user.saveXMLObjectToFile(userConfigFile);
 		log.debug("File [" + userConfigFile + "] successfully updated");
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.deleteUserFeedByIdFromUser", new Date().getTime() - t1);
+		return deletedFeedId && deletedFeedIdFromAllComposites;
 	}
-	public static synchronized void deleteCompositeUserFeedByIdFromUser(String compositeFeedId, String userName) throws Exception {
+	public static synchronized boolean deleteCompositeUserFeedByIdFromUser(String compositeFeedId, String userName) throws Exception {
 		long t1 = new Date().getTime();
+		boolean deletedBol = false;
 		log.debug("Trying to delete composite feed id [" + compositeFeedId + "] for user [" + userName + "]");
 		HashSet<CompositeUserFeed> userFeedNew = new HashSet<CompositeUserFeed>();
 		File userConfigFile = new File(ConfigMap.usersPath + "/" + userName + ".xml");
@@ -85,6 +91,7 @@ public class ServerUtils {
 		log.debug("Successfully read file [" + userConfigFile + "]");
 		for (CompositeUserFeed feed : user.getCompositeUserFeeds()) {
 			if (feed.getId().equals(compositeFeedId)) {
+				deletedBol=true;
 				continue;
 			}
 			userFeedNew.add(feed);
@@ -94,7 +101,7 @@ public class ServerUtils {
 		user.saveXMLObjectToFile(userConfigFile);
 		log.debug("File [" + userConfigFile + "] successfully updated");
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.deleteCompositeUserFeedByIdFromUser", new Date().getTime() - t1);
-
+		return deletedBol;
 	}
 
 	public static synchronized void clearSessionFromFeedAttributes(javax.servlet.http.HttpServletRequest request) {
@@ -111,7 +118,8 @@ public class ServerUtils {
 			"itemTitleTemplate",
 			"itemLinkTemplate",
 			"itemContentTemplate",
-			"filterWords"
+			"filterWords",
+			"durationUpdate"
 		};
 		boolean firstIteration=true;
 		for(String item : removeAttributes) {
@@ -217,18 +225,21 @@ public class ServerUtils {
 		throw new Exception("Unimplemented method");
 	}
 
-	public static synchronized void deleteFeed(String feedId, String userName) throws Exception {
+	public static synchronized boolean deleteFeed(String feedId, String userName) throws Exception {
 		long t1 = new Date().getTime();
+		boolean deletedFile=false;
+		boolean deletedUserFeedBol=false;
+
 		if(feedId.startsWith("composite_")) {
-			deleteCompositeUserFeedByIdFromUser(feedId, userName);
+			deletedUserFeedBol = deleteCompositeUserFeedByIdFromUser(feedId, userName);
 		}else {
-			deleteUserFeedByIdFromUser(feedId, userName);
+			deletedUserFeedBol = deleteUserFeedByIdFromUser(feedId, userName);
 		}
 		File feedFile = new File(ConfigMap.feedsPath + "/" + feedId + ".xml");
 
 		log.debug("Trying to delete feed file [" + feedFile.getAbsolutePath() + "]");
-		feedFile.delete();
-		log.debug("Feed file [" + feedFile.getAbsolutePath() + "] deleted");
+		deletedFile = feedFile.delete();
+		log.debug("File [" + feedFile.getAbsolutePath() + "] deleted? status ["+deletedFile+"], Feed id ["+feedId+"] deleted from user ["+userName+"]? status ["+deletedUserFeedBol+"]");
 //		Feed feed = getFeedByUserAndId(feedId);
 //		if(feed!=null) {
 //			log.debug("Trying to delete Feed with id ["+feedId+"], feed xml file ["+feed.getXmlFile()+"] and update users file ["+feed.getConfFile()+"]");
@@ -251,6 +262,7 @@ public class ServerUtils {
 //			throw new Exception("couldn't find Feed for feed id ["+feedId+"]");
 //		}
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.deleteFeed", new Date().getTime() - t1);
+		return deletedFile && deletedUserFeedBol;
 	}
 
 	public static synchronized final String escapeHTML(String s) {
@@ -486,13 +498,17 @@ public class ServerUtils {
 
 	
 
+	public static synchronized void updateCompositeRSS(String feedId, String userName, String compositeRSSTitle, ArrayList<String> feedIdList, boolean appendFeedIdsToComposite) throws Exception {
+		createCompositeRSS(feedId, userName, compositeRSSTitle, feedIdList, appendFeedIdsToComposite);
+	}
+	
 	public static synchronized void updateCompositeRSS(String feedId, String userName, String compositeRSSTitle, ArrayList<String> feedIdList) throws Exception {
-		createCompositeRSS(feedId, userName, compositeRSSTitle, feedIdList);
+		createCompositeRSS(feedId, userName, compositeRSSTitle, feedIdList, false);
 	}
 	public static synchronized void createCompositeRSS(String userName, String compositeRSSTitle, ArrayList<String> feedIdList) throws Exception {
-		createCompositeRSS(null, userName, compositeRSSTitle, feedIdList);
+		createCompositeRSS(null, userName, compositeRSSTitle, feedIdList, false);
 	}
-	public static synchronized void createCompositeRSS(String feedId, String userName, String compositeRSSTitle, ArrayList<String> feedIdList)
+	public static synchronized void createCompositeRSS(String feedId, String userName, String compositeRSSTitle, ArrayList<String> feedIdList, boolean appendFeedIdsToComposite)
 			throws Exception {
 		long t1 = new Date().getTime();
 		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + userName + ".xml");
@@ -520,12 +536,16 @@ public class ServerUtils {
 		}
 
 		// Creating new CompositeUserFeed and adding to user
-		CompositeUserFeed compositeUserFeed = new CompositeUserFeed();
-		compositeUserFeed.setId(compositeFeedId);
-		
-		if(user.removeCompositeUserFeedById(compositeFeedId)) {
-				log.debug("Removed previous version of composite feed ["+compositeFeedId+"]");
-				//System.err.println("Removed previous version of composite feed ["+compositeFeedId+"]");		
+		CompositeUserFeed compositeUserFeed = null;
+		if(!appendFeedIdsToComposite) {
+			if(user.removeCompositeUserFeedById(compositeFeedId)) {
+					log.debug("Removed previous version of composite feed ["+compositeFeedId+"]");
+					//System.err.println("Removed previous version of composite feed ["+compositeFeedId+"]");		
+			}
+			compositeUserFeed = new CompositeUserFeed();
+			compositeUserFeed.setId(compositeFeedId);
+		}else {
+			compositeUserFeed=user.getCompositeUserFeedById(compositeFeedId);
 		}
 //		for(CompositeUserFeed f : user.getCompositeUserFeeds()) {
 //			System.err.println("f:" + f.getId());
@@ -541,15 +561,18 @@ public class ServerUtils {
 			log.debug("Feed id ["+feedIdFromList+"] was added to composite feed");
 		}
 		
-		user.getCompositeUserFeeds().add(compositeUserFeed);
-		log.debug("Composite feed ["+compositeFeedId+"] was added to the ["+user.getName()+"] user");
-
+		user.removeCompositeUserFeedById(compositeFeedId);
+		if(user.getCompositeUserFeeds().add(compositeUserFeed)) {
+			log.debug("Composite feed ["+compositeFeedId+"] was added to the ["+user.getName()+"] user");
+		}else {
+			log.error("Couldn't add composite user feed ["+compositeFeedId+"] to the ["+user.getName()+"] user");
+		}
 
 		// Creating new composite rss and channel
 		RSS compositeRSS = new RSS();
 		compositeRSS.setVersion(ConfigMap.rssVersion);
 		Channel compositeChannel = new Channel();
-		compositeChannel.setTitle(compositeRSSTitle);
+		compositeChannel.setTitle(appendFeedIdsToComposite? RSS.getRSSObjectByFeedId(compositeFeedId).getChannel().getTitle():compositeRSSTitle);
 		compositeChannel.setDescription(compositeRSSTitle);
 		compositeChannel.setGenerator(ConfigMap.generator);
 		compositeChannel.setLastBuildDate(new Date());
@@ -709,9 +732,9 @@ public class ServerUtils {
 	 * @throws Exception
 	 */
 	
-	public synchronized static int addRSSFeedByURLAutomaticly(String url, String login, String titlePrefixForYoutubePlaylist, HashMap<String, String> cache) throws Exception {
+	public synchronized static ResponseForAddRSSFeedByURLAutomaticlyMethod addRSSFeedByURLAutomaticly(String url, String login, String titlePrefixForYoutubePlaylist, HashMap<String, String> cache, Long durationMillisecondsForUpdatingFeeds) throws Exception {
 		long t1 = new Date().getTime();
-
+		log.debug("addRSSFeedByURLAutomaticly: url ["+url+"], login ["+login+"], titlePrefixForYoutubePlaylist ["+titlePrefixForYoutubePlaylist+"], cache size ["+cache!=null?cache.size():null+"], durationMillisecondsForUpdatingFeeds ["+durationMillisecondsForUpdatingFeeds+"]");
 		// javax.servlet.http.HttpServletRequest request
 		url = (url.contains("youtube.com") && !url.contains("youtube.com/feeds/videos.xml")) ? Exec.getYoutubeFeedURL(url): url;
 		if (url==null){
@@ -783,7 +806,11 @@ public class ServerUtils {
 			uf.setItemContentTemplate(itemContentTemplate);
 			uf.setRepeatableSearchPattern(repeatableSearchPattern);
 		}else{
-			user.getUserFeeds().add(new UserFeed(feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern, ""));
+			if(durationMillisecondsForUpdatingFeeds==null) {
+				user.getUserFeeds().add(new UserFeed(feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern, "", ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE));
+			}else {
+				user.getUserFeeds().add(new UserFeed(feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern, "", durationMillisecondsForUpdatingFeeds));
+			}
 		}
 		// save repeatable search patterns
 		user.getRepeatableSearchPatterns()
@@ -801,19 +828,20 @@ public class ServerUtils {
 			cache.put(url, feedId);
 		// ---
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.addRSSFeedByURLAutomaticly", new Date().getTime() - t1);
-		return items.size();
+//		return items.size();
+		return new ResponseForAddRSSFeedByURLAutomaticlyMethod(items.size(), feedId);
 	}
 	
-	public synchronized static int addRSSFeedByURLAutomaticly(String url, String login, String titlePrefixForYoutubePlaylist) throws Exception {
-		return addRSSFeedByURLAutomaticly(url, login, titlePrefixForYoutubePlaylist, null);
+	public synchronized static ResponseForAddRSSFeedByURLAutomaticlyMethod addRSSFeedByURLAutomaticly(String url, String login, String titlePrefixForYoutubePlaylist) throws Exception {
+		return addRSSFeedByURLAutomaticly(url, login, titlePrefixForYoutubePlaylist, null, null);
 	}
 
-	public synchronized static int addRSSFeedByURLAutomaticly(String url, String login) throws Exception {
-		return addRSSFeedByURLAutomaticly(url, login, null, null);
+	public synchronized static ResponseForAddRSSFeedByURLAutomaticlyMethod addRSSFeedByURLAutomaticly(String url, String login) throws Exception {
+		return addRSSFeedByURLAutomaticly(url, login, null, null, null);
 	}
 	
-	public synchronized static int addRSSFeedByURLAutomaticly(String url, String login, HashMap<String, String> cache) throws Exception {
-		return addRSSFeedByURLAutomaticly(url, login, null, cache);
+	public synchronized static ResponseForAddRSSFeedByURLAutomaticlyMethod addRSSFeedByURLAutomaticly(String url, String login, HashMap<String, String> cache, Long durationMillisecondsForUpdatingFeeds) throws Exception {
+		return addRSSFeedByURLAutomaticly(url, login, null, cache, durationMillisecondsForUpdatingFeeds);
 	}
 	
 	public synchronized static File getUserFileByLogin(String login) {
@@ -823,3 +851,5 @@ public class ServerUtils {
 		return new File(ConfigMap.feedsPath + File.separator + feedId + ".xml");
 	}
 }
+
+

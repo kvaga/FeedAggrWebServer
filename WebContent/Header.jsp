@@ -18,6 +18,8 @@
 <br/>
 	<a href="HealthCheck.jsp">Health Check page</a>
 <br/>
+<a href="addFeedId2CompositeFeed.jsp">addFeedId2CompositeFeed</a>
+<br />
 <hr/>
 </body>
 </html>

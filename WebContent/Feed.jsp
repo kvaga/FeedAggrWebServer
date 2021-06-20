@@ -35,6 +35,7 @@ if(request.getParameter("action")!=null && request.getParameter("action").equals
 		request.getSession().setAttribute("itemLinkTemplate", user.getItemLinkTemplateByFeedId((String)request.getSession().getAttribute("feedId")));
 		request.getSession().setAttribute("itemContentTemplate", user.getItemContentTemplateByFeedId((String)request.getSession().getAttribute("feedId")));
 		request.getSession().setAttribute("filterWords", user.getFilterWordsByFeedId((String)request.getSession().getAttribute("feedId")));
+		request.getSession().setAttribute("durationUpdate", user.getDurationInMillisForUpdateByFeedId((String)request.getSession().getAttribute("feedId")));
 		request.getSession().setAttribute("feedDescription", rss.getChannel().getDescription());
 
 	}
@@ -91,6 +92,9 @@ if(request.getParameter("filterWords") != null){
 	request.getSession().setAttribute("filterWords", request.getParameter("filterWords"));
 }
 
+if(request.getParameter("durationUpdate") != null){
+	request.getSession().setAttribute("durationUpdate", request.getParameter("durationUpdate"));
+}
 
 if(request.getParameter("repeatableSearchPattern")!=null){
 	request.getSession().setAttribute("repeatableSearchPattern",request.getParameter("repeatableSearchPattern"));

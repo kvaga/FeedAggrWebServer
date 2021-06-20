@@ -67,7 +67,11 @@ public class mergeRSSServlet extends HttpServlet {
 				ServerUtils.createCompositeRSS(userName, compositeRSSTitle, feedIdList);
 			}else {
 //				System.err.println("Got feed id: " + compositeFeedID);
-				ServerUtils.updateCompositeRSS(compositeFeedID, userName, compositeRSSTitle, feedIdList);
+				if(request.getParameter("appendSingleFeedId")!=null) {
+					ServerUtils.updateCompositeRSS(compositeFeedID, userName, compositeRSSTitle, feedIdList, true);
+				}else {
+					ServerUtils.updateCompositeRSS(compositeFeedID, userName, compositeRSSTitle, feedIdList);
+				}
 			}
 			ServerUtils.updateCompositeRSSFilesOfUser(userName);
 		} catch (Exception e) {

@@ -22,7 +22,7 @@ public class BackgroudJobManager implements ServletContextListener{
 	private ScheduledExecutorService scheduler2;
 
 	final static Logger log = LogManager.getLogger(BackgroudJobManager.class);
-	private static boolean jobsEnabled=false;
+	private static boolean jobsEnabled=true;
 	public void contextInitialized (ServletContextEvent event) {
 		long t1 = new Date().getTime();
 		

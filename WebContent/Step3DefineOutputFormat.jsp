@@ -1,8 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="UTF-8"%>
 <%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtils,
-    ru.kvaga.rss.feedaggr.FeedAggrException,ru.kvaga.rss.feedaggr.Exec,
-    ru.kvaga.rss.feedaggr.FeedAggrException,ru.kvaga.rss.feedaggr.Item,
+    ru.kvaga.rss.feedaggr.FeedAggrException,
+    ru.kvaga.rss.feedaggr.Exec,
+    ru.kvaga.rss.feedaggr.FeedAggrException,
+    ru.kvaga.rss.feedaggr.Item,
     java.util.LinkedList,
     java.util.ArrayList,
     java.util.Date,
@@ -17,7 +19,8 @@
     ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed,
     ru.kvaga.rss.feedaggrwebserver.objects.user.UserRepeatableSearchPattern,
     ru.kvaga.rss.feedaggrwebserver.ConfigMap,
-    org.apache.logging.log4j.*
+    org.apache.logging.log4j.*,
+    ru.kvaga.rss.feedaggrwebserver.DurationMillisecondsForUpdatingFeeds
     "%>
      
     <%
@@ -163,7 +166,39 @@ User user = User.getXMLObjectFromXMLFile(userFile);
 							href="javascript:help('item_title')">?</a><br>
 							<input name="filterWords" id="filterWords" class="text" size="64" maxlength="150" value="<%= request.getSession().getAttribute("filterWords")!=null ? request.getSession().getAttribute("filterWords") : "" %>"/>
 					</p>
-							
+						
+					<p>
+						Duration for Feed Update<span class="bullet">*</span>: <a
+							class="small help" title="Help on this option"
+							href="javascript:help('item_title')">?</a><br>
+						<label for="cars">Choose a period:</label>
+						<select required name="durationUpdate" id="durationUpdate">
+						  <optgroup label="Duration Update">
+						  <% 
+	
+						  	if(request.getSession().getAttribute("durationUpdate")!=null){
+						  		out.write("<option value=\""+String.valueOf(DurationMillisecondsForUpdatingFeeds.EACH_HOUR) 	+ "\"" + ((""+request.getSession().getAttribute("durationUpdate")).equals(String.valueOf(DurationMillisecondsForUpdatingFeeds.EACH_HOUR))				?"selected":"") 	+ ">EACH HOUR</option>");
+							    out.write("<option value=\""+DurationMillisecondsForUpdatingFeeds.EACH_4_HOURS 	+ "\"" + ((""+request.getSession().getAttribute("durationUpdate")).equals(""+DurationMillisecondsForUpdatingFeeds.EACH_4_HOURS)			?"selected":"")	+ ">EACH 4 HOURS</option>");
+							    out.write("<option value=\""+DurationMillisecondsForUpdatingFeeds.EACH_DAY 		+ "\"" + ((""+request.getSession().getAttribute("durationUpdate")).equals(""+DurationMillisecondsForUpdatingFeeds.EACH_DAY)		?"selected":""+ "")	+ ">EACH DAY</option>");
+							    out.write("<option value=\""+DurationMillisecondsForUpdatingFeeds.EACH_WEEK 	+ "\"" + ((""+request.getSession().getAttribute("durationUpdate")).equals(""+DurationMillisecondsForUpdatingFeeds.EACH_WEEK)	?"selected":""+ "")	+ ">EACH WEEK</option>");
+							    out.write("<option value=\""+DurationMillisecondsForUpdatingFeeds.EACH_2_WEEKS 	+ "\"" + ((""+request.getSession().getAttribute("durationUpdate")).equals(""+DurationMillisecondsForUpdatingFeeds.EACH_2_WEEKS)	?"selected":"")	+ ">EACH 2 WEEKS</option>");
+							    out.write("<option value=\""+DurationMillisecondsForUpdatingFeeds.EACH_MONTH 	+ "\"" + ((""+request.getSession().getAttribute("durationUpdate")).equals(""+DurationMillisecondsForUpdatingFeeds.EACH_MONTH)	?"selected":"") + ">EACH MONTH</option>");
+							  
+						  	}else{
+						  		out.write("<option value=\""+ DurationMillisecondsForUpdatingFeeds.EACH_HOUR 	+"\">EACH HOUR</option>");
+							    out.write("<option value=\""+DurationMillisecondsForUpdatingFeeds.EACH_4_HOURS 	+"\">EACH 4 HOURS</option>");
+							    out.write("<option value=\""+DurationMillisecondsForUpdatingFeeds.EACH_DAY   	+"\" selected>EACH DAY</option>");
+							    out.write("<option value=\""+DurationMillisecondsForUpdatingFeeds.EACH_WEEK 	+"\">EACH WEEK</option>");
+							    out.write("<option value=\""+DurationMillisecondsForUpdatingFeeds.EACH_2_WEEKS 	+"\">EACH 2 WEEKS</option>");
+							    out.write("<option value=\""+DurationMillisecondsForUpdatingFeeds.EACH_MONTH 	+"\">EACH MONTH</option>");
+							  
+						  	}
+						  %>
+						   
+						  </optgroup>
+						</select>
+					</p>
+						
 					<p>
 						<a href="javascript:toggle('optional_parameters')"><span
 							id="optional_parameters_toggle" class="toggle"></span>Optional

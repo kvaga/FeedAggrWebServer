@@ -288,6 +288,34 @@ public class User {
 		return false;
 	}
 
+	public boolean removeFeedFromCompositeUserFeed(String feedId, String compositeFeedId) {
+		long t1 = new Date().getTime();
+		CompositeUserFeed cuf;
+		try {
+			cuf = getCompositeUserFeedById(compositeFeedId);
+			InfluxDB.getInstance().send("response_time,method=User.removeFeedFromCompositeUserFeed", new Date().getTime() - t1);
+			return cuf.getFeedIds().remove(feedId);
+		} catch (Exception e) {
+			log.error("There is no such composite user feed ["+compositeFeedId+"]");
+		}
+		
+		InfluxDB.getInstance().send("response_time,method=User.removeFeedFromCompositeUserFeed", new Date().getTime() - t1);
+		return false;
+	}
+	
+	public boolean removeFeedFromAllCompositeUserFeeds(String feedId) {
+		long t1 = new Date().getTime();
+		boolean deleted = false;
+		
+			for(CompositeUserFeed cuf : getCompositeUserFeeds()) {
+				deleted = cuf.getFeedIds().remove(feedId);
+			}
+			InfluxDB.getInstance().send("response_time,method=User.removeFeedFromCompositeUserFeed", new Date().getTime() - t1);
+		
+		InfluxDB.getInstance().send("response_time,method=User.removeFeedFromCompositeUserFeed", new Date().getTime() - t1);
+		return deleted;
+	}
+	
 	public UserRssItemPropertiesPatterns getRssItemPropertiesPatternByDomain(String domain) {
 		long t1 = new Date().getTime();
 		for (UserRssItemPropertiesPatterns ursp : getRssItemPropertiesPatterns()) {
@@ -367,6 +395,19 @@ public class User {
 		return null;
 	}
 
+	public Long getDurationInMillisForUpdateByFeedId(String feedId) {
+		long t1 = new Date().getTime();
+		for (UserFeed uf : getUserFeeds()) {
+			if (uf.getId().equals(feedId)) {
+				InfluxDB.getInstance().send("response_time,method=User.getDurationInMillisForUpdateByFeedId",
+						new Date().getTime() - t1);
+				return uf.getDurationInMillisForUpdate();
+			}
+		}
+		InfluxDB.getInstance().send("response_time,method=User.getDurationInMillisForUpdateByFeedId", new Date().getTime() - t1);
+		return null;
+	}
+	
 	public String getFilterWordsByFeedId(String feedId) {
 		long t1 = new Date().getTime();
 		for (UserFeed uf : getUserFeeds()) {
@@ -379,6 +420,8 @@ public class User {
 		InfluxDB.getInstance().send("response_time,method=User.getFilterWordsByFeedId", new Date().getTime() - t1);
 		return null;
 	}
+	
+	
 
 	public UserFeed getUserFeedByFeedId(String feedId) {
 		long t1 = new Date().getTime();

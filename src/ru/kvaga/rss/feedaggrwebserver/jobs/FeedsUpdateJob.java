@@ -70,7 +70,7 @@ public class FeedsUpdateJob implements Runnable {
 		String itemLinkTemplate = null; // get from config
 		String itemContentTemplate = null; // get from config
 		String filterWords = null;
-
+		Long durationInMillisForUpdate=null;
 //		for(File feedsFiles : new File(feedsPath).listFiles()) {
 //			log.debug(feedsFiles.getName());
 //		}
@@ -99,13 +99,33 @@ public class FeedsUpdateJob implements Runnable {
 
 				for (UserFeed userFeed : user.getUserFeeds()) {
 					try {
+						if(userFeed.getDurationInMillisForUpdate()==null) {
+							log.debug("DurationInMillisForUpdate parameter in the ["+userFeed.getId()+"] is null. We set default value ["+ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE+"]");
+							userFeed.setDurationInMillisForUpdate(ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE);
+						}
+						
 						String feedId = userFeed.getId();
 						String rssXmlFile = ConfigMap.feedsPath.getAbsolutePath() + "/" + userFeed.getId() + ".xml";
-
+						
 						log.debug("Found rssXmlFile [" + rssXmlFile + "] for users file [" + userFile + "]");
 						// Получаем feed объект из файла
 //						RSS rssFromFile = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(rssXmlFile, new RSS());
 						RSS rssFromFile = RSS.getRSSObjectFromXMLFile(rssXmlFile);
+						
+						long currentTimeInMillis = new Date().getTime();
+						if((currentTimeInMillis - rssFromFile.getChannel().getLastBuildDate().getTime())< userFeed.getDurationInMillisForUpdate()) {
+							log.warn("It's too early to update feed id ["+userFeed.getId()+"] "
+									+ "because last update date was ["+rssFromFile.getChannel().getLastBuildDate()+"] and "
+									+ "in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] and "
+									+ "parameter getDurationInMillisForUpdate set to ["+userFeed.getDurationInMillisForUpdate()+"]. Current date&time in millis ["+currentTimeInMillis+"] - getLastBuildDate in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] = ["+(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime())+"] < getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "]");
+							continue;
+						}
+
+						log.debug("It's good time to update feed id ["+userFeed.getId()+"] "
+								+ "because last update date was ["+rssFromFile.getChannel().getLastBuildDate()+"] and "
+								+ "in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] and "
+								+ "parameter getDurationInMillisForUpdate set to ["+userFeed.getDurationInMillisForUpdate()+"]. Current date&time in millis ["+currentTimeInMillis+"] - getLastBuildDate in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] = ["+(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime())+"] > getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "]");
+						
 						rssFromFile.removeItemsOlderThanXDays(ConfigMap.ttlOfFeedsInDays);
 //				ObjectsUtils.printXMLObject(rssFromFile);
 
@@ -121,11 +141,12 @@ public class FeedsUpdateJob implements Runnable {
 						itemContentTemplate = userFeed.getItemContentTemplate();
 						repeatableSearchPattern = userFeed.getRepeatableSearchPattern();
 						filterWords = userFeed.getFilterWords();
-
+						durationInMillisForUpdate = userFeed.getDurationInMillisForUpdate();
+						
 						log.debug(String.format(
-								"Got parameters for feed [feedId='%s', itemTitleTemplate='%s', itemLinkTemplate='%s', itemContentTemplate='%s', repeatableSearchPattern='%s', filterWords='%s']",
+								"Got parameters for feed [feedId='%s', itemTitleTemplate='%s', itemLinkTemplate='%s', itemContentTemplate='%s', repeatableSearchPattern='%s', filterWords='%s', durationInMillisForUpdate='%d']",
 								feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate,
-								repeatableSearchPattern, filterWords));
+								repeatableSearchPattern, filterWords, durationInMillisForUpdate));
 
 						substringForHtmlBodySplit = Exec.getSubstringForHtmlBodySplit(repeatableSearchPattern);
 
@@ -164,6 +185,8 @@ public class FeedsUpdateJob implements Runnable {
 						log.error("Exception on feedId [" + userFeed.getId() + "]", e);
 					}
 				}
+				user.saveXMLObjectToFile(userFile);
+				log.debug("User's file " +userFile+ " successfully saved");
 			}
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block

@@ -39,6 +39,7 @@ public class deleteFeed extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String feedId = request.getParameter("feedId");
 		String userName=(String) request.getSession().getAttribute("login");
+		log.debug("Got request for deleteing feed id ["+feedId+"] for the user ["+userName+"]");
 		try {
 			ServerUtils.deleteFeed(feedId, userName);
 			if(request.getParameter("redirectTo")!=null) {

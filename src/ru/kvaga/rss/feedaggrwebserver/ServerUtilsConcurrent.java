@@ -123,8 +123,8 @@ class GetURLContentTask implements Callable<String>{
 			con.setRequestProperty("user-agent",
 					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36");
 
-			log.debug("Connection response code: " + con.getResponseCode());
-			log.debug("ContentType: " + con.getContentType());
+			log.debug("url ["+urlText+"], connection response code [" + con.getResponseCode()+"], contentType  ["+ con.getContentType()+"]");
+
 
 			
 			if (con.getContentType().toLowerCase().contains("charset=utf-8")) {

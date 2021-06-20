@@ -222,6 +222,7 @@
 									uf.setItemLinkTemplate((String) request.getSession().getAttribute("itemLinkTemplate"));
 									uf.setItemContentTemplate((String) request.getSession().getAttribute("itemContentTemplate"));
 									uf.setRepeatableSearchPattern((String) request.getSession().getAttribute("repeatableSearchPattern"));
+									uf.setDurationInMillisForUpdate(Long.parseLong((String) request.getSession().getAttribute("durationUpdate")));
 								} else {
 									user.getUserFeeds()
 											.add(new UserFeed((String) request.getSession().getAttribute("feedId"),
@@ -229,7 +230,8 @@
 													(String) request.getSession().getAttribute("itemLinkTemplate"),
 													(String) request.getSession().getAttribute("itemContentTemplate"),
 													(String) request.getSession().getAttribute("repeatableSearchPattern"),
-													(String) request.getSession().getAttribute("filterWords")));
+													(String) request.getSession().getAttribute("filterWords"),
+													Long.parseLong((String) request.getSession().getAttribute("durationUpdate"))));
 								}
 								// Getting domain from url
 								String domain = Exec.getDomainFromURL((String) request.getSession().getAttribute("url"));

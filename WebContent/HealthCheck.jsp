@@ -112,7 +112,7 @@ boolean foundDuplicates=false;
 			foundDuplicates=true;
 			for (String url : feedIdsWithDuplicateUrls.keySet()) {
 				out.append("<tr><td>"+url+"</td><td>");
-				log.debug("Fulfilling html table with duplicated url ["+url+"]");
+				//log.debug("Fulfilling html table with duplicated url ["+url+"]");
 				for (String feedId : feedIdsWithDuplicateUrls.get(url)) {
 					RSS rss = RSS.getRSSObjectByFeedId(feedId);
 					
@@ -132,10 +132,28 @@ log.debug("Finished searching of duplicate urls in feeds of users");
 %>
 <h3>Zombie feeds in composite feeds by user (composite feed has feeds that don't exist)</h3>
 <%
+HashMap<String, String> zombieFeedIds = new HashMap<String, String>();
+for (User user : User.getAllUsersList()) {
+	Set<CompositeUserFeed> allCompositeUserFeedCache = user.getCompositeUserFeeds();
+	for(CompositeUserFeed cuf : allCompositeUserFeedCache){
+		for(String feedId : cuf.getFeedIds()){
+			File file = new File(ConfigMap.feedsPath+File.separator+feedId+".xml");
+			if(!(file.exists())){
+				zombieFeedIds.put(feedId, "["+user.getName() + "] " +cuf.getId() );
+			}
+		}
+	}
+}
 
-//for (User user : User.getAllUsersList()) {
-//	Set<CompositeUserFeed> allCompositeUserFeedCache = user.getCompositeUserFeeds();
-	
+if(zombieFeedIds.size()>0){
+	out.append("<table border='1'><tr><td align=\"center\" colspan=\"3\">Zombie composite's feed ids</td></tr><tr align=\"center\"><td>Composite feed</td><td>Feed Id</td><td>Action</td></tr>");
+	for(String feedId : zombieFeedIds.keySet()){
+		out.append("<tr><td>"+zombieFeedIds.get(feedId)+"</td><td><a href=\"showFeed?feedId="+feedId+"\">"+feedId+"</a></td><td><a href=\"deleteFeed?feedId="+feedId+"&redirectTo=HealthCheck.jsp\">Delete</a></td></tr>");
+	}
+	out.append("</table>");
+}else{
+	out.write("There is no any zombie feed");
+}
 %>
 </body>
 </html>

@@ -19,6 +19,7 @@ import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggr.objects.Feed;
 import ru.kvaga.rss.feedaggr.objects.Item;
 import ru.kvaga.rss.feedaggr.objects.RSS;
+import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
@@ -68,7 +69,7 @@ public class addAbandonedFeedToUserServlet extends HttpServlet {
 				if(userRssItemPropertiesPatterns==null) {
 					throw new Exception("Can't find userRssItemPropertiesPatterns for domain ["+domain+"] and user ["+request.getSession().getAttribute("login")+"]");		
 				}
-				UserFeed userFeed = new UserFeed(feedId, userRssItemPropertiesPatterns.getPatternTitle(), userRssItemPropertiesPatterns.getPatternLink(), userRssItemPropertiesPatterns.getPatternDescription(), repeatableSearchPattern, "");
+				UserFeed userFeed = new UserFeed(feedId, userRssItemPropertiesPatterns.getPatternTitle(), userRssItemPropertiesPatterns.getPatternLink(), userRssItemPropertiesPatterns.getPatternDescription(), repeatableSearchPattern, "", ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE);
 				if(user.getUserFeeds().add(userFeed)) {
 					user.saveXMLObjectToFileByLogin((String)request.getSession().getAttribute("login"));
 					log.debug("Feed id ["+feedId+"] successfully added to the user ["+request.getSession().getAttribute("login")+"]");		
