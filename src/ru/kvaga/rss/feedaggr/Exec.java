@@ -239,6 +239,8 @@ public class Exec {
 				charset = "UTF-8";
 			} else if(con.getContentType().toLowerCase().contains("application/json")) {
 				charset = "UTF-8";
+			} else if(con.getContentType().toLowerCase().contains("application/rss+xml")) {
+				charset = "UTF-8";
 			}else if(con.getContentType().toLowerCase().contains("text/html")) {
 				charset = "UTF-8";
 			} else {

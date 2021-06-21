@@ -35,5 +35,11 @@ public class FeedAggrException extends Exception{
 					+ "String for splitting ["+stringForSplitting+"]\n"
 					+ "Resulted massive size is less than 2");
 		}
+		public SplitHTMLContent(String url, String htmlContent, String stringForSplitting) {
+			super("Can't split html content for url ["+url+"]\n"
+					+ "["+(htmlContent.length()>=500?htmlContent.substring(0, htmlContent.length()-1): htmlContent)+"]\n"
+					+ "String for splitting ["+stringForSplitting+"]\n"
+					+ "Resulted massive size is less than 2");
+		}
 	}
 }

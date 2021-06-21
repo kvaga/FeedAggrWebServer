@@ -131,6 +131,9 @@ public class GetItems implements Callable<LinkedList<Item>>{
 		
 	}
 	private String[] splitHtmlContent(String htmlBody, String substringForHtmlBodySplit) throws FeedAggrException.SplitHTMLContent {
+		return splitHtmlContent(null, htmlBody, substringForHtmlBodySplit);
+	}
+	private String[] splitHtmlContent(String url, String htmlBody, String substringForHtmlBodySplit) throws FeedAggrException.SplitHTMLContent {
 		long t1 = new Date().getTime();
 //		System.err.println("repeatable search: " + substringForHtmlBodySplit);
 		log.debug("Splitting html content [is html content null: " + (htmlBody==null? "null":"not null")+"]");
@@ -140,7 +143,7 @@ public class GetItems implements Callable<LinkedList<Item>>{
 		log.debug("substringForHtmlBodySplit="+substringForHtmlBodySplit);
 		if(splittedItems.length<2) {
 			InfluxDB.getInstance().send("response_time,method=Exec.getSubstringForHtmlBodySplit", new Date().getTime() - t1);
-			throw new FeedAggrException.SplitHTMLContent(htmlBody,substringForHtmlBodySplit);			
+			throw new FeedAggrException.SplitHTMLContent(url, htmlBody,substringForHtmlBodySplit);			
 		}
 		InfluxDB.getInstance().send("response_time,method=Exec.getSubstringForHtmlBodySplit", new Date().getTime() - t1);
 
