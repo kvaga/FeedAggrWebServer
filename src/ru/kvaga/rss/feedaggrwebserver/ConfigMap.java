@@ -13,7 +13,7 @@ public class ConfigMap {
 	public static String adminPassword;
 	public static String generator="Feed Aggr Web Server Generator";
 	public static String rssVersion="2.0";
-	public static int ttlOfFeedsInDays=90;
+	public static int ttlOfFeedsInDays=365;
 	public static String prefixForlog4jJSP="ru.kvaga.feedaggrwebserver.jsps.";
 	public static String INFLUXDB_HOST,	INFLUXDB_DBNAME;
 	public static int INFLUXDB_PORT;

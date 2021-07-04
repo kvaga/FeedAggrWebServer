@@ -69,7 +69,7 @@ public class GetItems implements Callable<LinkedList<Item>>{
 			s = substringForHtmlBodySplit + s;
 			
 			// Check a presence of filter words in the item if filter set 
-			if(filterWords!=null) {
+			if(filterWords!=null && !filterWords.equals("")) {
 				boolean contains = false;
 				for(String word : filterWords.split("\\|")) {
 					log.debug("Searching word ["+word+"] in the string ["+s+"]");

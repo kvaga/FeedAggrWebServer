@@ -1,4 +1,4 @@
-package test.aspectj;
+package ru.kvaga.rss.feedaggr.aspectj;
 
 public class SampleService {
 

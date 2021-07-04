@@ -1,4 +1,4 @@
-package test.aspectj;
+package ru.kvaga.rss.feedaggr.aspectj;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
