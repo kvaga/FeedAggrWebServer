@@ -11,3 +11,4 @@ data/
 *Test*
 jconsole*
 src/test/*
+src/custom/*

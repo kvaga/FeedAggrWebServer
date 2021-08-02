@@ -37,16 +37,26 @@ ArrayList<RSS> rssCompositeListForPrinting = new ArrayList<RSS>();
 
 HashMap<RSS,String> mapRssStringForPrinting = new HashMap<RSS, String>();
 log.debug("=======================> " + ConfigMap.feedsPath);
+StringBuilder sb = new StringBuilder();
 for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
-//	log.debug(feedOnServer.getXmlFile());
-	//RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
-	RSS rssFeed = RSS.getRSSObjectFromXMLFile(feedOnServer.getXmlFile());
-	if(feedOnServer.getId().startsWith("composite")) {
-		rssCompositeListForPrinting.add(rssFeed);
-	}else{
-		rssListForPrinting.add(rssFeed);
+	try{
+	//	log.debug(feedOnServer.getXmlFile());
+		//RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
+		RSS rssFeed = RSS.getRSSObjectFromXMLFile(feedOnServer.getXmlFile());
+		if(feedOnServer.getId().startsWith("composite")) {
+			rssCompositeListForPrinting.add(rssFeed);
+		}else{
+			rssListForPrinting.add(rssFeed);
+		}
+		mapRssStringForPrinting.put(rssFeed, feedOnServer.getId());
+	}catch(Exception e){
+		sb.append(feedOnServer.getId());
+		sb.append(", ");
+		log.error("Exception was occured on FeedsList.jsp page during building a list of feeds. The problem was detected on the feed on server ["+feedOnServer.getId()+"]", e);
 	}
-	mapRssStringForPrinting.put(rssFeed, feedOnServer.getId());
+}
+if(sb.length()!=0){
+	throw new Exception("Exception was occured on FeedsList.jsp page during building a list of feeds. The problem was detected on the feed on server ["+sb.toString()+"]");
 }
 Collections.sort(rssListForPrinting, new RSSForPrintingComparatorByTitle());
 Collections.sort(rssCompositeListForPrinting, new RSSForPrintingComparatorByTitle());
