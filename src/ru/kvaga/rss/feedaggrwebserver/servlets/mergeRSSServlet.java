@@ -81,7 +81,7 @@ public class mergeRSSServlet extends HttpServlet {
 			out.print("<font color=red>Error: " + e.getMessage() + "</font>");
 			rd.include(request, response);
 		}
-		response.sendRedirect("FeedsList.jsp");
+		response.sendRedirect("LoginSuccess.jsp");
 
 		/* TODO: implement adding information about composite to User File */
 		/* TODO: create job */

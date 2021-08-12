@@ -16,6 +16,7 @@
 <title>Login Success Page</title>
 </head>
 <body>
+	<jsp:include page="Header.jsp"></jsp:include>
 
 <%  
 // allow access only if session exists
@@ -41,9 +42,10 @@ if(cookies!=null){
 	
 	<!--  Your SessionID=<%= sessionID %>-->
 	<br>
-	<jsp:include page="/FeedsList.jsp">
+	<!--<jsp:include page="/FeedsList.jsp">
         <jsp:param value="" name=""/>
     </jsp:include>
+    -->
     <br>
 	<form action="LogoutServlet" method="post">
 		<input type="submit" value="Logout">

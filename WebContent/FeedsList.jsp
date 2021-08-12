@@ -26,14 +26,11 @@
 </head>
 <body>
 <jsp:include page="Header.jsp"></jsp:include>
-Your feeds are listed below. 
-<br>
 <h3>Common feeds</h3>
 <%
 
 //String realPath=getServletContext().getRealPath("data/feeds/");
 ArrayList<RSS> rssListForPrinting = new ArrayList<RSS>();
-ArrayList<RSS> rssCompositeListForPrinting = new ArrayList<RSS>();
 
 HashMap<RSS,String> mapRssStringForPrinting = new HashMap<RSS, String>();
 log.debug("=======================> " + ConfigMap.feedsPath);
@@ -43,9 +40,7 @@ for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
 	//	log.debug(feedOnServer.getXmlFile());
 		//RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
 		RSS rssFeed = RSS.getRSSObjectFromXMLFile(feedOnServer.getXmlFile());
-		if(feedOnServer.getId().startsWith("composite")) {
-			rssCompositeListForPrinting.add(rssFeed);
-		}else{
+		if(!feedOnServer.getId().startsWith("composite")) {
 			rssListForPrinting.add(rssFeed);
 		}
 		mapRssStringForPrinting.put(rssFeed, feedOnServer.getId());
@@ -59,7 +54,6 @@ if(sb.length()!=0){
 	throw new Exception("Exception was occured on FeedsList.jsp page during building a list of feeds. The problem was detected on the feed on server ["+sb.toString()+"]");
 }
 Collections.sort(rssListForPrinting, new RSSForPrintingComparatorByTitle());
-Collections.sort(rssCompositeListForPrinting, new RSSForPrintingComparatorByTitle());
 for(RSS rss : rssListForPrinting){
 	out.println("<br>");	 
 	out.println("<a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]&nbsp&nbsp&nbsp[<a href=\"Feed.jsp?action=edit&feedId="+mapRssStringForPrinting.get(rss)+"\">Edit</a>]");
@@ -71,21 +65,6 @@ for(RSS rss : rssListForPrinting){
 //	ObjectsUtills.printXMLObject(rssFeed);
 }
 %>
-<br>
-<h3>Composite feeds</h3>
-<%
 
-for(RSS rss : rssCompositeListForPrinting) {
-	out.println("<br>");	 
-	out.println("<a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]");
-	out.println("&nbsp&nbsp&nbsp[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+rss.getChannel().getTitle()+"\">Edit</a>]");
-	out.println("<br>");	 
-	out.println("Source URL: "+rss.getChannel().getLink());
-	out.println("<br>");	 
-	out.println("Last updated: " + rss.getChannel().getLastBuildDate());
-	out.println("<br><br>");	 
-//	ObjectsUtills.printXMLObject(rssFeed);
-}
-%>
 </body>
 </html>

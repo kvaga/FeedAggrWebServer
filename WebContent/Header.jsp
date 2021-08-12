@@ -9,6 +9,11 @@
 </head>
 <body>
 <a href="LoginSuccess.jsp">Main page</a>. If you have other feeds, <a href="Feed.jsp?action=new">add</a> them to your account. Or <a href="mergeRSS.jsp">create Composite</a> rss feed
+</br>
+	<a href="FeedsList.jsp">Feeds List</a>
+<br/>
+<a href="CompositeFeedsList.jsp">Composite Feeds List</a>
+
 <br/>
 	<a href="addFeedsByList.jsp">Add feeds by URL list</a>
 <br/>
