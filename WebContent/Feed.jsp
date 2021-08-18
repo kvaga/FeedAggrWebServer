@@ -1,3 +1,4 @@
+<%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtilsConcurrent"%>
 <%@page import="java.util.Enumeration"%>
 <%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtils,
 ru.kvaga.rss.feedaggr.Exec,
@@ -215,11 +216,13 @@ String url= (String)request.getSession().getAttribute("url");
 			//responseHtmlBody = ServerUtils.convertStringToUTF8(Exec.getURLContent(url));
 			
 			url = (url.contains("youtube.com") && !url.contains("youtube.com/feeds/videos.xml")) ? Exec.getYoutubeFeedURL(url): url;
+			url = (url.startsWith("https://habr.com/ru/rss") || url.startsWith("https://habr.com/rss") || url.startsWith("https://habrahabr.com/rss")|| url.startsWith("https://habrahabr.ru/rss")) ? url : Exec.getHabrFeedURL(url);
 			request.getSession().setAttribute("url",url);
 			if (url==null){
 				throw new Exception("Can't find feed channel url");
 			}
-			responseHtmlBody = Exec.getURLContent(url);
+			// responseHtmlBody = Exec.getURLContent(url);
+			responseHtmlBody = ServerUtilsConcurrent.getInstance().getURLContent(url);
 		}catch(Exception e){
 			log.error("Exception", e);
 			out.print("<font color=red>Couldn't get content from the URL</font>");

@@ -200,6 +200,7 @@ public class Exec {
 		return splittedItems;
 	}
 */
+	@Deprecated
 	public static synchronized String getURLContent(String urlText) throws FeedAggrException.GetURLContentException {
 		long t1 = new Date().getTime();
 		String body = null;
@@ -505,4 +506,42 @@ public static void sleep(long timeInMillis) {
 	}
 }
 
+private static Pattern habrPattern = Pattern.compile(
+		//"^https?:\\/\\/habr(ahabr)?[.](com|ru)?(?<lang>en\\/|ru\\/)?(?<other>.*)"
+		"^https?:\\/\\/habr(ahabr)?[.](com|ru)\\/(?<lang>en\\/|ru\\/)?(?<other>.*)"
+		);
+public static synchronized String getHabrFeedURL(String url) throws Exception {
+	long t1 = new Date().getTime();
+	if(		url.startsWith("https://habr.com/en/rss/") ||
+			url.startsWith("https://habr.com/ru/rss/") ||
+			url.startsWith("https://habr.com/rss/") ||
+			url.startsWith("https://habrahabr.com/en/rss/") ||
+			url.startsWith("https://habrahabr.com/ru/rss/") ||
+			url.startsWith("https://habrahabr.com/rss/") ||
+			url.startsWith("https://habr.ru/en/rss/") ||
+			url.startsWith("https://habr.ru/ru/rss/") ||
+			url.startsWith("https://habr.ru/rss/") ||
+			url.startsWith("https://habrahabr.ru/en/rss/") ||
+			url.startsWith("https://habrahabr.ru/ru/rss/") ||
+			url.startsWith("https://habrahabr.ru/rss/") 
+			) {
+		return url;
+	}
+	String habrUrl;
+	String prefix = "https://habr.com/%srss/";
+	Matcher m = habrPattern.matcher(url);
+	if(m.find()) {
+		System.out.println("url: " + url);
+		System.out.println("lang: " + m.group("lang"));
+		System.out.println("other: " + m.group("other"));
+
+		habrUrl = String.format(prefix, m.group("lang")==null?"":m.group("lang")) + m.group("other");
+		System.out.println("finalUrl: " + habrUrl);
+		//InfluxDB.getInstance().send("response_time,method=Exec.getHabrFeedURL", new Date().getTime() - t1);
+		return habrUrl;
+	}else {
+		//InfluxDB.getInstance().send("response_time,method=Exec.getHabrFeedURLError", new Date().getTime() - t1);
+		throw new Exception("Can't convert url ["+url+"] to the habr rss pattern url");
+	}
+}
 }
