@@ -10,21 +10,14 @@
 <body>
 <a href="LoginSuccess.jsp">Main page</a>. If you have other feeds, <a href="Feed.jsp?action=new">add</a> them to your account. Or <a href="mergeRSS.jsp">create Composite</a> rss feed
 </br>
-	<a href="FeedsList.jsp">Feeds List</a>
-<br/>
-<a href="CompositeFeedsList.jsp">Composite Feeds List</a>
-
-<br/>
-	<a href="addFeedsByList.jsp">Add feeds by URL list</a>
-<br/>
-	<a href="CheckoutPage.jsp">Checkout Page</a>
-<br/>
-	<a href="Test">Test page</a>
-<br/>
-	<a href="HealthCheck.jsp">Health Check page</a>
-<br/>
-<a href="addFeedId2CompositeFeed.jsp">addFeedId2CompositeFeed</a>
-<br />
+<table border="1">
+	<tr>
+		<td><a href="FeedsList.jsp">Feeds List</a> <br/> <a href="CompositeFeedsList.jsp">Composite Feeds List</a></td>
+		<td><a href="addFeedsByList.jsp">Add feeds by URL list</a><br/><a href="CheckoutPage.jsp">Checkout Page</a></td>
+		<td><a href="Test">Test page</a><br/><a href="HealthCheck.jsp">Health Check page</a></td>
+		<td><a href="addFeedId2CompositeFeed.jsp">addFeedId2CompositeFeed</a><br/><a href="DeleteOldFeedItems.jsp">DeleteOldFeedItems.jsp</a></td>
+	</tr>
+</table>
 <hr/>
 </body>
 </html>

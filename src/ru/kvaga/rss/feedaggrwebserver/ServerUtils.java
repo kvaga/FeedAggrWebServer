@@ -850,6 +850,42 @@ public class ServerUtils {
 	public synchronized static File getRssFeedFileByFeedId(String feedId) {
 		return new File(ConfigMap.feedsPath + File.separator + feedId + ".xml");
 	}
+	
+	public synchronized static Date getDateSinceToday(int count_of_days_since_today) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, count_of_days_since_today);
+		return cal.getTime();
+	}
+	
+	/**
+	 * 
+	 * @param feedId
+	 * @param deleteFeedItemsOlderThanCountDays
+	 * @return count of feed items were deleted
+	 */
+	public synchronized static int deleteOldFeedItems(String feedId, int deleteFeedItemsOlderThanCountDays) {
+		Date dateForDeletion = getDateSinceToday(-deleteFeedItemsOlderThanCountDays);
+		log.info("Trying to delete feed ["+feedId+"] items older than ["+dateForDeletion+"]. Current date ["+new Date()+"]");
+		ArrayList<Item> listAfterDeletion = new ArrayList<Item>();
+		int currentSizeOfFeedItems = 0;
+		try {
+			RSS rss = RSS.getRSSObjectByFeedId(feedId);
+			currentSizeOfFeedItems=rss.getChannel().getItem().size();
+			for(Item item: rss.getChannel().getItem()) {
+				if (item.getPubDate().before(dateForDeletion)) continue;
+				listAfterDeletion.add(item);
+			}
+			rss.getChannel().setItem(listAfterDeletion);
+			File rssFile = new File(ConfigMap.feedsPath+File.separator+feedId+".xml");
+			rss.saveXMLObjectToFile(rssFile);
+			log.info("Deleted ["+(currentSizeOfFeedItems - listAfterDeletion.size())+"] feed ["+feedId+"] items. Initial size was ["+currentSizeOfFeedItems+"]. ["+listAfterDeletion.size()+"] items stored to the file ["+rssFile.getAbsolutePath()+"]");
+			return currentSizeOfFeedItems - listAfterDeletion.size();
+		} catch (JAXBException e) {
+			log.error("An error was occured during deletion old feed items in feedId ["+feedId+"]", e);
+			return 0;
+		}
+	}
 }
 
 
