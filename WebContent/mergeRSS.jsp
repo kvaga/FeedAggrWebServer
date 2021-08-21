@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <%@page import="ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="ru.kvaga.rss.feedaggr.objects.RSSForPrintingComparatorByTitle"%>

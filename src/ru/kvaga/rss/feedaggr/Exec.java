@@ -135,6 +135,13 @@ public class Exec {
 	}
 
 */	
+	public static synchronized String getHTMLSuccessText(String text) {
+		return "<font color=\"green\">"+text+"</text>";
+	}
+	public static synchronized String getHTMLFailText(String text) {
+		return "<font color=\"red\">"+text+"</text>";
+	}
+	
 	public static synchronized int countWordsUsingSplit(String input, String splitItem) { 
 		if (input == null || input.isEmpty()) { 
 			return 0; 

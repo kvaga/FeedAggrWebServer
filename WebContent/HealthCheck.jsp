@@ -24,6 +24,8 @@ ru.kvaga.rss.feedaggr.objects.Feed
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Health Check</title>
+<script src="lib.js"></script>
+<!--  
 <script language="JavaScript">
 function toggle(source) {
 	checkboxes = document.querySelectorAll('[name^=feed_id_]');
@@ -32,6 +34,7 @@ function toggle(source) {
 	  }
 	}
 </script>
+-->
 </head>
 <body>
 <jsp:include page="Header.jsp"></jsp:include>

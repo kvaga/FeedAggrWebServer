@@ -39,18 +39,65 @@ Set<CompositeUserFeed> cufSet = user.getCompositeUserFeeds();
 
 %>
 <form action="mergeRSS">
-<input type="hidden" name="appendSingleFeedId" value="true"></input>
-Feed id: <input type="text" name="id_<%=request.getParameter("feedId")%>" value="<%= request.getParameter("feedId")!=null? request.getParameter("feedId"):"" %>"></input>
+<input type="hidden" name="appendSingleFeedIds" value="true"></input>
+<%
+if(request.getParameterValues("feedId")!=null && request.getParameterValues("feedId").length>0){
+	out.write("The list of feed ids for merging: ");
+	for(String feedId: request.getParameterValues("feedId")){
+		out.write(feedId+" ");
+		out.write("<input type=\"hidden\" name=\"id_"+feedId+"\" value=\""+feedId+"\">");
+	}
+}else{
+%>
+<br/>
+Single Feed id: <input type="text" name="id_<%=request.getParameter("feedId")%>" value="<%= request.getParameter("feedId")!=null? request.getParameter("feedId"):"" %>"></input>
 <br/>
 <%
+}
 if(cufSet.size()>0){
 %>
 <h3>The list of user's [<%= (String) request.getSession().getAttribute("login")%>] composite feeds</h3>
 <%
+HashMap<RSS,String> mapRssStringForPrinting = new HashMap<RSS, String>();
+ArrayList<RSS> rssCompositeListForPrinting = new ArrayList<RSS>();
+StringBuilder sb = new StringBuilder();
+for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
+	try{
+	//	log.debug(feedOnServer.getXmlFile());
+		//RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
+		RSS rssFeed = RSS.getRSSObjectFromXMLFile(feedOnServer.getXmlFile());
+		if(feedOnServer.getId().startsWith("composite")) {
+			rssCompositeListForPrinting.add(rssFeed);
+		}
+		mapRssStringForPrinting.put(rssFeed, feedOnServer.getId());
+	}catch(Exception e){
+		sb.append(feedOnServer.getId());
+		sb.append(", ");
+		log.error("Exception was occured on FeedsList.jsp page during building a list of feeds. The problem was detected on the feed on server ["+feedOnServer.getId()+"]", e);
+	}
+}
+Collections.sort(rssCompositeListForPrinting, new RSSForPrintingComparatorByTitle());
+
+for(RSS rss : rssCompositeListForPrinting) {
+	out.println("<br>");
+	%>
+	<input type="radio" id="feedId" name="feedId" value="<%=mapRssStringForPrinting.get(rss)%>"/>
+	<%
+	out.println("<a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]");
+	out.println("&nbsp&nbsp&nbsp[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+rss.getChannel().getTitle()+"\">Edit</a>]");
+	out.println("<br>");	 
+	out.println("&nbsp&nbsp&nbsp&nbsp&nbsp&nbspSource URL: "+rss.getChannel().getLink());
+	out.println("<br>");	 
+	out.println("&nbsp&nbsp&nbsp&nbsp&nbsp&nbspLast updated: " + rss.getChannel().getLastBuildDate());
+	out.println("<br><br>");	 
+//	ObjectsUtills.printXMLObject(rssFeed);
+}
+%>
+<%
 for(CompositeUserFeed cuf : cufSet){
 	//RSS rss = RSS.getRSSObjectByFeedId(cuf.getId());
 %>
-<input type="radio" id="feedId" name="feedId" value="<%=cuf.getId()%>"><label for="feedId"><%=cuf.getId()%></label>
+
 <%
 }
 }else{

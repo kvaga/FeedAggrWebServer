@@ -23,6 +23,8 @@ java.util.HashSet
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Add Feeds by List</title>
+<script src="lib.js"></script>
+
 </head>
 <body>
 	<jsp:include page="Header.jsp"></jsp:include>
@@ -42,13 +44,14 @@ if (request.getParameter("listOfURLs") == null) {
 					: (String) request.getSession().getAttribute("listOfURLs")%></textarea>
 		<br /> <input type="submit" value="Add" />
 	</form>
+	<form action="addFeedId2CompositeFeed.jsp">
 	<%
 		if (request.getParameter("listOfURLs") != null) {
 		log.debug("Starting a process to adding list of urls ["+request.getParameter("listOfURLs") +"]");
 		User user = User.getXMLObjectFromXMLFile(ServerUtils.getUserFileByLogin((String) request.getSession().getAttribute("login")));
 		HashMap<String, String> localUrlsCache = user.getAllUserUrlsAndFeedIdsMap();
 		log.debug("localUrlsCache size ["+localUrlsCache.size()+"]");
-		out.write("<table border=\"1\"><tr><td>URL</td><td>Status</td><td>Add to composite</td></tr>");
+		out.write("<table border=\"1\"><tr><td><input type=\"checkbox\" onClick=\"toggle(this)\"></td><td>URL</td><td>Status</td><td>Add to composite</td></tr>");
 		
 		for (String url : ((String) request.getParameter("listOfURLs")).split("\r\n")) {
 			try {
@@ -82,17 +85,21 @@ if (request.getParameter("listOfURLs") == null) {
 									int size = responseForAddRSSFeedByURLAutomaticlyMethod.getSize();
 									String createdFeedId = responseForAddRSSFeedByURLAutomaticlyMethod.getFeedId();
 
+									/*
+										!!! THIS SNIPPET IS DUPLICTED BELOW !!!
+										Don't forget to correct code below
+									*/
 									if (size > 0) {
-										out.write("<tr><td>" + playlistUrl + "</td><td>" + size
-												+ "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId="
-												+ createdFeedId + "\">Add to composite</a></td></tr>");
+										out.write("<tr><td><input type=\"checkbox\" id=\"feed_id\" name=\"feedId\" value=\""+createdFeedId+"\" ></td><td>" + url + "</td><td>" + size + "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId
+												+ "\">Add to composite</a></td></tr>");
+
 									} else {
-										out.write("<font color=\"red\"><tr><td>" + playlistUrl + "</td><td>" + size
-												+ "</td><td></td></tr></font>");
+										out.write("<tr><td><input type=\"checkbox\"disabled></td><td>" + Exec.getHTMLFailText(url) + "</td><td>" + size
+												+ "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId
+												+ "\">Add to composite</a></td></tr>");
 									}
 								} catch (Exception e) {
-									out.write("<font color=\"red\"><tr><td>" + playlistUrl + "</td><td>"
-											+ e.getMessage() + "</td></tr></font>");
+									out.write("<tr><td><input type=\"checkbox\" disabled></td></td><td>" + Exec.getHTMLFailText(url) + "</font></td><td>" + Exec.getHTMLFailText(e.getMessage())+ "</td><td></td></tr>");
 									log.error("ShowResultTableException", e);
 								}
 							}
@@ -112,21 +119,24 @@ if (request.getParameter("listOfURLs") == null) {
 					int size = responseForAddRSSFeedByURLAutomaticlyMethod.getSize();
 					String createdFeedId = responseForAddRSSFeedByURLAutomaticlyMethod.getFeedId();
 					if (size > 0) {
-						out.write("<tr><td>" + url + "</td><td>" + size + "</td></tr>");
+						out.write("<tr><td><input type=\"checkbox\"  id=\"feed_id\" name=\"feedId\" value=\""+createdFeedId+"\"  ></td><td>" + url + "</td><td>" + size + "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId
+								+ "\">Add to composite</a></td></tr>");					
 					} else {
-						out.write("<font color=\"red\"><tr><td>" + url + "</td><td>" + size
+						out.write("<tr><td><input type=\"checkbox\"disabled></td><td>" + Exec.getHTMLFailText(url) + "</td><td>" + size
 								+ "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId
-								+ "\">Add to composite</a></td></tr></font>");
+								+ "\">Add to composite</a></td></tr>");
 					}
 				} catch (Exception e) {
-					out.write("<font color=\"red\"><tr><td>" + url + "</td><td>" + e.getMessage()
-							+ "</td><td></td></tr></font>");
+					out.write("<tr><td><input type=\"checkbox\" disabled></td></td><td>" + Exec.getHTMLFailText(url) + "</font></td><td>" + Exec.getHTMLFailText(e.getMessage())+ "</td><td></td></tr>");
 					log.error("ShowResultTableException", e);
 				}
 			}
 			out.write("</table>");
+			out.write("<input type=\"submit\" name=\"Добавить выбранные\" value=\"Добавить выбранные\">");
+
 			//ServerUtils.clearSessionFromFeedAttributes(request);
 		}
 	%>
+	</form>
 </body>
 </html>

@@ -47,7 +47,17 @@ public class mergeRSSServlet extends HttpServlet {
 	 */
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		String redirectTo = request.getParameter("redirectTo");
+		RequestDispatcher rd = null;
+		if(redirectTo!=null) {
+			rd = getServletContext().getRequestDispatcher("/"+redirectTo);
+		}else {
+			rd = getServletContext().getRequestDispatcher("/LoginSuccess.jsp");
+		}
+		PrintWriter out = response.getWriter();
+
 		try {
+
 			String userName = (String) request.getSession().getAttribute("login");
 			String compositeFeedID=request.getParameter("feedId");
 			log.debug("Getting list of incoming feed ids ["+userName+"]:");
@@ -57,7 +67,7 @@ public class mergeRSSServlet extends HttpServlet {
 			while (en.hasMoreElements()) {
 				String parameter = en.nextElement();
 				if (parameter.startsWith("id_")) {
-					log.debug("Parameter " + parameter + ": " + request.getParameter(parameter));
+					log.debug("Parameter [" + parameter + "]: [" + request.getParameter(parameter)+"]");
 					feedIdList.add(request.getParameter(parameter));
 				}
 			}
@@ -67,21 +77,21 @@ public class mergeRSSServlet extends HttpServlet {
 				ServerUtils.createCompositeRSS(userName, compositeRSSTitle, feedIdList);
 			}else {
 //				System.err.println("Got feed id: " + compositeFeedID);
-				if(request.getParameter("appendSingleFeedId")!=null) {
+				if(request.getParameter("appendSingleFeedIds")!=null) {
 					ServerUtils.updateCompositeRSS(compositeFeedID, userName, compositeRSSTitle, feedIdList, true);
 				}else {
 					ServerUtils.updateCompositeRSS(compositeFeedID, userName, compositeRSSTitle, feedIdList);
 				}
 			}
 			ServerUtils.updateCompositeRSSFilesOfUser(userName);
+			out.print("<font color=\"green\">Composite feed ["+compositeRSSTitle+"] successfully updated</font><br>");
 		} catch (Exception e) {
 			log.error("Exception: ", e);
-			RequestDispatcher rd = getServletContext().getRequestDispatcher("/mergeRSS.jsp");
-			PrintWriter out = response.getWriter();
 			out.print("<font color=red>Error: " + e.getMessage() + "</font>");
-			rd.include(request, response);
+			
 		}
-		response.sendRedirect("LoginSuccess.jsp");
+		rd.include(request, response);
+//		response.sendRedirect("LoginSuccess.jsp");
 
 		/* TODO: implement adding information about composite to User File */
 		/* TODO: create job */
