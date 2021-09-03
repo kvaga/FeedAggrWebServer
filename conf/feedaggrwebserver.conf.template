@@ -17,3 +17,5 @@ influxdb.port=8086
 influxdb.threads.numder=10
 influxdb.attempts=5
 influxdb.timeout=5000
+
+timeout.waittime_after_get_content_url_exception_in_millis=3600000

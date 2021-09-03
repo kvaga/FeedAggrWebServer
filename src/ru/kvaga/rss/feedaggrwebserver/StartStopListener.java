@@ -99,14 +99,16 @@ public class StartStopListener implements ServletContextListener{
 			}
 			log.info("InfluxDB: " + InfluxDB.getInstance());
 
+			if(System.getProperty("TEST_MODE")!=null) {
+				ConfigMap.TEST_MODE=true;
+			}
+			log.info("Loaded parameter TEST_MODE="+ConfigMap.TEST_MODE);
+			
 			try {
-				if(System.getProperty("TEST_MODE")!=null) {
-					ConfigMap.TEST_MODE=true;
-				}
-				log.info("Loaded parameter TEST_MODE="+ConfigMap.TEST_MODE);
+				ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS=Long.parseLong(props.getProperty("timeout.waittime_after_get_content_url_exception_in_millis"));
+				log.info("Loaded parameter timeout.waittime_after_get_content_url_exception_in_millis="+ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS);
 			}catch(Exception e) {
-				log.error("Incorrect format of influxdb.port parameter ["+props.getProperty("influxdb.port")+"]. InfluxDB disabled");
-				InfluxDB.disable();
+				log.error("Incorrect format of timeout.waittime_after_get_content_url_exception_in_millis parameter ["+props.getProperty("timeout.waittime_after_get_content_url_exception_in_millis")+"]. InfluxDB disabled");
 			}
 			
 		} catch (IOException e) {

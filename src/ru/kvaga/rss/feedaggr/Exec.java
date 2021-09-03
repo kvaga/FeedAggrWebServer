@@ -11,6 +11,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
@@ -207,14 +208,29 @@ public class Exec {
 		return splittedItems;
 	}
 */
+	private static HashMap<String, Long> getURLContentDomainLocks = new HashMap<String, Long>();
 	@Deprecated
 	public static synchronized String getURLContent(String urlText) throws FeedAggrException.GetURLContentException {
 		long t1 = new Date().getTime();
+		String domain = Exec.getDomainFromURL(urlText);
+
 		String body = null;
 		String charset; // You should determine it based on response header.
 		HttpURLConnection con=null;
 
 		try {
+			
+			// Check if lock was expired
+			if(getURLContentDomainLocks.containsKey(domain) && getURLContentDomainLocks.get(domain) + ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS < new Date().getTime()) {
+				getURLContentDomainLocks.remove(domain);
+				log.debug("The getURLContentDomainLocks for the domain ["+domain+"] was removed");
+			}
+			
+			// Check if lock exists
+			if(getURLContentDomainLocks.containsKey(domain)) {
+				throw new Exception("There is lock for the domain ["+domain+"] during ["+(new Date().getTime()-getURLContentDomainLocks.get(domain))+"] milliseconds. We just have to wait for ["+(getURLContentDomainLocks.get(domain) + ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS - new Date().getTime())+"] milliseconds");
+			}
+			
 			URL url = new URL(urlText);
 			con = (HttpURLConnection) url.openConnection();
 //			con.connect();
@@ -288,7 +304,10 @@ public class Exec {
 			return body;
 			
 		} catch (Exception e) {
-			log.error("GetURLContentException: couldn't get a content for the ["+urlText+"] URL", e);
+			log.error("GetURLContentException: couldn't get a content for the ["+urlText+"] URL]. ", e);
+			if(e.getMessage().contains("Server returned HTTP response code: 403")) {
+				if(!getURLContentDomainLocks.containsKey(domain)) getURLContentDomainLocks.put(domain, new Date().getTime());
+			}
 			if(con!=null) {
 				con.disconnect();
 			}

@@ -23,6 +23,7 @@ public class ConfigMap {
 	public static long INFLUXDB_TIMEOUT;
 	public static long DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE=DurationMillisecondsForUpdatingFeeds.EACH_DAY;
 	public static boolean TEST_MODE=false;
+	public static long WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS=1000;
 
 			
 
