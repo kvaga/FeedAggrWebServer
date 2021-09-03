@@ -216,7 +216,7 @@ String url= (String)request.getSession().getAttribute("url");
 			//responseHtmlBody = ServerUtils.convertStringToUTF8(Exec.getURLContent(url));
 			
 			url = (url.contains("youtube.com") && !url.contains("youtube.com/feeds/videos.xml")) ? Exec.getYoutubeFeedURL(url): url;
-			url = (url.startsWith("https://habr.com/ru/rss") || url.startsWith("https://habr.com/rss") || url.startsWith("https://habrahabr.com/rss")|| url.startsWith("https://habrahabr.ru/rss")) ? url : Exec.getHabrFeedURL(url);
+			url = (url.startsWith("https://habr.com/ru/rss") || url.startsWith("https://habr.com/rss") || url.startsWith("https://habrahabr.com/rss")|| url.startsWith("https://habrahabr.ru/rss")) ? Exec.getHabrFeedURL(url) : url;
 			request.getSession().setAttribute("url",url);
 			if (url==null){
 				throw new Exception("Can't find feed channel url");

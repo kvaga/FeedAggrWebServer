@@ -30,15 +30,12 @@ out.print("----------------------------<br>");
 		//
 		String feedTitle=null;
 		String responseHtmlBody = request.getParameter("responseHtmlBody");
-		log.error("1---> request.getSession().getAttribute(\"feedTitle\")=["+request.getSession().getAttribute("feedTitle")+"]");
 		if(request.getSession().getAttribute("feedTitle")==null){
 			request.getSession().setAttribute("feedTitle", Exec.getTitleFromHtmlBody(responseHtmlBody));
 		}
 		feedTitle=(String)request.getSession().getAttribute("feedTitle");
 
-		log.debug("2---> request.getSession().getAttribute(\"feedTitle\")=["+request.getSession().getAttribute("feedTitle")+"]");
-
-		log.debug("[point 8] feedTitle="+feedTitle);
+		log.debug("request.getSession().getAttribute(\"feedTitle\")=["+request.getSession().getAttribute("feedTitle")+"]");
 		//if(feedTitle!=null){
 			//request.getSession().setAttribute("feedTitle", feedTitle);
 		//}
