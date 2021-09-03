@@ -626,14 +626,17 @@ public class ServerUtils {
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.createCompositeRSS", new Date().getTime() - t1);
 	}
 
-	public static synchronized void updateCompositeRSSFilesOfUser(String userName) throws JAXBException {
+	public static synchronized int[] updateCompositeRSSFilesOfUser(String userName) throws JAXBException {
 		long t1 = new Date().getTime();
+		int allFeedsCount=0, successFeedsCount=0;
+
 		log.info("Started proccess updateCompositeRSSFilesOfUser for user ["+userName+"]");
 		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + userName + ".xml");
 //		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
 		User user = User.getXMLObjectFromXMLFile(userFile);
 
 		for (CompositeUserFeed compositeUserFeed : user.getCompositeUserFeeds()) {
+			allFeedsCount++;
 			File compositeRSSFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + compositeUserFeed.getId() + ".xml");
 //			RSS compositeRSS = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(compositeRSSFile, new RSS());
 			RSS compositeRSS = RSS.getRSSObjectFromXMLFile(compositeRSSFile);
@@ -657,9 +660,11 @@ public class ServerUtils {
 				InfluxDB.getInstance().send("response_time,method=ServerUtils.updateCompositeRSSFilesOfUserException", new Date().getTime() - t1);
 				continue;
 			}
+			successFeedsCount++;
 			compositeRSS.saveXMLObjectToFile(compositeRSSFile);
 		}
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.updateCompositeRSSFilesOfUser", new Date().getTime() - t1);
+		return new int[] {allFeedsCount, successFeedsCount, allFeedsCount-successFeedsCount};
 	}
 
 	// If compositeRSSFile = null then create a new file

@@ -183,13 +183,13 @@ public class FeedsUpdateJob implements Runnable {
 //						ObjectsUtils.saveXMLObjectToFile(rssFromFile, rssFromFile.getClass(), new File(rssXmlFile));
 						rssFromFile.saveXMLObjectToFile(new File(rssXmlFile));
 						log.debug("Объект rssFromFile сохранен в файл [" + rssXmlFile + "]");
+						successFeedsCount++;
 
 					} catch (Exception e) {
 						log.error("Exception on feedId [" + userFeed.getId() + "]", e);
 					}
 				}
 				user.saveXMLObjectToFile(userFile);
-				successFeedsCount++;
 				log.debug("User's file " +userFile+ " successfully saved");
 			}
 		} catch (JAXBException e) {
