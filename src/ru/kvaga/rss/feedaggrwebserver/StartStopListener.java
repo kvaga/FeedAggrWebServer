@@ -99,6 +99,16 @@ public class StartStopListener implements ServletContextListener{
 			}
 			log.info("InfluxDB: " + InfluxDB.getInstance());
 
+			try {
+				if(System.getProperty("TEST_MODE")!=null) {
+					ConfigMap.TEST_MODE=true;
+				}
+				log.info("Loaded parameter TEST_MODE="+ConfigMap.TEST_MODE);
+			}catch(Exception e) {
+				log.error("Incorrect format of influxdb.port parameter ["+props.getProperty("influxdb.port")+"]. InfluxDB disabled");
+				InfluxDB.disable();
+			}
+			
 		} catch (IOException e) {
 			log.error("Can't get configuration parameters of servlet", e);
 			return;

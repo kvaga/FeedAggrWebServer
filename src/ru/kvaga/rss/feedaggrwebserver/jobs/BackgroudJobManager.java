@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import ru.kvaga.monitoring.influxdb.InfluxDB;
 import ru.kvaga.rss.feedaggr.Exec;
+import ru.kvaga.rss.feedaggrwebserver.ConfigMap;;
 
 @WebListener
 public class BackgroudJobManager implements ServletContextListener{
@@ -22,8 +23,15 @@ public class BackgroudJobManager implements ServletContextListener{
 	private ScheduledExecutorService scheduler2;
 
 	final static Logger log = LogManager.getLogger(BackgroudJobManager.class);
-	private static boolean jobsEnabled=true;
+	private static boolean jobsEnabled = true;
+	
 	public void contextInitialized (ServletContextEvent event) {
+		if(ConfigMap.TEST_MODE) {
+			jobsEnabled = false;
+			log.debug("Jobs were disabled beacuse of jobsEnabled=["+jobsEnabled+"], ConfigMap.TEST_MODE=["+ConfigMap.TEST_MODE+"]");
+		}
+		
+		
 		long t1 = new Date().getTime();
 		
 		scheduler1 = Executors.newSingleThreadScheduledExecutor();
