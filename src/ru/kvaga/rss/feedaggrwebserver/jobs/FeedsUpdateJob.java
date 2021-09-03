@@ -51,7 +51,7 @@ public class FeedsUpdateJob implements Runnable {
 //		}
 	}
 
-	void updateFeeds() throws Exception {
+	int[] updateFeeds() throws Exception {
 		long t1 = new Date().getTime();
 //		URL urlLog = org.apache.logging.log4j.LogManager.class.getResource("/log4j.properties");
 //		log.info("==========----------------------------------------------------------------------------------------------------------------------------->>>" + urlLog);
@@ -71,6 +71,8 @@ public class FeedsUpdateJob implements Runnable {
 		String itemContentTemplate = null; // get from config
 		String filterWords = null;
 		Long durationInMillisForUpdate=null;
+		
+		int allFeedsCount=0, successFeedsCount=0;
 //		for(File feedsFiles : new File(feedsPath).listFiles()) {
 //			log.debug(feedsFiles.getName());
 //		}
@@ -98,6 +100,7 @@ public class FeedsUpdateJob implements Runnable {
 				}
 
 				for (UserFeed userFeed : user.getUserFeeds()) {
+					allFeedsCount++;
 					try {
 						if(userFeed.getDurationInMillisForUpdate()==null) {
 							log.debug("DurationInMillisForUpdate parameter in the ["+userFeed.getId()+"] is null. We set default value ["+ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE+"]");
@@ -186,6 +189,7 @@ public class FeedsUpdateJob implements Runnable {
 					}
 				}
 				user.saveXMLObjectToFile(userFile);
+				successFeedsCount++;
 				log.debug("User's file " +userFile+ " successfully saved");
 			}
 		} catch (JAXBException e) {
@@ -193,13 +197,15 @@ public class FeedsUpdateJob implements Runnable {
 			log.error("Exception occured", e);
 		}
 		InfluxDB.getInstance().send("response_time,method=FeedsUpdateJob.updateFeeds", new Date().getTime() - t1);
+		return new int[] {allFeedsCount, successFeedsCount, allFeedsCount-successFeedsCount};
 	}
 
 	public void run() {
 		log.info("Job started");
-
+		int[] result;
 		try {
-			updateFeeds();
+			result = updateFeeds();
+			log.debug("Processed feeds: all ["+result[0]+"], successful ["+result[1]+"], failed ["+result[2]+"]");
 		} catch (NoSuchAlgorithmException e) {
 			log.error("NoSuchAlgorithmException", e);
 		} catch (SplitHTMLContent e) {
