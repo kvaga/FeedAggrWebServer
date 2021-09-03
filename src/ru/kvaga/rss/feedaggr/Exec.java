@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -136,6 +137,15 @@ public class Exec {
 	}
 
 */	
+	
+	public static String getHumanReadableHoursMinutesSecondsFromMilliseconds(long millis) {
+		return String.format("%02d:%02d:%02d", 
+				TimeUnit.MILLISECONDS.toHours(millis),
+				TimeUnit.MILLISECONDS.toMinutes(millis) -  
+				TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), // The change is in this line
+				TimeUnit.MILLISECONDS.toSeconds(millis) - 
+				TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+	}
 	public static synchronized String getHTMLSuccessText(String text) {
 		return "<font color=\"green\">"+text+"</font>";
 	}
@@ -228,7 +238,7 @@ public class Exec {
 			
 			// Check if lock exists
 			if(getURLContentDomainLocks.containsKey(domain)) {
-				throw new Exception("There is lock for the domain ["+domain+"] during ["+(new Date().getTime()-getURLContentDomainLocks.get(domain))+"] milliseconds. We just have to wait for ["+(getURLContentDomainLocks.get(domain) + ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS - new Date().getTime())+"] milliseconds");
+				throw new Exception("There is lock for the domain ["+domain+"] during ["+(new Date().getTime()-getURLContentDomainLocks.get(domain))+"] milliseconds, hh:mm:ss ["+Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(new Date().getTime()-getURLContentDomainLocks.get(domain))+"]. We just have to wait for ["+(getURLContentDomainLocks.get(domain) + ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS - new Date().getTime())+"] milliseconds, hh:mm:ss ["+Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(getURLContentDomainLocks.get(domain) + ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS - new Date().getTime())+"]");
 			}
 			
 			URL url = new URL(urlText);

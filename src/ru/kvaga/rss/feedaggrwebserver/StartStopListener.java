@@ -13,6 +13,7 @@ import javax.servlet.annotation.WebListener;
 import org.apache.logging.log4j.Logger;
 
 import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.rss.feedaggr.Exec;
 
 import org.apache.logging.log4j.LogManager;;
 
@@ -106,7 +107,7 @@ public class StartStopListener implements ServletContextListener{
 			
 			try {
 				ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS=Long.parseLong(props.getProperty("timeout.waittime_after_get_content_url_exception_in_millis"));
-				log.info("Loaded parameter timeout.waittime_after_get_content_url_exception_in_millis="+ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS);
+				log.info("Loaded parameter timeout.waittime_after_get_content_url_exception_in_millis="+ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS + ", hh:mm:ss ["+Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS)+"]");
 			}catch(Exception e) {
 				log.error("Incorrect format of timeout.waittime_after_get_content_url_exception_in_millis parameter ["+props.getProperty("timeout.waittime_after_get_content_url_exception_in_millis")+"]. InfluxDB disabled");
 			}
