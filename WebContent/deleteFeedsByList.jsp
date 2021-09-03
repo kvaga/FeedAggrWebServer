@@ -13,8 +13,7 @@
 	java.util.HashMap,
 	java.io.File,
 	ru.kvaga.rss.feedaggrwebserver.objects.user.User,
-	org.apache.logging.log4j.*,
-	ru.kvaga.rss.feedaggrwebserver.ConfigMap
+	org.apache.logging.log4j.*
 	"
 	
 	%>
@@ -25,11 +24,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Delete Feeds</title>
+<title>Delete Feeds by List</title>
 </head>
 <body>
+<jsp:include page="Header.jsp"></jsp:include>
 <h2>Your [<%= request.getSession().getAttribute("login")%>] RSS list:</h2>
-<form action="deleteFeedsByList">
+<form action="deleteFeed">
 <table>
 
 <%
@@ -48,8 +48,8 @@ if(request.getParameter("feedId")!=null){
 int k=0;
 ArrayList<RSS> rssListForPrinting = new ArrayList<RSS>();
 HashMap<RSS,String> mapRssStringForPrinting = new HashMap<RSS, String>();
-for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
-	if(feedOnServer.getId().startsWith("composite")) continue;
+for(Feed feedOnServer : ServerUtils.getFeedsList(true, false)) {
+	//if(feedOnServer.getId().startsWith("composite")) continue;
 	RSS rssFeed = RSS.getRSSObjectFromXMLFile(feedOnServer.getXmlFile());
 	rssListForPrinting.add(rssFeed);
 	mapRssStringForPrinting.put(rssFeed, feedOnServer.getId());
@@ -58,9 +58,9 @@ Collections.sort(rssListForPrinting, new RSSForPrintingComparatorByTitle());
 for(RSS rss : rssListForPrinting){
 	out.println("<tr>");
 	if(request.getParameter("feedId")!=null && compositeUserFeed.doesHaveCompositeFeedId(mapRssStringForPrinting.get(rss))){
-		out.println("<td valign=\"top\"><input type=\"checkbox\" id=\"vehicle1\" name=\"id_"+(k)+"\" value=\""+mapRssStringForPrinting.get(rss)+"\" checked></td>");
+		out.println("<td valign=\"top\"><input type=\"checkbox\" id=\"vehicle1\" name=\"feedId\" value=\""+mapRssStringForPrinting.get(rss)+"\" checked></td>");
 	}else{
-		out.println("<td valign=\"top\"><input type=\"checkbox\" id=\"vehicle1\" name=\"id_"+(k)+"\" value=\""+mapRssStringForPrinting.get(rss)+"\"></td>");
+		out.println("<td valign=\"top\"><input type=\"checkbox\" id=\"vehicle1\" name=\"feedId\" value=\""+mapRssStringForPrinting.get(rss)+"\"></td>");
 	}
 	out.println("<td><a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>");
 	out.println("<br>");	 

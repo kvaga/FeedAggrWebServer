@@ -91,7 +91,8 @@ public class showFeedServlet extends HttpServlet {
 //		log.debug("realPath: "+realPath);
 		try {
 
-			for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
+			//for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
+			for(Feed feedOnServer : ServerUtils.getFeedsList(true, true)) {
 
 
 				if(feedOnServer.getId().equals(feedId)) {

@@ -42,7 +42,7 @@ function toggle(source) {
 	final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClass().getSimpleName());
 %>
 <%		
-	ArrayList<Feed> allFeedsListOnTheServer = ServerUtils.getFeedsList();
+	ArrayList<Feed> allFeedsListOnTheServer = ServerUtils.getFeedsList(true, true);
 	HashMap<String,String> allFeedIdsOfAllUsersMap = User.getFeedsIdsOfAllUsersMap();
 	//User user = User.getXMLObjectFromXMLFileByUserName((String) request.getSession().getAttribute("login"));
 %>

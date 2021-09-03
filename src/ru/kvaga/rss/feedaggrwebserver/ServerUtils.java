@@ -76,9 +76,9 @@ public class ServerUtils {
 		log.debug("Created new list without [" + feedId + "] feed");
 		user.setUserFeeds(userFeedNew);
 		user.saveXMLObjectToFile(userConfigFile);
-		log.debug("File [" + userConfigFile + "] successfully updated");
+		log.debug("File [" + userConfigFile + "] successfully updated. This feedId ["+feedId+"] wasn't located in any compsoiteFeedIds, beacuse deletedFeedIdFromAllComposites ["+deletedFeedIdFromAllComposites+"], deletedFeedId ["+deletedFeedId+"]");
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.deleteUserFeedByIdFromUser", new Date().getTime() - t1);
-		return deletedFeedId && deletedFeedIdFromAllComposites;
+		return deletedFeedId;
 	}
 	public static synchronized boolean deleteCompositeUserFeedByIdFromUser(String compositeFeedId, String userName) throws Exception {
 		long t1 = new Date().getTime();
@@ -154,7 +154,7 @@ public class ServerUtils {
 		return (ArrayList<UserFeed>) user.getUserFeeds();
 	}
 
-	public static synchronized ArrayList<Feed> getFeedsList(String realPath) throws GetFeedsListByUser, JAXBException {
+	private static synchronized ArrayList<Feed> getFeedsList(String realPath) throws GetFeedsListByUser, JAXBException {
 		/*
 		 * // String dataDirText="WebContent/data";  
 		 * // String userDirText=String.format("%s/%s",
@@ -175,16 +175,38 @@ public class ServerUtils {
 		return getFeedsList(new File(realPath));
 	}
 	
-	public static synchronized ArrayList<Feed> getFeedsList() throws GetFeedsListByUser, JAXBException {
-		return getFeedsList(ConfigMap.feedsPath);
+
+	
+	/**
+	 * @param commonFeeds includes common feeds
+	 * @param compositeFeeds includes composite feeds
+	 * @return
+	 * @throws GetFeedsListByUser
+	 * @throws JAXBException
+	 */
+	public static synchronized ArrayList<Feed> getFeedsList(boolean commonFeeds, boolean compositeFeeds) throws GetFeedsListByUser, JAXBException {
+		return getFeedsList(ConfigMap.feedsPath, commonFeeds, compositeFeeds);
 	}
 	
-	public static synchronized ArrayList<Feed> getFeedsList(File dir) throws GetFeedsListByUser, JAXBException {
+	
+	private static synchronized ArrayList<Feed> getFeedsList(File dir) throws GetFeedsListByUser, JAXBException {
+		return getFeedsList(dir, true, true);
+	}
+	
+
+	/**
+	 * Get a list of all feeds (feeds + composite) for the specific location
+	 * @param dir
+	 * @return
+	 * @throws GetFeedsListByUser
+	 * @throws JAXBException
+	 */
+	private static synchronized ArrayList<Feed> getFeedsList(File dir, boolean commonFeeds, boolean compositeFeeds) throws GetFeedsListByUser, JAXBException {
 		long t1 = new Date().getTime();
 //		String dataDirText="WebContent/data";
 //		String userDirText=String.format("%s/%s", dataDirText,user);
 		ArrayList<Feed> al = new ArrayList<Feed>();
-		log.debug("Searching Feed in the [" + dir + "] directory");
+		log.debug("Searching Feed in the [" + dir + "] directory for commonFeeds ["+commonFeeds+"] and compositeFeeds ["+compositeFeeds+"]");
 		if (!dir.isDirectory()) {
 			InfluxDB.getInstance().send("response_time,method=ServerUtils.getFeedsListException", new Date().getTime() - t1);
 
@@ -194,8 +216,13 @@ public class ServerUtils {
 		}
 		for (File feedFile : dir.listFiles()) {
 			String feedId = feedFile.getName().replaceAll("\\.xml", "");
-			Feed feed = new Feed(feedId, feedFile, null);
-			al.add(feed);
+			if(commonFeeds && !feedId.startsWith("composite_")) {
+				Feed feed = new Feed(feedId, feedFile, null);
+				al.add(feed);
+			}else if(compositeFeeds && feedId.startsWith("composite_")) {
+				Feed feed = new Feed(feedId, feedFile, null);
+				al.add(feed);
+			}
 		}
 		InfluxDB.getInstance().send("response_time,method=ServerUtils.getFeedsList", new Date().getTime() - t1);
 		return al;
@@ -225,6 +252,13 @@ public class ServerUtils {
 		throw new Exception("Unimplemented method");
 	}
 
+	/**
+	 * Delete feedId for user <code>userName</code>
+	 * @param feedId
+	 * @param userName
+	 * @return
+	 * @throws Exception
+	 */
 	public static synchronized boolean deleteFeed(String feedId, String userName) throws Exception {
 		long t1 = new Date().getTime();
 		boolean deletedFile=false;

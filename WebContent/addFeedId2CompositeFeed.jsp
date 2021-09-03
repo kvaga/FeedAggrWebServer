@@ -61,7 +61,7 @@ if(cufSet.size()>0){
 HashMap<RSS,String> mapRssStringForPrinting = new HashMap<RSS, String>();
 ArrayList<RSS> rssCompositeListForPrinting = new ArrayList<RSS>();
 StringBuilder sb = new StringBuilder();
-for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
+for(Feed feedOnServer : ServerUtils.getFeedsList(false, true)) {
 	try{
 	//	log.debug(feedOnServer.getXmlFile());
 		//RSS rssFeed = (RSS)ObjectsUtils.getXMLObjectFromXMLFile(feedOnServer.getXmlFile(), new RSS());
