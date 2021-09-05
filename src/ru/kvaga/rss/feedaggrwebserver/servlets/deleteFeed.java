@@ -17,6 +17,7 @@ import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetFeedsListByUser;
 import ru.kvaga.rss.feedaggr.objects.Feed;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
+import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 
 /**
  * Servlet implementation class deleteFeed
@@ -42,6 +43,7 @@ public class deleteFeed extends HttpServlet {
 		
 		String userName=(String) request.getSession().getAttribute("login");
 		StringBuilder sb = new StringBuilder();
+		log.debug("Got parameter: redirectTo ["+request.getParameter("redirectTo")+"]");
 		sb.append("<html>");
 		RequestDispatcher rd = request.getParameter("redirectTo")!=null? getServletContext().getRequestDispatcher(request.getParameter("redirectTo")) : getServletContext().getRequestDispatcher("/LoginSuccess.jsp");
 		PrintWriter out = response.getWriter();
@@ -51,7 +53,7 @@ public class deleteFeed extends HttpServlet {
 			for(String feedId : request.getParameterValues("feedId")) {
 				log.debug("Got request for deleteing feed id ["+feedId+"] for the user ["+userName+"]");
 				sb.append("Status of deletion of feedId ["+feedId+"]: ");
-				if(ServerUtils.deleteFeed(feedId, userName)) {
+				if(User.deleteFeed(feedId, userName)) {
 					sb.append(Exec.getHTMLSuccessText("SUCCESS"));
 				}else {
 					sb.append(Exec.getHTMLFailText("FAIL"));

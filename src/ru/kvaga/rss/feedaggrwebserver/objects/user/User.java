@@ -288,6 +288,99 @@ public class User {
 		return false;
 	}
 
+	/*
+	public boolean removeFeedFromUserFeed(String feedId) {
+		long t1 = new Date().getTime();
+		try {
+			for(UserFeed uf : getUserFeeds()) {
+				if(uf.getId().equals(feedId)) {
+					InfluxDB.getInstance().send("response_time,method=User.removeFeedFromUserFeed", new Date().getTime() - t1);
+					return getUserFeeds().remove(uf);
+				}
+			}
+			
+		} catch (Exception e) {
+			log.error("There is no such user feed ["+feedId+"]");
+		}
+		InfluxDB.getInstance().send("response_time,method=User.removeFeedFromUserFeed", new Date().getTime() - t1);
+		return false;
+	}
+	*/
+	public static synchronized boolean deleteUserFeedByIdFromUser(String feedId, String userName) throws Exception {
+		long t1 = new Date().getTime();
+		log.debug("Trying to delete feed id [" + feedId + "] for user [" + userName + "]");
+		boolean deletedFeedId = false;
+		boolean deletedFeedIdFromAllComposites = false;
+		HashSet<UserFeed> userFeedNew = new HashSet<UserFeed>();
+		File userConfigFile = new File(ConfigMap.usersPath + "/" + userName + ".xml");
+//		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userConfigFile, new User());
+		User user = User.getXMLObjectFromXMLFile(userConfigFile);
+		log.debug("Successfully read file [" + userConfigFile + "]");
+		for (UserFeed feed : user.getUserFeeds()) {
+			if (feed.getId().equals(feedId)) {
+				deletedFeedId=true;
+				continue;
+			}
+			userFeedNew.add(feed);
+		}
+		deletedFeedIdFromAllComposites = user.removeFeedFromAllCompositeUserFeeds(feedId);
+		log.debug("Created new list without [" + feedId + "] feed");
+		user.setUserFeeds(userFeedNew);
+		user.saveXMLObjectToFile(userConfigFile);
+		log.debug("File [" + userConfigFile + "] successfully updated. This feedId ["+feedId+"] wasn't located in any compsoiteFeedIds, beacuse deletedFeedIdFromAllComposites ["+deletedFeedIdFromAllComposites+"], deletedFeedId ["+deletedFeedId+"]");
+		InfluxDB.getInstance().send("response_time,method=User.deleteUserFeedByIdFromUser", new Date().getTime() - t1);
+		return deletedFeedId;
+	}
+	public static synchronized boolean deleteCompositeUserFeedByIdFromUser(String compositeFeedId, String userName) throws Exception {
+		long t1 = new Date().getTime();
+		boolean deletedBol = false;
+		log.debug("Trying to delete composite feed id [" + compositeFeedId + "] for user [" + userName + "]");
+		HashSet<CompositeUserFeed> userFeedNew = new HashSet<CompositeUserFeed>();
+		File userConfigFile = new File(ConfigMap.usersPath + "/" + userName + ".xml");
+//		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userConfigFile, new User());
+		User user = User.getXMLObjectFromXMLFile(userConfigFile);
+		log.debug("Successfully read file [" + userConfigFile + "]");
+		for (CompositeUserFeed feed : user.getCompositeUserFeeds()) {
+			if (feed.getId().equals(compositeFeedId)) {
+				deletedBol=true;
+				continue;
+			}
+			userFeedNew.add(feed);
+		}
+		log.debug("Created new composite list without [" + compositeFeedId + "] feed");
+		user.setCompositeUserFeeds(userFeedNew);
+		user.saveXMLObjectToFile(userConfigFile);
+		log.debug("File [" + userConfigFile + "] successfully updated");
+		InfluxDB.getInstance().send("response_time,method=User.deleteCompositeUserFeedByIdFromUser", new Date().getTime() - t1);
+		return deletedBol;
+	}
+
+	/**
+	 * Delete feedId for user <code>userName</code>
+	 * @param feedId
+	 * @param userName
+	 * @return
+	 * @throws Exception
+	 */
+	public static synchronized boolean deleteFeed(String feedId, String userName) throws Exception {
+		long t1 = new Date().getTime();
+		boolean deletedFile=false;
+		boolean deletedUserFeedBol=false;
+
+		if(feedId.startsWith("composite_")) {
+			deletedUserFeedBol = deleteCompositeUserFeedByIdFromUser(feedId, userName);
+		}else {
+			deletedUserFeedBol = deleteUserFeedByIdFromUser(feedId, userName);
+		}
+		File feedFile = new File(ConfigMap.feedsPath + "/" + feedId + ".xml");
+
+		log.debug("Trying to delete feed file [" + feedFile.getAbsolutePath() + "]");
+		deletedFile = feedFile.delete();
+		log.debug("File [" + feedFile.getAbsolutePath() + "] deleted? status ["+deletedFile+"], Feed id ["+feedId+"] deleted from user ["+userName+"]? status ["+deletedUserFeedBol+"]");
+
+		InfluxDB.getInstance().send("response_time,method=User.deleteFeed", new Date().getTime() - t1);
+		return deletedFile && deletedUserFeedBol;
+	}
 	public boolean removeFeedFromCompositeUserFeed(String feedId, String compositeFeedId) {
 		long t1 = new Date().getTime();
 		CompositeUserFeed cuf;

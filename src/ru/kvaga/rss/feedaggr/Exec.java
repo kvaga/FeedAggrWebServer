@@ -152,6 +152,9 @@ public class Exec {
 	public static synchronized String getHTMLFailText(String text) {
 		return "<font color=\"red\">"+text+"</font>";
 	}
+	public static synchronized String getHTMLFailText(Exception e) {
+		return "<font color=\"red\">Exception: "+e.getMessage()+", Cause: "+e.getCause()+"</font>";
+	}
 	
 	public static synchronized int countWordsUsingSplit(String input, String splitItem) { 
 		if (input == null || input.isEmpty()) { 
