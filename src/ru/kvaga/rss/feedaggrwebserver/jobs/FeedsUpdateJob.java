@@ -203,6 +203,7 @@ public class FeedsUpdateJob implements Runnable {
 	public void run() {
 		log.info("Job started");
 		int[] result;
+		long t1 = new Date().getTime();
 		try {
 			result = updateFeeds();
 			log.debug("Processed feeds: all ["+result[0]+"], successful ["+result[1]+"], failed ["+result[2]+"]");
@@ -219,7 +220,7 @@ public class FeedsUpdateJob implements Runnable {
 		} catch (Exception e) {
 			log.error("Exception", e);
 		}
-		log.info("Job finished");
+		log.info("Job finished for ["+(Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(new Date().getTime()-t1))+"]");
 
 	}
 

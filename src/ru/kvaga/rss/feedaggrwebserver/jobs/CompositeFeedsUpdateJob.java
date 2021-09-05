@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
@@ -41,7 +42,7 @@ public class CompositeFeedsUpdateJob implements Runnable {
 				int result[] = ServerUtils.updateCompositeRSSFilesOfUser(userFile.getName().replace(".xml", ""));
 				log.debug("Processed composite feeds: all ["+result[0]+"], successful ["+result[1]+"], failed ["+result[2]+"]");
 			} catch (Exception e) {
-				log.error("Exception", e);
+				log.error("CompositeFeedsUpdateJob Exception", e);
 			}
 //				for(CompositeUserFeed compositeUserFeed : user.getCompositeUserFeeds()) {
 //					ArrayList<String> al = new ArrayList<String>();
@@ -54,7 +55,7 @@ public class CompositeFeedsUpdateJob implements Runnable {
 //				ServerUtils.mergeRSS(null, "kvaga", al, new File("C:\\eclipseWorkspace\\FeedAggrWebServer\\data\\feeds\\composite_1613763817102.xml"));
 		}
 
-		log.debug("CompositeFeedsUpdateJob finished");
+		log.debug("CompositeFeedsUpdateJob finished for ["+(Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(new Date().getTime()-t1))+"]");
 		InfluxDB.getInstance().send("response_time,method=CompositeFeedsUpdateJob.Run", new Date().getTime() - t1);
 	}
 

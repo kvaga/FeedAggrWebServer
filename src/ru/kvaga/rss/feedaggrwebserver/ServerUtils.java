@@ -656,7 +656,7 @@ public class ServerUtils {
 				}
 				compositeRSS.getChannel().setLastBuildDate(new Date());
 			} catch (Exception e) {
-				log.error("Exception", e);
+				log.error("updateCompositeRSSFilesOfUser Exception in the composite feed id ["+compositeUserFeed.getId()+"]", e);
 				InfluxDB.getInstance().send("response_time,method=ServerUtils.updateCompositeRSSFilesOfUserException", new Date().getTime() - t1);
 				continue;
 			}
