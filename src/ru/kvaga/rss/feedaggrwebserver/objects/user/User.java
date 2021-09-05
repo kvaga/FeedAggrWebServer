@@ -455,7 +455,7 @@ public class User {
 		long t1 = new Date().getTime();
 		for (UserFeed uf : getUserFeeds()) {
 			if (uf.getId().equals(feedId)) {
-				return uf.getItemTitleTemplate();
+				return uf.getItemTitleTemplate(); 
 			}
 		}
 		return null;
