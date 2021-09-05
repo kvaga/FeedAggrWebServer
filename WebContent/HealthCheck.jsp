@@ -156,7 +156,7 @@ for (User user : User.getAllUsersList()) {
 if(zombieFeedIds.size()>0){
 	out.append("<table border='1'><tr><td align=\"center\" colspan=\"3\">Zombie composite's feed ids</td></tr><tr align=\"center\"><td>Composite feed</td><td>Feed Id</td><td>Action</td></tr>");
 	for(String feedId : zombieFeedIds.keySet()){
-		out.append("<tr><td>"+zombieFeedIds.get(feedId)+"</td><td><a href=\"showFeed?feedId="+feedId+"\">"+feedId+"</a></td><td><a href=\"deleteFeed?feedId="+feedId+"&redirectTo=HealthCheck.jsp\">Delete</a></td></tr>");
+		out.append("<tr><td>"+zombieFeedIds.get(feedId)+"</td><td><a href=\"showFeed?feedId="+feedId+"\">"+feedId+"</a></td><td><a href=\"deleteFeed?feedId="+feedId+"&redirectTo=/HealthCheck.jsp\">Delete</a></td></tr>");
 	}
 	out.append("</table>");
 }else{
