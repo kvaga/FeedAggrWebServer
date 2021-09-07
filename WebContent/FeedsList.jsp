@@ -24,7 +24,8 @@
 <html>
 <head>
 <meta charset="utf-8">
-<script src="sort_table.js"></script>
+<script src="sort_table.js"></script> 
+<!--<script src="lib.js"></script>-->
 
 <title>Feeds List</title>
 <style type="text/css">
@@ -66,8 +67,18 @@ if(sb.length()!=0){
 	throw new Exception("Exception was occured on FeedsList.jsp page during building a list of feeds. The problem was detected on the feed on server ["+sb.toString()+"]");
 }
 Collections.sort(rssListForPrinting, new RSSForPrintingComparatorByTitle());
-out.println("<table id=\"table\" border=1>");
-out.println("<tr><th onclick=\"sortTable(1)\">Name</th><th>Delete</th><th>Edit</th><th onclick=\"sortTable(4)\">Last updated</th><th onclick=\"sortTable(5, 'true')\">Count of items</th><th onclick=\"sortTable(6, 'true')\">Size, mb</th></tr>");	 
+out.println("<table id=\"table\" border=1 style=\"white-space:nowrap;\">");
+out.println("<tr><th onclick=\"sortTable(1)\">Name</th><th>Delete</th><th>Edit</th><th onclick=\"sortTable(4)\">Last updated</th><th onclick=\"sortTable(5, 'true')\">Count of items</th><th onclick=\"sortTable(6, 'true')\">Size, mb</th><th onClick='show_hide_column(7,false);'>URL</th></tr>");	 
+//out.println("<tr><th>Name</th><th>Delete</th><th>Edit</th><th>Last updated</th><th>Count of items</th><th>Size, mb</th><th onClick='show_hide_column(7,false);' class=\"targ\">URL</th></tr>");	 
+/*
+out.println("<col class=\"col1\"/>");
+out.println("<col class=\"col2\"/>");
+out.println("<col class=\"col3\"/>");
+out.println("<col class=\"col4\"/>");
+out.println("<col class=\"col5\"/>");
+out.println("<col class=\"col6\"/>");
+out.println("<col class=\"col7\"/>");
+*/
 //for(RSS rss : rssListForPrinting){
 //	out.println("<br>");	 
 //	out.println("<a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]&nbsp&nbsp&nbsp[<a href=\"Feed.jsp?action=edit&feedId="+mapRssStringForPrinting.get(rss)+"\">Edit</a>]");
@@ -84,6 +95,7 @@ for(RSS rss : rssListForPrinting) {
 	out.println("<td>"+rss.getChannel().getLastBuildDate()+"</td>");
 	out.println("<td>"+rss.getChannel().getItem().size()+"</td>");
 	out.println("<td>"+Exec.getFileSizeByFeedId(mapRssStringForPrinting.get(rss))+"</td>");
+	out.println("<td>"+rss.getChannel().getLink()+"</td>");
 	out.println("</tr>");	 
 //	ObjectsUtills.printXMLObject(rssFeed);
 }

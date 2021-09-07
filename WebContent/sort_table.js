@@ -49,6 +49,7 @@ function sortTable(colnum, descending='false') {
   // and then the magic part that makes the sorting appear on-page:
   rows.forEach(row => table.appendChild(row));
 }
-table.querySelectorAll(`th`).forEach((th, position) => {
-	  th.addEventListener(`click`, evt => sortTable(position));
-	});
+
+//table.querySelectorAll(`th`).forEach((th, position) => {
+//	  th.addEventListener(`click`, evt => sortTable(position));
+//});
