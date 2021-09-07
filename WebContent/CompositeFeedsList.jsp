@@ -58,7 +58,7 @@ for(Feed feedOnServer : ServerUtils.getFeedsList(false, true)) {
 	}
 }
 Collections.sort(rssCompositeListForPrinting, new RSSForPrintingComparatorByTitle());
-out.println("<table id=\"table1\" border=1>");
+out.println("<table id=\"table\" border=1>");
 //out.println("<tr><td>Name</td><td>Delete</td><td>Edit</td><td>Last updated</td><td>Count of items</td><td>Size, mb</td></tr>");	 
 out.println("<tr><th onclick=\"sortTable(1)\">Name</th><th>Delete</th><th>Edit</th><th onclick=\"sortTable(4)\">Last updated</th><th onclick=\"sortTable(5, 'true')\">Count of items</th><th onclick=\"sortTable(6, 'true')\">Size, mb</th></tr>");	 
 
