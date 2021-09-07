@@ -94,7 +94,7 @@ public class showFeedServlet extends HttpServlet {
 		BufferedReader br = null;
 		String filePathStr=ConfigMap.feedsPath+File.separator+feedId+".xml";
 		// Path path = Paths.get(filePathStr);
-		float fileSizeMb = -1; 
+		//float fileSizeMb = -1; 
 		File file = new File(filePathStr);
 //		String realPath=getServletContext().getRealPath("data/feeds/");
 //		String realPath=getServletContext().getRealPath(ConfigMap.dataPath+"/feeds/");
@@ -102,7 +102,7 @@ public class showFeedServlet extends HttpServlet {
 //		log.debug("realPath: "+realPath);
 		
 		 try(InputStream in = new FileInputStream(file); OutputStream out = response.getOutputStream()) {
-			 fileSizeMb = Exec.getFileSize(filePathStr); //Files.size(path)/1024/1024;;
+			 //fileSizeMb = Exec.getFileSize(filePathStr); //Files.size(path)/1024/1024;;
 		            byte[] buffer = new byte[ConfigMap.SERVLET_SHOW_FEED_BUFFER_READ_BYTES];
 		        
 		            int numBytesRead;
@@ -112,7 +112,7 @@ public class showFeedServlet extends HttpServlet {
 		}catch(Exception e) {
 			log.error("Exception", e);
 		}
-		 log.debug("Response sent for the feedId ["+request.getParameter("feedId")+"] for ["+(System.currentTimeMillis()-t1)+"] millis, size ["+fileSizeMb+"] mb");
+		 log.debug("Response sent for the feedId ["+request.getParameter("feedId")+"] for ["+(System.currentTimeMillis()-t1)+"] millis");
 //		doGet(request, response);
 	}
 

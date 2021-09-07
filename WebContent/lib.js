@@ -7,3 +7,4 @@ function toggle(source) {
 	    checkboxes[i].checked = source.checked;
 	  }
 }
+

@@ -24,7 +24,17 @@
 <html>
 <head>
 <meta charset="utf-8">
+<script src="sort_table.js"></script>
+
 <title>Feeds List</title>
+<style type="text/css">
+	table, th, td {
+	    border: 1px solid black;
+	}
+	th {
+	    cursor: pointer;
+	}
+</style>
 </head>
 <body>
 <jsp:include page="Header.jsp"></jsp:include>
@@ -56,8 +66,8 @@ if(sb.length()!=0){
 	throw new Exception("Exception was occured on FeedsList.jsp page during building a list of feeds. The problem was detected on the feed on server ["+sb.toString()+"]");
 }
 Collections.sort(rssListForPrinting, new RSSForPrintingComparatorByTitle());
-out.println("<table border=1>");
-out.println("<tr><td>Name</td><td>Delete</td><td>Edit</td><td>Last updated</td><td>Count of items</td><td>Size, mb</td></tr>");	 
+out.println("<table id=\"table\" border=1>");
+out.println("<tr><th onclick=\"sortTable(1)\">Name</th><th>Delete</th><th>Edit</th><th onclick=\"sortTable(4)\">Last updated</th><th onclick=\"sortTable(5, 'true')\">Count of items</th><th onclick=\"sortTable(6, 'true')\">Size, mb</th></tr>");	 
 //for(RSS rss : rssListForPrinting){
 //	out.println("<br>");	 
 //	out.println("<a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]&nbsp&nbsp&nbsp[<a href=\"Feed.jsp?action=edit&feedId="+mapRssStringForPrinting.get(rss)+"\">Edit</a>]");

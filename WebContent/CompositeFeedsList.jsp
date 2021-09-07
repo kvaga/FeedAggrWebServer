@@ -22,6 +22,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script src="sort_table.js"></script>
+<style type="text/css">
+	table, th, td {
+	    border: 1px solid black;
+	}
+	th {
+	    cursor: pointer;
+	}
+</style>
 <meta charset="utf-8">
 <title>Composite Feeds List</title>
 </head>
@@ -49,11 +58,12 @@ for(Feed feedOnServer : ServerUtils.getFeedsList(false, true)) {
 	}
 }
 Collections.sort(rssCompositeListForPrinting, new RSSForPrintingComparatorByTitle());
-out.println("<table border=1>");
-out.println("<tr><td>Name</td><td>Delete</td><td>Edit</td><td>Last updated</td><td>Count of items</td><td>Size, mb</td></tr>");	 
+out.println("<table id=\"table1\" border=1>");
+//out.println("<tr><td>Name</td><td>Delete</td><td>Edit</td><td>Last updated</td><td>Count of items</td><td>Size, mb</td></tr>");	 
+out.println("<tr><th onclick=\"sortTable(1)\">Name</th><th>Delete</th><th>Edit</th><th onclick=\"sortTable(4)\">Last updated</th><th onclick=\"sortTable(5, 'true')\">Count of items</th><th onclick=\"sortTable(6, 'true')\">Size, mb</th></tr>");	 
 
 for(RSS rss : rssCompositeListForPrinting) {
-	out.println("<td><a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a></td><td>[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]</td>");
+	out.println("<tr><td><a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a></td><td>[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]</td>");
 	out.println("<td>[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+rss.getChannel().getTitle()+"\">Edit</a>]</td>");
 	out.println("<td>"+rss.getChannel().getLastBuildDate()+"</td>");
 	out.println("<td>"+rss.getChannel().getItem().size()+"</td>");
