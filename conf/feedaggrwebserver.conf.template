@@ -19,3 +19,6 @@ influxdb.attempts=5
 influxdb.timeout=5000
 
 timeout.waittime_after_get_content_url_exception_in_millis=3600000
+
+servlet.show_feed.buffer_read_bytes=512
+

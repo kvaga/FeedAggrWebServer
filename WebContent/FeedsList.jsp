@@ -11,7 +11,9 @@
 	java.util.HashMap,
 	java.util.ArrayList,
 	org.apache.logging.log4j.*,
-	ru.kvaga.rss.feedaggrwebserver.ConfigMap
+	ru.kvaga.rss.feedaggrwebserver.ConfigMap,
+		ru.kvaga.rss.feedaggr.Exec
+	
 	"%>
 	<%
 	final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClass().getSimpleName());
@@ -54,17 +56,33 @@ if(sb.length()!=0){
 	throw new Exception("Exception was occured on FeedsList.jsp page during building a list of feeds. The problem was detected on the feed on server ["+sb.toString()+"]");
 }
 Collections.sort(rssListForPrinting, new RSSForPrintingComparatorByTitle());
-for(RSS rss : rssListForPrinting){
-	out.println("<br>");	 
-	out.println("<a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]&nbsp&nbsp&nbsp[<a href=\"Feed.jsp?action=edit&feedId="+mapRssStringForPrinting.get(rss)+"\">Edit</a>]");
-	out.println("<br>");	 
-	out.println("Source URL: "+rss.getChannel().getLink());
-	out.println("<br>");	 
-	out.println("Last updated: " + rss.getChannel().getLastBuildDate());
-	out.println("<br><br>");	 
+out.println("<table border=1>");
+out.println("<tr><td>Name</td><td>Delete</td><td>Edit</td><td>Last updated</td><td>Count of items</td><td>Size, mb</td></tr>");	 
+//for(RSS rss : rssListForPrinting){
+//	out.println("<br>");	 
+//	out.println("<a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]&nbsp&nbsp&nbsp[<a href=\"Feed.jsp?action=edit&feedId="+mapRssStringForPrinting.get(rss)+"\">Edit</a>]");
+//	out.println("<br>");	 
+//	out.println("Source URL: "+rss.getChannel().getLink());
+//	out.println("<br>");	 
+//	out.println("Last updated: " + rss.getChannel().getLastBuildDate());
+//	out.println("<br><br>");	 
+////	ObjectsUtills.printXMLObject(rssFeed);
+//}
+for(RSS rss : rssListForPrinting) {
+	out.println("<td><a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a></td><td>[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]</td>");
+	out.println("<td>[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+rss.getChannel().getTitle()+"\">Edit</a>]</td>");
+	out.println("<td>"+rss.getChannel().getLastBuildDate()+"</td>");
+	out.println("<td>"+rss.getChannel().getItem().size()+"</td>");
+	out.println("<td>"+Exec.getFileSizeByFeedId(mapRssStringForPrinting.get(rss))+"</td>");
+	out.println("</tr>");	 
 //	ObjectsUtills.printXMLObject(rssFeed);
 }
+out.println("</table>");
 %>
+
+
+
+
 
 </body>
 </html>

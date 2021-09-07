@@ -48,7 +48,7 @@ if(request.getParameter("feedId")!=null){
 int k=0;
 ArrayList<RSS> rssListForPrinting = new ArrayList<RSS>();
 HashMap<RSS,String> mapRssStringForPrinting = new HashMap<RSS, String>();
-for(Feed feedOnServer : ServerUtils.getFeedsList(ConfigMap.feedsPath)) {
+for(Feed feedOnServer : ServerUtils.getFeedsList(true, false)) {
 	if(feedOnServer.getId().startsWith("composite")) continue;
 	RSS rssFeed = RSS.getRSSObjectFromXMLFile(feedOnServer.getXmlFile());
 	rssListForPrinting.add(rssFeed);

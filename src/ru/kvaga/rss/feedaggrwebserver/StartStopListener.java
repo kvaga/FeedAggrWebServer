@@ -109,8 +109,17 @@ public class StartStopListener implements ServletContextListener{
 				ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS=Long.parseLong(props.getProperty("timeout.waittime_after_get_content_url_exception_in_millis"));
 				log.info("Loaded parameter timeout.waittime_after_get_content_url_exception_in_millis="+ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS + ", hh:mm:ss ["+Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS)+"]");
 			}catch(Exception e) {
-				log.error("Incorrect format of timeout.waittime_after_get_content_url_exception_in_millis parameter ["+props.getProperty("timeout.waittime_after_get_content_url_exception_in_millis")+"]. InfluxDB disabled");
+				log.error("Incorrect format of timeout.waittime_after_get_content_url_exception_in_millis parameter ["+props.getProperty("timeout.waittime_after_get_content_url_exception_in_millis")+"]");
 			}
+			
+			try {
+				ConfigMap.SERVLET_SHOW_FEED_BUFFER_READ_BYTES=Integer.parseInt(props.getProperty("servlet.show_feed.buffer_read_bytes"));
+				log.info("Loaded parameter servlet.show_feed.buffer_read_bytes ["+ConfigMap.SERVLET_SHOW_FEED_BUFFER_READ_BYTES + "]");
+			}catch(Exception e) {
+				log.error("Incorrect format of servlet.show_feed.buffer_read_bytes parameter ["+props.getProperty("servlet.show_feed.buffer_read_bytes")+"]");
+			}
+			
+			
 			
 		} catch (IOException e) {
 			log.error("Can't get configuration parameters of servlet", e);

@@ -11,7 +11,8 @@
 	java.util.HashMap,
 	java.util.ArrayList,
 	org.apache.logging.log4j.*,
-	ru.kvaga.rss.feedaggrwebserver.ConfigMap
+	ru.kvaga.rss.feedaggrwebserver.ConfigMap,
+	ru.kvaga.rss.feedaggr.Exec
 	"%>
 	<%
 	final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClass().getSimpleName());
@@ -29,7 +30,7 @@
 <h3>Composite feeds</h3>
 <%
 HashMap<RSS,String> mapRssStringForPrinting = new HashMap<RSS, String>();
-log.debug("=======================> " + ConfigMap.feedsPath);
+//log.debug("=======================> " + ConfigMap.feedsPath);
 ArrayList<RSS> rssCompositeListForPrinting = new ArrayList<RSS>();
 StringBuilder sb = new StringBuilder();
 for(Feed feedOnServer : ServerUtils.getFeedsList(false, true)) {
@@ -48,18 +49,20 @@ for(Feed feedOnServer : ServerUtils.getFeedsList(false, true)) {
 	}
 }
 Collections.sort(rssCompositeListForPrinting, new RSSForPrintingComparatorByTitle());
+out.println("<table border=1>");
+out.println("<tr><td>Name</td><td>Delete</td><td>Edit</td><td>Last updated</td><td>Count of items</td><td>Size, mb</td></tr>");	 
 
 for(RSS rss : rssCompositeListForPrinting) {
-	out.println("<br>");	 
-	out.println("<a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]");
-	out.println("&nbsp&nbsp&nbsp[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+rss.getChannel().getTitle()+"\">Edit</a>]");
-	out.println("<br>");	 
-	out.println("Source URL: "+rss.getChannel().getLink());
-	out.println("<br>");	 
-	out.println("Last updated: " + rss.getChannel().getLastBuildDate());
-	out.println("<br><br>");	 
+	out.println("<td><a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a></td><td>[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]</td>");
+	out.println("<td>[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+rss.getChannel().getTitle()+"\">Edit</a>]</td>");
+	out.println("<td>"+rss.getChannel().getLastBuildDate()+"</td>");
+	out.println("<td>"+rss.getChannel().getItem().size()+"</td>");
+	out.println("<td>"+Exec.getFileSizeByFeedId(mapRssStringForPrinting.get(rss))+"</td>");
+	out.println("</tr>");	 
 //	ObjectsUtills.printXMLObject(rssFeed);
 }
+out.println("</table>");
+
 %>
 </body>
 </html>

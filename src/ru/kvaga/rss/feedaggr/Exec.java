@@ -1,6 +1,8 @@
 package ru.kvaga.rss.feedaggr;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -9,6 +11,9 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -406,6 +411,15 @@ public class Exec {
 	return rss;
 	}
 	
+	public static synchronized float getFileSize(String filePathStr) throws IOException {
+		Path path = Paths.get(filePathStr);
+		return Files.size(path)/1024/1024;
+	}
+	
+	public static synchronized float getFileSizeByFeedId(String feedId) throws IOException {
+		Path path = Paths.get(ConfigMap.feedsPath+File.separator+feedId+".xml");
+		return Files.size(path)/1024/1024;
+	}
 	private static Pattern getNumberFromItemLinkPattern = Pattern.compile(".*\\{%(\\d+)}.*");
 	public static synchronized int getNumberFromItemLink(String itemLink) throws Exception {
 		long t1 = new Date().getTime();
