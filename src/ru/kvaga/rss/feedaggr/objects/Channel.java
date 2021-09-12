@@ -150,4 +150,14 @@ public class Channel {
 		InfluxDB.getInstance().send("response_time,method=Channel.setItemsFromRawHtmlBodyItems", new Date().getTime() - t1);
 
 	}
+	
+	public Item getItemByGuid(String guid) {
+		
+		for(Item i : getItem()) {
+			if(i.getGuid().getValue().equals(guid)) {
+				return i;
+			}
+		}
+		return null;
+	}
 }

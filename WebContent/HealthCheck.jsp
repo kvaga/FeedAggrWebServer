@@ -73,8 +73,8 @@ function toggle(source) {
 			table+=	"<tr>"+
 						"<td><input type=\"checkbox\" id=\"feed_id_"+feed.getId()+"\" name=\"feed_id_"+feed.getId()+"\" value=\""+feed.getId()+"\"></td>"+
 						"<td><a href=\"showFeed?feedId="+feed.getId()+"\">"+rss.getChannel().getTitle()+ "</a><br>"+rss.getChannel().getLink()+"</td>"+
-						"<td>[<a href=\"deleteFeed?feedId="+feed.getId()+"&redirectTo=HealthCheck.jsp\">Delete</a>]</td>"+
-						"<td><a href=\"addAbandonedFeedToUser?redirectTo=HealthCheck.jsp&feedId="+feed.getId()+"\">ADD</a></td>"+
+						"<td>[<a href=\"deleteFeed?feedId="+feed.getId()+"&redirectTo=/HealthCheck.jsp\">Delete</a>]</td>"+
+						"<td><a href=\"addAbandonedFeedToUser?redirectTo=/HealthCheck.jsp&feedId="+feed.getId()+"\">ADD</a></td>"+
 					"</tr>";
 		}
 		table+="<tr><td colspan=\"3\"></td><td><input type=\"submit\" value=\"Add\"></td></tr></table><input id=\"batch\" name=\"batch\" type=\"hidden\" value=\"yes\"><input type=\"hidden\" name=\"redirectTo\" value=\"HealthCheck.jsp\"></form>";
@@ -92,7 +92,7 @@ function toggle(source) {
 			RSS rss = RSS.getRSSObjectFromXMLFile(feed.getXmlFile());
 			tableComposite+=	"<tr>"+
 						"<td><a href=\"showFeed?feedId="+feed.getId()+"\">"+rss.getChannel().getTitle()+ "</a><br>"+rss.getChannel().getLink()+"</td>"+
-						"<td>[<a href=\"deleteFeed?feedId="+feed.getId()+"&redirectTo=HealthCheck.jsp\">Delete</a>]</td>"+
+						"<td>[<a href=\"deleteFeed?feedId="+feed.getId()+"&redirectTo=/HealthCheck.jsp\">Delete</a>]</td>"+
 						"<td><a href=\"addAbandonedFeedToUser?redirectTo=HealthCheck.jsp&feedId="+feed.getId()+"\">ADD</a></td>"+
 					"</tr>";
 		}
@@ -121,7 +121,7 @@ boolean foundDuplicates=false;
 					for (String feedId : feedIdsWithDuplicateUrls.get(url)) {
 						RSS rss = RSS.getRSSObjectByFeedId(feedId);
 						
-						out.append("<a href=\"showFeed?feedId="+feedId+"\">["+user.getCompositeUserFeedIdsListWhichContainUserFeedId(feedId, allCompositeUserFeedCache).size()+"] "+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+feedId+"&redirectTo=HealthCheck.jsp\">Delete</a>]");
+						out.append("<a href=\"showFeed?feedId="+feedId+"\">["+user.getCompositeUserFeedIdsListWhichContainUserFeedId(feedId, allCompositeUserFeedCache).size()+"] "+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+feedId+"&redirectTo=/HealthCheck.jsp\">Delete</a>]");
 						out.append("<br>");
 					}
 					out.append("</td></tr>");

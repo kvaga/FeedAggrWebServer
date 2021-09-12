@@ -40,12 +40,9 @@ if(cookies!=null){
 	<!--  User=<%= user %> -->
 	<br> 
 	
-	<!--  Your SessionID=<%= sessionID %>-->
+	
 	<br>
-	<!--<jsp:include page="/FeedsList.jsp">
-        <jsp:param value="" name=""/>
-    </jsp:include>
-    -->
+	
     <br>
 	<form action="LogoutServlet" method="post">
 		<input type="submit" value="Logout">

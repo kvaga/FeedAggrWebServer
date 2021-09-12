@@ -25,6 +25,8 @@ public class ConfigMap {
 	public static boolean TEST_MODE=false;
 	public static long WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS=1000;
 	public static int SERVLET_SHOW_FEED_BUFFER_READ_BYTES=512;
+	public static int UPDATE_COMPOSITE_RSS_FILES_DAYS_COUNT_FOR_DELETION=31;
+	
 
 			
 

@@ -107,6 +107,12 @@ public class RSS {
     public synchronized void saveXMLObjectToFile(String file) throws JAXBException {
     	saveXMLObjectToFile(new File(file));
 	}
+    
+    public String toString() {
+    	return "RSS channel title ["+channel.getTitle()+"], link ["+channel.getLink()+"], lastBuildDate ["+channel.getLastBuildDate()+"], version ["+version+"]";
+    }
+    
+    
    
 }
 

@@ -74,7 +74,7 @@ public class mergeRSSServlet extends HttpServlet {
 			String compositeRSSTitle = request.getParameter("compositeRSSTitle");
 //			ServerUtils.mergeRSS(compositeRSSTitle, userName, feedIdList, null);
 			if(compositeFeedID==null) {
-				ServerUtils.createCompositeRSS(userName, compositeRSSTitle, feedIdList);
+				compositeFeedID = ServerUtils.createCompositeRSS(userName, compositeRSSTitle, feedIdList);
 			}else {
 //				System.err.println("Got feed id: " + compositeFeedID);
 				if(request.getParameter("appendSingleFeedIds")!=null) {
@@ -83,7 +83,7 @@ public class mergeRSSServlet extends HttpServlet {
 					ServerUtils.updateCompositeRSS(compositeFeedID, userName, compositeRSSTitle, feedIdList);
 				}
 			}
-			ServerUtils.updateCompositeRSSFilesOfUser(userName);
+			ServerUtils.updateCompositeRSSFilesOfUser(userName, compositeFeedID);
 			out.print("<font color=\"green\">Composite feed ["+compositeRSSTitle+"] successfully updated</font><br>");
 		} catch (Exception e) {
 			log.error("Exception: ", e);

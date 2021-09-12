@@ -38,7 +38,9 @@ public class BackgroudJobManager implements ServletContextListener{
 		scheduler2 = Executors.newSingleThreadScheduledExecutor();
 		
 		if(jobsEnabled) {
+			
 			scheduler1.scheduleAtFixedRate(new FeedsUpdateJob(event.getServletContext()), 0, 1, TimeUnit.HOURS);
+			
 //		scheduler1.scheduleAtFixedRate(new FeedsUpdateJob(event.getServletContext()), 0, 20, TimeUnit.SECONDS);
 			log.info("BackgroudJobManager started with jobs [FeedsUpdateJob for each 1 hours]");
 			scheduler2.scheduleAtFixedRate(new CompositeFeedsUpdateJob(), 0, 1, TimeUnit.HOURS);

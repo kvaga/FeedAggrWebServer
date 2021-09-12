@@ -31,7 +31,7 @@
 <h2>Your [<%= request.getSession().getAttribute("login")%>] RSS list:</h2>
 <form action="mergeRSS">
 <table>
-<tr>Title of composite RSS: <input type="text" name="compositeRSSTitle" value="<%= request.getParameter("feedTitle")==null?"":request.getParameter("feedTitle")%>"></input></tr>
+<tr>Title of composite RSS: <input type="text" name="compositeRSSTitle" value="<%= request.getParameter("feedTitle")==null?"":request.getParameter("feedTitle")%>"></input><input type="submit" name="Create"></input></tr>
 <%
 File userFile = null;
 User user = null;

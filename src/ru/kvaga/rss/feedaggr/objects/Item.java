@@ -51,4 +51,19 @@ public class Item{
 		this.description = description;
 	}
 	
+	public boolean equals(Object obj) {
+		Item i = (Item) obj;
+		if(i.getGuid().getValue().equals(guid.getValue())) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+//	public int hashCode() {
+//		return guid.getValue().getBytes().hashCode();
+//	}
+	public String toString() {
+		return "Feed title ["+title+"], link ["+link+"], pubDate ["+pubDate+"], guid ["+guid.getValue()+"]";
+	}
+	
 }

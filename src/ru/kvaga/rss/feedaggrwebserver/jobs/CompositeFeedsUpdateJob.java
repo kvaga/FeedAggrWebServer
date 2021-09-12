@@ -39,7 +39,7 @@ public class CompositeFeedsUpdateJob implements Runnable {
 			}
 			try {
 //				User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
-				int result[] = ServerUtils.updateCompositeRSSFilesOfUser(userFile.getName().replace(".xml", ""));
+				int result[] = ServerUtils.updateCompositeRSSFilesOfUser(userFile.getName().replace(".xml", ""), null);
 				log.debug("Processed composite feeds: all ["+result[0]+"], successful ["+result[1]+"], failed ["+result[2]+"]");
 			} catch (Exception e) {
 				log.error("CompositeFeedsUpdateJob Exception", e);

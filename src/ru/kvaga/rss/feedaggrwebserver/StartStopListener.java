@@ -119,6 +119,12 @@ public class StartStopListener implements ServletContextListener{
 				log.error("Incorrect format of servlet.show_feed.buffer_read_bytes parameter ["+props.getProperty("servlet.show_feed.buffer_read_bytes")+"]");
 			}
 			
+			try {
+				ConfigMap.UPDATE_COMPOSITE_RSS_FILES_DAYS_COUNT_FOR_DELETION=Integer.parseInt(props.getProperty("update_composite_rss_files.days_count_for_deletion"));
+				log.info("Loaded parameter update_composite_rss_files.days_count_for_deletion="+ConfigMap.UPDATE_COMPOSITE_RSS_FILES_DAYS_COUNT_FOR_DELETION);
+			}catch(Exception e) {
+				log.error("Incorrect format of update_composite_rss_files.days_count_for_deletion parameter ["+props.getProperty("update_composite_rss_files.days_count_for_deletion")+"]. Use default value ["+ConfigMap.UPDATE_COMPOSITE_RSS_FILES_DAYS_COUNT_FOR_DELETION+"]");
+			}
 			
 			
 		} catch (IOException e) {

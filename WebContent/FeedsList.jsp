@@ -95,7 +95,7 @@ for(RSS rss : rssListForPrinting) {
 	out.println("<td>"+rss.getChannel().getLastBuildDate()+"</td>");
 	out.println("<td>"+rss.getChannel().getItem().size()+"</td>");
 	out.println("<td>"+Exec.getFileSizeByFeedId(mapRssStringForPrinting.get(rss))+"</td>");
-	out.println("<td>"+rss.getChannel().getLink()+"</td>");
+	out.println("<td><a href=\""+rss.getChannel().getLink()+"\">"+rss.getChannel().getLink()+"</a></td>");
 	out.println("</tr>");	 
 //	ObjectsUtills.printXMLObject(rssFeed);
 }
