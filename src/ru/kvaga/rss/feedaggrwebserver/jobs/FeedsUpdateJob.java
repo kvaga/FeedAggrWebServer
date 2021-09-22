@@ -72,7 +72,7 @@ public class FeedsUpdateJob implements Runnable {
 		String filterWords = null;
 		Long durationInMillisForUpdate=null;
 		
-		int allFeedsCount=0, successFeedsCount=0;
+		int allFeedsCount=0, successFeedsCount=0, postponedCount=0;
 //		for(File feedsFiles : new File(feedsPath).listFiles()) {
 //			log.debug(feedsFiles.getName());
 //		}
@@ -116,18 +116,10 @@ public class FeedsUpdateJob implements Runnable {
 						RSS rssFromFile = RSS.getRSSObjectFromXMLFile(rssXmlFile);
 						
 						long currentTimeInMillis = new Date().getTime();
-						if((currentTimeInMillis - rssFromFile.getChannel().getLastBuildDate().getTime())< userFeed.getDurationInMillisForUpdate()) {
-							log.warn("It's too early to update feed id ["+userFeed.getId()+"] "
-									+ "because last update date was ["+rssFromFile.getChannel().getLastBuildDate()+"] and "
-									+ "in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] and "
-									+ "parameter getDurationInMillisForUpdate set to ["+userFeed.getDurationInMillisForUpdate()+"]. Current date&time in millis ["+currentTimeInMillis+"] - getLastBuildDate in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] = ["+(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime())+"] < getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "]");
+						if(!isItTimeToUpdateFeed(currentTimeInMillis, userFeed, rssFromFile)) {
+							postponedCount++;
 							continue;
 						}
-
-						log.debug("It's good time to update feed id ["+userFeed.getId()+"] "
-								+ "because last update date was ["+rssFromFile.getChannel().getLastBuildDate()+"] and "
-								+ "in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] and "
-								+ "parameter getDurationInMillisForUpdate set to ["+userFeed.getDurationInMillisForUpdate()+"]. Current date&time in millis ["+currentTimeInMillis+"] - getLastBuildDate in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] = ["+(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime())+"] > getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "]");
 						
 						rssFromFile.removeItemsOlderThanXDays(ConfigMap.ttlOfFeedsInDays);
 //				ObjectsUtils.printXMLObject(rssFromFile);
@@ -197,7 +189,24 @@ public class FeedsUpdateJob implements Runnable {
 			log.error("Exception occured", e);
 		}
 		InfluxDB.getInstance().send("response_time,method=FeedsUpdateJob.updateFeeds", new Date().getTime() - t1);
-		return new int[] {allFeedsCount, successFeedsCount, allFeedsCount-successFeedsCount};
+		return new int[] {allFeedsCount, successFeedsCount, allFeedsCount-successFeedsCount-postponedCount, postponedCount};
+	}
+
+	private boolean isItTimeToUpdateFeed(long currentTimeInMillis, UserFeed userFeed, RSS rssFromFile) {
+		if((currentTimeInMillis - rssFromFile.getChannel().getLastBuildDate().getTime())< userFeed.getDurationInMillisForUpdate()) {
+			log.warn("It's too early to update feed id ["+userFeed.getId()+"] "
+					+ "because last update date was ["+rssFromFile.getChannel().getLastBuildDate()+"] and "
+					+ "in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] and "
+					+ "parameter getDurationInMillisForUpdate set to ["+userFeed.getDurationInMillisForUpdate()+"]. Current date&time in millis ["+currentTimeInMillis+"] - getLastBuildDate in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] = ["+(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime())+"] < getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "]");
+			return false;
+		}else {
+			log.debug("It's good time to update feed id ["+userFeed.getId()+"] "
+					+ "because last update date was ["+rssFromFile.getChannel().getLastBuildDate()+"] and "
+					+ "in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] and "
+					+ "parameter getDurationInMillisForUpdate set to ["+userFeed.getDurationInMillisForUpdate()+"]. "
+					+ "Current date&time ["+currentTimeInMillis+"] - getLastBuildDate ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] = ["+(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime())+"] > getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "]");
+			return true;
+		}
 	}
 
 	public void run() {
@@ -206,7 +215,7 @@ public class FeedsUpdateJob implements Runnable {
 		long t1 = new Date().getTime();
 		try {
 			result = updateFeeds();
-			log.debug("Processed feeds: all ["+result[0]+"], successful ["+result[1]+"], failed ["+result[2]+"]");
+			log.debug("Processed feeds: all ["+result[0]+"], successful ["+result[1]+"], failed ["+result[2]+"], postponed ["+result[3]+"]");
 		} catch (NoSuchAlgorithmException e) {
 			log.error("NoSuchAlgorithmException", e);
 		} catch (SplitHTMLContent e) {
