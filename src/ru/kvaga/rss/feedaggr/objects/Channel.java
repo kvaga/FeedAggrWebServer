@@ -9,8 +9,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.monitoring.influxdb2.InfluxDB;
 import ru.kvaga.rss.feedaggr.Exec;
+import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;
 
 @XmlRootElement
 public class Channel {
@@ -96,12 +97,12 @@ public class Channel {
 		long t1 = new Date().getTime();
 		for (Item _i : getItem()) {
 			if (item.getGuid().getValue().equals(_i.getGuid().getValue())) {
-				InfluxDB.getInstance().send("response_time,method=Channel.", new Date().getTime() - t1);
+				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 				return true;
 			}
 		}
-		InfluxDB.getInstance().send("response_time,method=Channel.containsItem", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 		return false;
 	}
@@ -147,7 +148,7 @@ public class Channel {
 			items.add(_item);
 		}
 		setItem(items);
-		InfluxDB.getInstance().send("response_time,method=Channel.setItemsFromRawHtmlBodyItems", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 	}
 	

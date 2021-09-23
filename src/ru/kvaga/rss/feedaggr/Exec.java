@@ -24,7 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
-import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.monitoring.influxdb2.InfluxDB;
 import ru.kvaga.rss.feedaggr.FeedAggrException.CommonException;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetFeedsListByUser;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetURLContentException;
@@ -33,6 +33,7 @@ import ru.kvaga.rss.feedaggr.objects.Channel;
 import ru.kvaga.rss.feedaggr.objects.GUID;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
+import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtilsConcurrent;
 
 public class Exec {
@@ -180,10 +181,10 @@ public class Exec {
 		responseHtmlBody = responseHtmlBody.replaceAll("\r\n", "").replaceAll("\n", "");
 		Matcher matcher = getTitleFromHtmlBodyPattern.matcher(responseHtmlBody);
 		if(matcher.find()) {
-			InfluxDB.getInstance().send("response_time,method=Exec,getTitleFromHtmlBody", new Date().getTime() - t1);
+			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 			return matcher.group("title");
 		}else {
-			InfluxDB.getInstance().send("response_time,method=Exec.getTitleFromHtmlBody", new Date().getTime() - t1);
+			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 			return null;
 		}
@@ -197,14 +198,14 @@ public class Exec {
 		index = indexOfAsterisk==-1? indexOfPercent:Math.min(indexOfPercent, indexOfAsterisk);
 
 		if (index == -1) {
-			InfluxDB.getInstance().send("response_time,method=Exec.getSubstringForHtmlBodySplit", new Date().getTime() - t1);
+			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 			throw new FeedAggrException.GetSubstringForHtmlBodySplitException(repeatableSearchPattern);
 		}
 //		System.err.println(indexOfAsterisk);
 //		System.err.println(indexOfPercent);
 //		System.err.println(index);
-		InfluxDB.getInstance().send("response_time,method=Exec.getSubstringForHtmlBodySplit", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 		return repeatableSearchPattern.substring(0, index);
 	}
@@ -286,7 +287,7 @@ public class Exec {
 			}else if(con.getContentType().toLowerCase().contains("text/html")) {
 				charset = "UTF-8";
 			} else {
-				InfluxDB.getInstance().send("response_time,method=Exec.getURLContent", new Date().getTime() - t1);
+				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 				throw new FeedAggrException.GetURLContentException(urlText,
 						String.format("Received unsupported contentType: %s. ", con.getContentType()));
 			}
@@ -317,7 +318,7 @@ public class Exec {
 				br.close();
 			}
 			con.disconnect();
-			InfluxDB.getInstance().send("response_time,method=Exec.getURLContent", new Date().getTime() - t1);
+			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 			return body;
 			
@@ -329,7 +330,7 @@ public class Exec {
 			if(con!=null) {
 				con.disconnect();
 			}
-			InfluxDB.getInstance().send("response_time,method=Exec.getURLContent", new Date().getTime() - t1);
+			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 			throw new FeedAggrException.GetURLContentException(e.getMessage(),urlText);
 		}
@@ -406,7 +407,7 @@ public class Exec {
 			}
 			channel.setItem(items);
 	        rss.setChannel(channel);
-	        InfluxDB.getInstance().send("response_time,method=Exec.getURLContent", new Date().getTime() - t1);
+	        MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 	return rss;
 	}
@@ -426,11 +427,11 @@ public class Exec {
 		Matcher m = getNumberFromItemLinkPattern.matcher(itemLink);
 		if(m.matches()) {
 			log.debug("Found number ["+m.group(1)+"] in the item link ["+itemLink+"]");
-			InfluxDB.getInstance().send("response_time,method=Exec.getNumberFromItemLink", new Date().getTime() - t1);
+			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 			return Integer.parseInt(m.group(1));
 		}
-		InfluxDB.getInstance().send("response_time,method=Exec.getNumberFromItemLink", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		throw new Exception("Can't find number in the item link ["+itemLink+"]");
 	}
 
@@ -456,13 +457,13 @@ public static synchronized String checkItemURLForFullness(String feedURL, String
 	if(matcher.find()) {
 		leftPathOfFeedURL = matcher.group();
 	}else {
-		InfluxDB.getInstance().send("response_time,method=Exec.checkItemURLForFullness", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		throw new FeedAggrException.CommonException("checkItemURLForFullness: Can't find left path in the URL ["+feedURL+"] by the regex pattern ["+leftPathPatternText+"]");
 	}
 	finalURL=leftPathOfFeedURL+itemURL;
 	log.debug("Now Item URL ["+itemURL+"] converted to ["+leftPathOfFeedURL+itemURL+"]");
 	log.debug("checkItemURLForFullness feedURL=["+feedURL+"] itemURL=["+itemURL+"] t=["+(new Date().getTime()-t1)+"]");
-	InfluxDB.getInstance().send("response_time,method=Exec.checkItemURLForFullness", new Date().getTime() - t1);
+	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 	return leftPathOfFeedURL+itemURL;
 }
@@ -482,11 +483,11 @@ public static synchronized String getYoutubeChannelId(String youtubeVideosUrl) t
 	long t1 = new Date().getTime();
 	Matcher m1 = youtubeUrlChannelVideosPattern.matcher(youtubeVideosUrl);
 	if(m1.find()) {
-		InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeChannelId.part1", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return m1.group("channleId");
 	}
 	if(youtubeVideosUrl.contains("feeds/videos.xml")) {
-		InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeChannelId.part2", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return Exec.getChannelIdFromXMLURL(youtubeVideosUrl);
 	}
 //	String regex="\"externalId\":\"(([A-Z]*[0-9]*[a-z]*)*)\",";
@@ -494,10 +495,10 @@ public static synchronized String getYoutubeChannelId(String youtubeVideosUrl) t
 //	String urlContent=Exec.getURLContent(youtubeVideosUrl);
 	Matcher m = yutubeUrlContentExternalId.matcher(Exec.getURLContent(youtubeVideosUrl));
 	if(m.find()) {
-		InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeChannelId.part3", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return m.group(1);
 	}
-	InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeChannelId", new Date().getTime() - t1);
+	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 	return null;
 }
 
@@ -506,10 +507,10 @@ public static synchronized String getYoutubeFeedURL(String url) throws Exception
 	String youtubeChannelPattern="https://www.youtube.com/feeds/videos.xml?channel_id=%s";
 	String channelId = getYoutubeChannelId(url);
 	if(channelId!=null) {
-		InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeFeedURL.part1", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return String.format(youtubeChannelPattern, channelId);
 	}
-	InfluxDB.getInstance().send("response_time,method=Exec.getYoutubeFeedURL", new Date().getTime() - t1);
+	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 	return null;
 }
 
@@ -533,7 +534,7 @@ public static synchronized HashSet<String> getYoutubeListOfPlaylistsURLs(String 
 			l.add(String.format(urlPlaylistFeedPattern, m.group(i)));
 		}
 	}
-	InfluxDB.getInstance().send("response_time,method=getYoutubeListOfPlaylistsURLs", new Date().getTime()-t1);
+	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime()-t1);
 	return l;
 }
 
@@ -543,11 +544,11 @@ public synchronized static String getDomainFromURL(String url){
 	Matcher m = getDomainFromURLPattern.matcher(url);
 	if(m.find()) {
 		log.debug("Found domain ["+m.group("url")+"] in the url ["+url+"]");
-		InfluxDB.getInstance().send("response_time,method=Exec.getDomainFromURL", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return m.group("url");
 	}
 	log.error("Didn't find domain in the url ["+url+"]");
-	InfluxDB.getInstance().send("response_time,method=getDomainFromURL", new Date().getTime() - t1);
+	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 	return null;
 }
 
@@ -590,10 +591,10 @@ public static synchronized String getHabrFeedURL(String url) throws Exception {
 
 		habrUrl = String.format(prefix, m.group("lang")==null?"":m.group("lang")) + m.group("other");
 		System.out.println("finalUrl: " + habrUrl);
-		//InfluxDB.getInstance().send("response_time,method=Exec.getHabrFeedURL", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
 		return habrUrl;
 	}else {
-		//InfluxDB.getInstance().send("response_time,method=Exec.getHabrFeedURLError", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
 		throw new Exception("Can't convert url ["+url+"] to the habr rss pattern url");
 	}
 }

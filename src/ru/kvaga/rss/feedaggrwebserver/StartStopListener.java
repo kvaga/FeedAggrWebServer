@@ -12,7 +12,7 @@ import javax.servlet.annotation.WebListener;
 
 import org.apache.logging.log4j.Logger;
 
-import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.monitoring.influxdb2.InfluxDB;
 import ru.kvaga.rss.feedaggr.Exec;
 
 import org.apache.logging.log4j.LogManager;;
@@ -48,14 +48,14 @@ public class StartStopListener implements ServletContextListener{
 			try {
 				ConfigMap.INFLUXDB_ENABLED=Boolean.parseBoolean(props.getProperty("influxdb.enabled"));
 				if(ConfigMap.INFLUXDB_ENABLED) {
-					InfluxDB.enable();
+					//InfluxDB.enable();
 				}else {
-					InfluxDB.disable();
+					//InfluxDB.disable();
 				}
 				log.info("Loaded parameter influxdb.enabled="+ConfigMap.INFLUXDB_ENABLED);
 			}catch(Exception e) {
 				log.error("Incorrect format of influxdb.enabled parameter ["+props.getProperty("influxdb.enabled")+"]. InfluxDB disabled");
-				InfluxDB.disable();
+				//InfluxDB.disable();
 			}
 			ConfigMap.INFLUXDB_HOST=props.getProperty("influxdb.host");
 			log.info("Loaded parameter influxdb.host="+ConfigMap.INFLUXDB_HOST);
@@ -72,7 +72,7 @@ public class StartStopListener implements ServletContextListener{
 				log.info("Loaded parameter influxdb.port="+ConfigMap.INFLUXDB_PORT);
 			}catch(Exception e) {
 				log.error("Incorrect format of influxdb.port parameter ["+props.getProperty("influxdb.port")+"]. InfluxDB disabled");
-				InfluxDB.disable();
+				//InfluxDB.disable();
 			}
 			
 			try {
@@ -80,20 +80,21 @@ public class StartStopListener implements ServletContextListener{
 				log.info("Loaded parameter influxdb.attempts="+ConfigMap.INFLUXDB_COUNT_OF_ATTEMPTS_IF_FAILS);
 			}catch(Exception e) {
 				log.error("Incorrect format of influxdb.attempts parameter ["+props.getProperty("influxdb.attempts")+"]. InfluxDB disabled");
-				InfluxDB.disable();
+				//InfluxDB.disable();
 			}
 			try {
 				ConfigMap.INFLUXDB_TIMEOUT=Long.parseLong(props.getProperty("influxdb.timeout"));
 				log.info("Loaded parameter influxdb.timeout="+ConfigMap.INFLUXDB_TIMEOUT);
 			}catch(Exception e) {
 				log.error("Incorrect format of influxdb.timeout parameter ["+props.getProperty("influxdb.timeout")+"]. InfluxDB disabled");
-				InfluxDB.disable();
+				//InfluxDB.disable();
 			}
 			
 			try {
-				InfluxDB.setCountOfAttemptsIfFails(10);
-				InfluxDB.setTimeoutInMillis(1000);
-				InfluxDB.getInstance(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME, ConfigMap.INFLUXDB_THREAD_NUMBER);
+				//InfluxDB.setCountOfAttemptsIfFails(10);
+				//InfluxDB.setTimeoutInMillis(1000);
+				//InfluxDB.getInstance(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME, ConfigMap.INFLUXDB_THREAD_NUMBER);
+				InfluxDB.getInstance(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME);
 				log.debug("InfluXDB successfully started");
 			}catch(Exception e) {
 				log.error("Couldn't start InfluxDB monitoring sending", e);
@@ -136,7 +137,8 @@ public class StartStopListener implements ServletContextListener{
 
 	    @Override
 	    public void contextDestroyed(ServletContextEvent servletContextEvent) {
-	    	InfluxDB.destroy();
+	    	if(InfluxDB.getInstance()!=null)
+	    		InfluxDB.getInstance().destroy();
 	        log.info("Servlet has been stopped.");
 	    }
 	    

@@ -24,7 +24,7 @@ import org.apache.hc.client5.http.ConnectTimeoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.monitoring.influxdb2.InfluxDB;
 import ru.kvaga.rss.feedaggr.FeedAggrException;
 import ru.kvaga.rss.feedaggr.Item;
 import ru.kvaga.rss.feedaggr.FeedAggrException.SplitHTMLContent;
@@ -171,10 +171,10 @@ class GetURLContentTask implements Callable<String>{
 			if(con!=null) {
 				con.disconnect();
 			}
-			InfluxDB.getInstance().send("response_time,method=GetURLContentTask.call", new Date().getTime() - t1);
+			MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
 			throw new FeedAggrException.GetURLContentException(e.getMessage(),urlText);
 		}
-		InfluxDB.getInstance().send("response_time,method=GetURLContentTask.call", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return body;
 	}
 	

@@ -13,9 +13,10 @@ import javax.servlet.http.HttpServlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.monitoring.influxdb2.InfluxDB;
 import ru.kvaga.rss.feedaggr.Exec;
-import ru.kvaga.rss.feedaggrwebserver.ConfigMap;;
+import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
+import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;;
 
 @WebListener
 public class BackgroudJobManager implements ServletContextListener{
@@ -36,8 +37,8 @@ public class BackgroudJobManager implements ServletContextListener{
 		
 		scheduler1 = Executors.newSingleThreadScheduledExecutor();
 		scheduler2 = Executors.newSingleThreadScheduledExecutor();
-		if(true) { 
-//		if(jobsEnabled) {
+//		if(true) { 
+		if(jobsEnabled) {
 			scheduler1.scheduleAtFixedRate(new FeedsUpdateJob(event.getServletContext()), 0, 1, TimeUnit.HOURS);
 			
 //		scheduler1.scheduleAtFixedRate(new FeedsUpdateJob(event.getServletContext()), 0, 20, TimeUnit.SECONDS);
@@ -50,7 +51,7 @@ public class BackgroudJobManager implements ServletContextListener{
 //        scheduler.schedule("7 8-22 * * *", new Task());
 //        scheduler.start();
 //        servletContextEvent.getServletContext().setAttribute("SCHEDULER", scheduler);
-		InfluxDB.getInstance().send("response_time,method=BackgroudJobManager.contextInitialized", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 	}
 	
 

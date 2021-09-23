@@ -3,7 +3,8 @@ package ru.kvaga.rss.feedaggr.objects;
 import java.util.Comparator;
 import java.util.Date;
 
-import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.monitoring.influxdb2.InfluxDB;
+import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;
 
 public class RSSForPrintingComparatorByTitle implements Comparator<RSS>{
 
@@ -15,7 +16,7 @@ public class RSSForPrintingComparatorByTitle implements Comparator<RSS>{
 			return 1;
 		if(o2.getChannel().getTitle()==null)
 			return -1;
-		InfluxDB.getInstance().send("response_time,method=RSSForPrintingComparatorByTitle.compare", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return o1.getChannel().getTitle().compareTo(o2.getChannel().getTitle());
 	}
 

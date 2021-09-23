@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.monitoring.influxdb2.InfluxDB;
 import ru.kvaga.rss.feedaggr.FeedAggrException;
 import ru.kvaga.rss.feedaggr.Item;
 
@@ -125,7 +125,7 @@ public class GetItems implements Callable<LinkedList<Item>>{
 			}
 
 		}
-		InfluxDB.getInstance().send("response_time,method=Exec.getItems", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 		return ll;
 		
@@ -142,10 +142,10 @@ public class GetItems implements Callable<LinkedList<Item>>{
 		log.debug("splitted html content items.length="+splittedItems.length);
 		log.debug("substringForHtmlBodySplit="+substringForHtmlBodySplit);
 		if(splittedItems.length<2) {
-			InfluxDB.getInstance().send("response_time,method=Exec.getSubstringForHtmlBodySplit", new Date().getTime() - t1);
+			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 			throw new FeedAggrException.SplitHTMLContent(url, htmlBody,substringForHtmlBodySplit);			
 		}
-		InfluxDB.getInstance().send("response_time,method=Exec.getSubstringForHtmlBodySplit", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 		return splittedItems;
 	}

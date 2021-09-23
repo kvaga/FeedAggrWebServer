@@ -23,7 +23,7 @@ ru.kvaga.rss.feedaggr.Exec
         ru.kvaga.rss.feedaggrwebserver.objects.user.UserRepeatableSearchPattern,
             ru.kvaga.rss.feedaggrwebserver.ConfigMap,
             org.apache.logging.log4j.*,
-            ru.kvaga.monitoring.influxdb.InfluxDB
+            ru.kvaga.monitoring.influxdb2.InfluxDB2
             
         
     "%>
@@ -39,7 +39,7 @@ ru.kvaga.rss.feedaggr.Exec
 <body>
 !!!!!!!!!!!!!!!1
 <%
-InfluxDB.getInstance().send("response_time,method=getYoutubeListOfPlaylistsURLs", 45);
+//InfluxDB2.getInstance().send("response_time,method=getYoutubeListOfPlaylistsURLs", 45);
 
 %>
 <%

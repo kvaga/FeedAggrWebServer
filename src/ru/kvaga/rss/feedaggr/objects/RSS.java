@@ -19,9 +19,10 @@ import javax.xml.bind.annotation.XmlValue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.monitoring.influxdb2.InfluxDB;
 import ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
+import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;
 
 
 
@@ -64,18 +65,18 @@ public class RSS {
 	    jaxbContext = JAXBContext.newInstance(RSS.class);              
 	    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 	    RSS rss = (RSS) jaxbUnmarshaller.unmarshal(xmlFile);
-	    InfluxDB.getInstance().send("response_time,method=RSS.getRSSObjectFromXMLFile", new Date().getTime() - t1);
+	    MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 	    return rss;
 	}
     public static RSS getRSSObjectFromXMLFile(String xmlFile) throws JAXBException {
     	long t1 = new Date().getTime();
-	    InfluxDB.getInstance().send("response_time,method=RSS.getRSSObjectFromXMLFile", new Date().getTime() - t1);
+    	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return getRSSObjectFromXMLFile(new File(xmlFile));
 	}
     
     public static RSS getRSSObjectByFeedId(String feedId) throws JAXBException {
     	long t1 = new Date().getTime();
-	    InfluxDB.getInstance().send("response_time,method=RSS.getRSSObjectByFeedId", new Date().getTime() - t1);
+    	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return getRSSObjectFromXMLFile(new File(ConfigMap.feedsPath + File.separator + feedId + ".xml"));
 	}
     
@@ -90,7 +91,7 @@ public class RSS {
     		updatedListOfItems.add(item);
     	}
     	getChannel().setItem(updatedListOfItems);
-	    InfluxDB.getInstance().send("response_time,method=RSS.removeItemsOlderThanXDays", new Date().getTime() - t1);
+    	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
     }
     
@@ -101,7 +102,7 @@ public class RSS {
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         m.marshal(this, file);
         log.debug("Object rss [" + getChannel().getTitle() + "] successfully saved to the [" + file + "] file");
-	    InfluxDB.getInstance().send("response_time,method=RSS.saveXMLObjectToFile", new Date().getTime() - t1);
+        MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 	}
     public synchronized void saveXMLObjectToFile(String file) throws JAXBException {

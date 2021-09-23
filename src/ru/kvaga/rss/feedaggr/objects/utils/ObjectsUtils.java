@@ -13,11 +13,12 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.monitoring.influxdb2.InfluxDB;
 import ru.kvaga.rss.feedaggr.objects.Channel;
 import ru.kvaga.rss.feedaggr.objects.GUID;
 import ru.kvaga.rss.feedaggr.objects.Item;
 import ru.kvaga.rss.feedaggr.objects.RSS;
+import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;
 
 public class ObjectsUtils {
 	final static Logger log = LogManager.getLogger(ObjectsUtils.class);
@@ -33,7 +34,7 @@ public class ObjectsUtils {
         Marshaller m = jc.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         m.marshal(object, file);
-        InfluxDB.getInstance().send("response_time,method=ObjectsUtils.saveXMLObjectToFile", new Date().getTime() - t1);
+        MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
 	}
 	*/
 	// Read XML object from file, then print this object
@@ -52,7 +53,7 @@ public class ObjectsUtils {
 	    jaxbContext = JAXBContext.newInstance(object.getClass());              
 	    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 	    Object obj = (Object) jaxbUnmarshaller.unmarshal(xmlFile);
-        InfluxDB.getInstance().send("response_time,method=ObjectsUtils.getXMLObjectFromXMLFile", new Date().getTime() - t1);
+        MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
 
 	    return obj;
 	}
@@ -67,7 +68,7 @@ public class ObjectsUtils {
 	    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 	    marshaller.marshal(object, writer);
 	    log.debug(writer.toString());
-        InfluxDB.getInstance().send("response_time,method=ObjectsUtils.printXMLObject", new Date().getTime() - t1);
+	    MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
     }
     
 	// Read XML object from file, then print this object
@@ -94,13 +95,13 @@ public class ObjectsUtils {
 		    Marshaller marshaller = jc.createMarshaller();
 		    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		    marshaller.marshal(rss, writer);
-	        InfluxDB.getInstance().send("response_time,method=ObjectsUtils.", new Date().getTime() - t1);
+		    MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 		}
 		catch (JAXBException e) 
 		{
 		   log.error("Exception", e);
-	        InfluxDB.getInstance().send("response_time,method=ObjectsUtils.readXMLObjectFromXMLFileAndPrint", new Date().getTime() - t1);
+		   MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		}
 		
 	}

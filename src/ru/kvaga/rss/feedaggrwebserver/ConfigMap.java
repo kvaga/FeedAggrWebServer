@@ -2,7 +2,7 @@ package ru.kvaga.rss.feedaggrwebserver;
 
 import java.io.File;
 
-import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.monitoring.influxdb2.InfluxDB;
 
 public class ConfigMap {
 	public static File configFile=null;

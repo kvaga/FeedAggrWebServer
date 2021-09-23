@@ -15,7 +15,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.logging.log4j.*;
 
-import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.monitoring.influxdb2.InfluxDB;
 import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggr.FeedAggrException.CommonException;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetSubstringForHtmlBodySplitException;
@@ -27,6 +27,7 @@ import ru.kvaga.rss.feedaggr.objects.GUID;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
+import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed;
 
@@ -60,7 +61,6 @@ public class FeedsUpdateJob implements Runnable {
 		String usersPath = ConfigMap.usersPath.getAbsolutePath();
 //		log.debug("feedsPath="+feedsPath);
 		log.debug("usersPath=" + usersPath);
-
 		String url = null;
 		String responseHtmlBody = null;
 		String repeatableSearchPattern = null;
@@ -79,7 +79,7 @@ public class FeedsUpdateJob implements Runnable {
 
 		File[] listOfUsersFiles = ConfigMap.usersPath.listFiles();
 		if (listOfUsersFiles == null || listOfUsersFiles.length == 0) {
-			InfluxDB.getInstance().send("response_time,method=FeedsUpdateJob.updateFeeds", new Date().getTime() - t1);
+			MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
 			throw new RuntimeException("The list of files for path [" + ConfigMap.usersPath + "]=0");
 		}
 		try {
@@ -188,7 +188,7 @@ public class FeedsUpdateJob implements Runnable {
 			// TODO Auto-generated catch block
 			log.error("Exception occured", e);
 		}
-		InfluxDB.getInstance().send("response_time,method=FeedsUpdateJob.updateFeeds", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return new int[] {allFeedsCount, successFeedsCount, allFeedsCount-successFeedsCount-postponedCount, postponedCount};
 	}
 
@@ -197,14 +197,14 @@ public class FeedsUpdateJob implements Runnable {
 			log.warn("It's too early to update feed id ["+userFeed.getId()+"] "
 					+ "because last update date was ["+rssFromFile.getChannel().getLastBuildDate()+"] and "
 					+ "in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] and "
-					+ "parameter getDurationInMillisForUpdate set to ["+userFeed.getDurationInMillisForUpdate()+"]. Current date&time in millis ["+currentTimeInMillis+"] - getLastBuildDate in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] = ["+(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime())+"] < getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "]");
+					+ "parameter getDurationInMillisForUpdate set to ["+userFeed.getDurationInMillisForUpdate()+"]. Current date&time in millis ["+currentTimeInMillis+"] - getLastBuildDate in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] = ["+(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime())+"] < getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "], [" + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime()) + " < " + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(userFeed.getDurationInMillisForUpdate())+"]");
 			return false;
 		}else {
 			log.debug("It's good time to update feed id ["+userFeed.getId()+"] "
 					+ "because last update date was ["+rssFromFile.getChannel().getLastBuildDate()+"] and "
 					+ "in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] and "
 					+ "parameter getDurationInMillisForUpdate set to ["+userFeed.getDurationInMillisForUpdate()+"]. "
-					+ "Current date&time ["+currentTimeInMillis+"] - getLastBuildDate ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] = ["+(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime())+"] > getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "]");
+					+ "Current date&time ["+currentTimeInMillis+"] - getLastBuildDate ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] = ["+(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime())+"] > getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "], [" + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime()) + " > " + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds( userFeed.getDurationInMillisForUpdate())+"]");
 			return true;
 		}
 	}

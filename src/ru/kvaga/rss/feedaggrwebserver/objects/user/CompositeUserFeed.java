@@ -4,7 +4,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 
-import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.monitoring.influxdb2.InfluxDB;
+import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;
 
 public class CompositeUserFeed {
 	private String id;
@@ -31,11 +32,11 @@ public class CompositeUserFeed {
 		long t1 = new Date().getTime();
 		for(String s : feedIds) {
 			if(s.equals(compositeFeedId)) {
-				InfluxDB.getInstance().send("response_time,method=CompositeUserFeed.doesHaveCompositeFeedId", new Date().getTime() - t1);
+				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 				return true;
 			}
 		}
-		InfluxDB.getInstance().send("response_time,method=CompositeUserFeed.doesHaveCompositeFeedId", new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return false;
 	}
 	
