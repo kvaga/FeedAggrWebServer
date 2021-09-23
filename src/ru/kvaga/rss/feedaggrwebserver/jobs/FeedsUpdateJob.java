@@ -198,7 +198,7 @@ public class FeedsUpdateJob implements Runnable {
 					+ "because last update date was ["+rssFromFile.getChannel().getLastBuildDate()+"] and "
 					+ "in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] and "
 					+ "parameter getDurationInMillisForUpdate set to ["+userFeed.getDurationInMillisForUpdate()+"]. Current date&time in millis ["+currentTimeInMillis+"] - getLastBuildDate in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] = ["+(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime())+"] < getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "], [" + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime()) + " < " + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(userFeed.getDurationInMillisForUpdate())+"]");
-			return false;
+			return false; 
 		}else {
 			log.debug("It's good time to update feed id ["+userFeed.getId()+"] "
 					+ "because last update date was ["+rssFromFile.getChannel().getLastBuildDate()+"] and "
