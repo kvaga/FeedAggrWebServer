@@ -264,11 +264,11 @@ public class User {
 
 	public CompositeUserFeed getCompositeUserFeedById(String feedId) throws Exception {
 		long t1 = new Date().getTime();
-		for (CompositeUserFeed userFeed : getCompositeUserFeeds()) {
-			if (userFeed.getId().equals(feedId)) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-						new Date().getTime() - t1);
-				return userFeed;
+		for (CompositeUserFeed compositeUserFeed : getCompositeUserFeeds()) {
+			System.out.println(compositeUserFeed.getId() + " ? " + feedId);
+			if (compositeUserFeed.getId().equals(feedId)) {
+				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},	new Date().getTime() - t1);
+				return compositeUserFeed;
 			}
 		}
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);

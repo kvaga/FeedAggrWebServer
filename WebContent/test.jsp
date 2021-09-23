@@ -23,7 +23,7 @@ ru.kvaga.rss.feedaggr.Exec
         ru.kvaga.rss.feedaggrwebserver.objects.user.UserRepeatableSearchPattern,
             ru.kvaga.rss.feedaggrwebserver.ConfigMap,
             org.apache.logging.log4j.*,
-            ru.kvaga.monitoring.influxdb2.InfluxDB2
+            ru.kvaga.monitoring.influxdb2.InfluxDB
             
         
     "%>

@@ -91,7 +91,10 @@ out.println("<col class=\"col7\"/>");
 //}
 for(RSS rss : rssListForPrinting) {
 	out.println("<td><a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a></td><td>[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]</td>");
-	out.println("<td>[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+rss.getChannel().getTitle()+"\">Edit</a>]</td>");
+	//out.println("<td>[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+rss.getChannel().getTitle()+"\">Edit</a>]</td>");
+	out.println("<td>[<a href=\"Feed.jsp?action=edit&feedId="+mapRssStringForPrinting.get(rss)+"\">Edit</a>]</td>");
+
+	
 	out.println("<td>"+rss.getChannel().getLastBuildDate()+"</td>");
 	out.println("<td>"+rss.getChannel().getItem().size()+"</td>");
 	out.println("<td>"+Exec.getFileSizeByFeedId(mapRssStringForPrinting.get(rss))+"</td>");
