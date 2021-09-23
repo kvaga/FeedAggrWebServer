@@ -206,7 +206,7 @@ public class FeedsUpdateJob implements Runnable {
 					+ "parameter getDurationInMillisForUpdate set to ["+userFeed.getDurationInMillisForUpdate()+"]. "
 					+ "Current date&time ["+currentTimeInMillis+"] - getLastBuildDate ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] = ["+(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime())+"] > getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "], [" + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime()) + " > " + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds( userFeed.getDurationInMillisForUpdate())+"]");
 			return true;
-		}
+		}//
 	}
 
 	public void run() {
