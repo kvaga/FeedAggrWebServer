@@ -186,6 +186,7 @@ public class FeedsUpdateJob implements Runnable {
 
 					} catch (Exception e) {
 						log.error("Exception on feedId [" + userFeed.getId() + "]", e);
+						MonitoringUtils.sendCommonMetric("FeedsUpdateJob.ExceptionOnFeed", 1, new Tag("feedId",userFeed.getId()));
 					}
 				}
 				user.saveXMLObjectToFile(userFile);
@@ -221,12 +222,14 @@ public class FeedsUpdateJob implements Runnable {
 		int[] result;
 		long t1 = new Date().getTime();
 		try {
+			MonitoringUtils.sendCommonMetric("JobsWork", 1, new Tag("job", "FeedsUpdateJob"));
 			result = updateFeeds();
 			log.debug("Processed feeds: all ["+result[0]+"], successful ["+result[1]+"], failed ["+result[2]+"], postponed ["+result[3]+"]");
 			MonitoringUtils.sendCommonMetric("Processed feeds", result[0], new Tag("status","all"));
 			MonitoringUtils.sendCommonMetric("Processed feeds", result[1], new Tag("status","successful"));
 			MonitoringUtils.sendCommonMetric("Processed feeds", result[2], new Tag("status","failed"));
 			MonitoringUtils.sendCommonMetric("Processed feeds", result[3], new Tag("status","postponed"));
+			MonitoringUtils.sendCommonMetric("JobsWork", 0, new Tag("job", "FeedsUpdateJob"));
 
 		} catch (NoSuchAlgorithmException e) {
 			log.error("NoSuchAlgorithmException", e);

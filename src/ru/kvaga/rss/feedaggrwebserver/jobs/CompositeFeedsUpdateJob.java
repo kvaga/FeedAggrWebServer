@@ -27,6 +27,7 @@ public class CompositeFeedsUpdateJob implements Runnable {
 
 	public void run() {
 		long t1 = new Date().getTime();
+		MonitoringUtils.sendCommonMetric("JobsWork", 1, new Tag("job", "CompositeFeedsUpdateJob"));
 
 //		ArrayList<String> al = new ArrayList<String>();
 //		al.add("1613078641721");
@@ -62,6 +63,8 @@ public class CompositeFeedsUpdateJob implements Runnable {
 
 		log.debug("CompositeFeedsUpdateJob finished for ["+(Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(new Date().getTime()-t1))+"]");
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		MonitoringUtils.sendCommonMetric("JobsWork", 0, new Tag("job", "CompositeFeedsUpdateJob"));
+
 	}
 
 }

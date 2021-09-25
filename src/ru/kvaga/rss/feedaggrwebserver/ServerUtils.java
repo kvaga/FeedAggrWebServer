@@ -42,6 +42,7 @@ import ru.kvaga.rss.feedaggr.objects.Item;
 import ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils;
 import ru.kvaga.rss.feedaggrwebserver.jobs.CompositeFeedsUpdateJob;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.MonitoringUtils;
+import ru.kvaga.rss.feedaggrwebserver.monitoring.Tag;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed;
@@ -548,6 +549,7 @@ public class ServerUtils {
 		User user = User.getXMLObjectFromXMLFile(userFile);
 
 		for (CompositeUserFeed compositeUserFeed : user.getCompositeUserFeeds()) {
+			int countOfDeletedOldItems=0;
 			if(singleCompositeFeedIdForUpdatingAfterAddingNewFeeds!=null && !compositeUserFeed.getId().equals(singleCompositeFeedIdForUpdatingAfterAddingNewFeeds)) {
 				log.debug("Skipped composite feed id ["+compositeUserFeed.getId()+"] because it isn't equal to singleCompositeFeedIdForUpdatingAfterAddingNewFeeds ["+singleCompositeFeedIdForUpdatingAfterAddingNewFeeds+"]");
 				continue;
@@ -590,6 +592,7 @@ public class ServerUtils {
 //								iterator.remove(); 
 								compositeRSS.getChannel().getItem().remove(itemFromCompositeRSSFile);
 								log.debug(itemFromCompositeRSSFile + " was deleted from rss composite ["+compositeRSS+"] list because it older than ["+deleteItemsWhichOlderThanThisDate+"] date");
+								countOfDeletedOldItems++;
 							} else {
 								log.debug(itemFromCompositeRSSFile + " exists in the rss composite ["+compositeRSS+"] list and skipped because newer than ["+deleteItemsWhichOlderThanThisDate+"] ");
 							}
@@ -605,6 +608,7 @@ public class ServerUtils {
 			}
 			successFeedsCount++;
 			compositeRSS.saveXMLObjectToFile(compositeRSSFile);
+			MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJob.CountOfDeletedOldItems", countOfDeletedOldItems, new Tag("compositeFeedId",compositeUserFeed.getId()));
 		}
 		//InfluxDB.getInstance().send("response_time,method=ServerUtils.updateCompositeRSSFilesOfUser", new Date().getTime() - t1);
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
