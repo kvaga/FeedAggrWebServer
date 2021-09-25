@@ -33,7 +33,7 @@ import ru.kvaga.rss.feedaggr.objects.Channel;
 import ru.kvaga.rss.feedaggr.objects.GUID;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
-import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;
+import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtilsConcurrent;
 
 public class Exec {
@@ -242,11 +242,13 @@ public class Exec {
 			// Check if lock was expired
 			if(getURLContentDomainLocks.containsKey(domain) && getURLContentDomainLocks.get(domain) + ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS < new Date().getTime()) {
 				getURLContentDomainLocks.remove(domain);
+				MonitoringUtils.sendCommonMetric("GetURLContent.Locks", 0, new Tag("domain", domain));
 				log.debug("The getURLContentDomainLocks for the domain ["+domain+"] was removed");
 			}
 			
 			// Check if lock exists
 			if(getURLContentDomainLocks.containsKey(domain)) {
+				MonitoringUtils.sendCommonMetric("GetURLContent.Locks", 1, new Tag("domain", domain));
 				throw new Exception("There is lock for the domain ["+domain+"] during ["+(new Date().getTime()-getURLContentDomainLocks.get(domain))+"] milliseconds, hh:mm:ss ["+Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(new Date().getTime()-getURLContentDomainLocks.get(domain))+"]. We just have to wait for ["+(getURLContentDomainLocks.get(domain) + ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS - new Date().getTime())+"] milliseconds, hh:mm:ss ["+Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(getURLContentDomainLocks.get(domain) + ConfigMap.WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS - new Date().getTime())+"]");
 			}
 			
@@ -325,6 +327,7 @@ public class Exec {
 		} catch (Exception e) {
 			log.error("GetURLContentException: couldn't get a content for the ["+urlText+"] URL]. ", e);
 			if(e.getMessage().contains("Server returned HTTP response code: 403")) {
+				MonitoringUtils.sendCommonMetric("GetURLContent.HTTP_403", 1, new Tag("domain", domain));
 				if(!getURLContentDomainLocks.containsKey(domain)) getURLContentDomainLocks.put(domain, new Date().getTime());
 			}
 			if(con!=null) {

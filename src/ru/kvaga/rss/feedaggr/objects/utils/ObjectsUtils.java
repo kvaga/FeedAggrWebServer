@@ -18,7 +18,7 @@ import ru.kvaga.rss.feedaggr.objects.Channel;
 import ru.kvaga.rss.feedaggr.objects.GUID;
 import ru.kvaga.rss.feedaggr.objects.Item;
 import ru.kvaga.rss.feedaggr.objects.RSS;
-import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;
+import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
 
 public class ObjectsUtils {
 	final static Logger log = LogManager.getLogger(ObjectsUtils.class);

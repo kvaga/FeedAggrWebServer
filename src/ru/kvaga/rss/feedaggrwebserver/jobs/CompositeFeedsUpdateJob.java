@@ -13,8 +13,7 @@ import ru.kvaga.monitoring.influxdb2.InfluxDB;
 import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
-import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;
-import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
+import ru.kvaga.rss.feedaggrwebserver.monitoring.*;import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 
@@ -42,7 +41,12 @@ public class CompositeFeedsUpdateJob implements Runnable {
 //				User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
 				int result[] = ServerUtils.updateCompositeRSSFilesOfUser(userFile.getName().replace(".xml", ""), null);
 				log.debug("Processed composite feeds: all ["+result[0]+"], successful ["+result[1]+"], failed ["+result[2]+"]");
+				MonitoringUtils.sendCommonMetric("Processed composite feeds", result[0], new Tag("status","all"));
+				MonitoringUtils.sendCommonMetric("Processed composite feeds", result[1], new Tag("status","successful"));
+				MonitoringUtils.sendCommonMetric("Processed composite feeds", result[2], new Tag("status","failed"));
+
 			} catch (Exception e) {
+				
 				log.error("CompositeFeedsUpdateJob Exception", e);
 			}
 //				for(CompositeUserFeed compositeUserFeed : user.getCompositeUserFeeds()) {

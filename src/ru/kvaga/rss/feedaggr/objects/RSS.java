@@ -22,8 +22,7 @@ import org.apache.logging.log4j.Logger;
 import ru.kvaga.monitoring.influxdb2.InfluxDB;
 import ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
-import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;
-
+import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
 
 
 
@@ -80,19 +79,21 @@ public class RSS {
 		return getRSSObjectFromXMLFile(new File(ConfigMap.feedsPath + File.separator + feedId + ".xml"));
 	}
     
-    public void removeItemsOlderThanXDays(int xDays) {
+    public int removeItemsOlderThanXDays(int xDays) {
     	long t1 = new Date().getTime();
+    	int countOfDeletedItems=0;
     	ArrayList<Item> updatedListOfItems = new ArrayList<Item>();
     	for(Item item : getChannel().getItem()) {
     		if(item.getPubDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isBefore(LocalDate.now().minusDays(xDays))) {
     			log.debug("RSS Item ["+item.getGuid()+"] was deleted because is older than ["+xDays+"]");
+    			countOfDeletedItems++;
     			continue;
     		}
     		updatedListOfItems.add(item);
     	}
     	getChannel().setItem(updatedListOfItems);
     	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
-
+    	return countOfDeletedItems;
     }
     
     public synchronized void saveXMLObjectToFile(File file) throws JAXBException {

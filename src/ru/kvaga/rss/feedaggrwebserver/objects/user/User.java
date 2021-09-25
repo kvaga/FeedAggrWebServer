@@ -28,8 +28,7 @@ import ru.kvaga.rss.feedaggr.FeedAggrException.GetFeedsListByUser;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
-import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;
-import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
+import ru.kvaga.rss.feedaggrwebserver.monitoring.*;import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 
 @XmlRootElement
 public class User {

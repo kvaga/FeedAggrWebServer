@@ -4,8 +4,7 @@ import java.util.Comparator;
 import java.util.Date;
 
 import ru.kvaga.monitoring.influxdb2.InfluxDB;
-import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;
-
+import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
 public class RSSForPrintingComparatorByTitle implements Comparator<RSS>{
 
 	public int compare(RSS o1, RSS o2) {

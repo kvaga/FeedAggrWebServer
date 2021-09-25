@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ru.kvaga.monitoring.influxdb2.InfluxDB;
-import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;
-
+import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
 public class CompositeUserFeed {
 	private String id;
 	private ArrayList<String> feedIds = new ArrayList<String>();

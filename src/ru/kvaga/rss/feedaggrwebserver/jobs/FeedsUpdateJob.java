@@ -27,7 +27,7 @@ import ru.kvaga.rss.feedaggr.objects.GUID;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
-import ru.kvaga.rss.feedaggrwebserver.MonitoringUtils;
+import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed;
 
@@ -80,7 +80,7 @@ public class FeedsUpdateJob implements Runnable {
 		File[] listOfUsersFiles = ConfigMap.usersPath.listFiles();
 		if (listOfUsersFiles == null || listOfUsersFiles.length == 0) {
 			MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
-			throw new RuntimeException("The list of files for path [" + ConfigMap.usersPath + "]=0");
+			throw new RuntimeException("The list size of files for path [" + ConfigMap.usersPath + "]=0");
 		}
 		try {
 			// Пробегаемся по всем пользователям
@@ -101,6 +101,7 @@ public class FeedsUpdateJob implements Runnable {
 
 				for (UserFeed userFeed : user.getUserFeeds()) {
 					allFeedsCount++;
+					int countOfNewlyAddedItemsToTheCurrentFeedId=0;
 					try {
 						if(userFeed.getDurationInMillisForUpdate()==null) {
 							log.debug("DurationInMillisForUpdate parameter in the ["+userFeed.getId()+"] is null. We set default value ["+ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE+"]");
@@ -115,14 +116,18 @@ public class FeedsUpdateJob implements Runnable {
 //						RSS rssFromFile = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(rssXmlFile, new RSS());
 						RSS rssFromFile = RSS.getRSSObjectFromXMLFile(rssXmlFile);
 						
+						int countOfDeletedOldItems = rssFromFile.removeItemsOlderThanXDays(ConfigMap.ttlOfFeedsInDays);
+						log.info("Count of deleted old items ["+countOfDeletedOldItems+"]");
+						MonitoringUtils.sendCommonMetric("FeedsUpdateJob.CountOfDeletedOldItems", countOfDeletedOldItems, new Tag("feedId", feedId));
+						
 						long currentTimeInMillis = new Date().getTime();
 						if(!isItTimeToUpdateFeed(currentTimeInMillis, userFeed, rssFromFile)) {
 							postponedCount++;
 							continue;
 						}
 						
-						rssFromFile.removeItemsOlderThanXDays(ConfigMap.ttlOfFeedsInDays);
-//				ObjectsUtils.printXMLObject(rssFromFile);
+						
+//				ObjectsUtils.printXMLObject(rssFromFile); 
 
 						// Получаем вспомогательную информацию для получения feed (RSS) объекта из Web
 						url = rssFromFile.getChannel().getLink();
@@ -169,6 +174,7 @@ public class FeedsUpdateJob implements Runnable {
 								rssFromFile.getChannel().getItem().add(itemFromWeb);
 								log.debug("itemFromWeb [" + itemFromWeb.getTitle() + "] с guid ["
 										+ itemFromWeb.getGuid().getValue() + "] добавлен в rssFromFile");
+								countOfNewlyAddedItemsToTheCurrentFeedId++;
 							}
 						}
 						rssFromFile.getChannel().setLastBuildDate(new Date());
@@ -176,6 +182,7 @@ public class FeedsUpdateJob implements Runnable {
 						rssFromFile.saveXMLObjectToFile(new File(rssXmlFile));
 						log.debug("Объект rssFromFile сохранен в файл [" + rssXmlFile + "]");
 						successFeedsCount++;
+						MonitoringUtils.sendCommonMetric("FeedsUpdateJob.CountOfNewlyAddedItemsToTheCurrentFeedId", countOfNewlyAddedItemsToTheCurrentFeedId, new Tag("feedId", feedId));
 
 					} catch (Exception e) {
 						log.error("Exception on feedId [" + userFeed.getId() + "]", e);
@@ -216,6 +223,11 @@ public class FeedsUpdateJob implements Runnable {
 		try {
 			result = updateFeeds();
 			log.debug("Processed feeds: all ["+result[0]+"], successful ["+result[1]+"], failed ["+result[2]+"], postponed ["+result[3]+"]");
+			MonitoringUtils.sendCommonMetric("Processed feeds", result[0], new Tag("status","all"));
+			MonitoringUtils.sendCommonMetric("Processed feeds", result[1], new Tag("status","successful"));
+			MonitoringUtils.sendCommonMetric("Processed feeds", result[2], new Tag("status","failed"));
+			MonitoringUtils.sendCommonMetric("Processed feeds", result[3], new Tag("status","postponed"));
+
 		} catch (NoSuchAlgorithmException e) {
 			log.error("NoSuchAlgorithmException", e);
 		} catch (SplitHTMLContent e) {
