@@ -9,6 +9,8 @@
 	ru.kvaga.rss.feedaggrwebserver.ServerUtils,
 	java.util.Collections,
 	java.util.HashMap,
+	java.util.Date,
+	java.text.SimpleDateFormat,
 	java.util.ArrayList,
 	org.apache.logging.log4j.*,
 	ru.kvaga.rss.feedaggrwebserver.ConfigMap,
@@ -68,7 +70,7 @@ if(sb.length()!=0){
 }
 Collections.sort(rssListForPrinting, new RSSForPrintingComparatorByTitle());
 out.println("<table id=\"table\" border=1 style=\"white-space:nowrap;\">");
-out.println("<tr><th onclick=\"sortTable(1)\">Name</th><th>Delete</th><th>Edit</th><th onclick=\"sortTable(4)\">Last updated</th><th onclick=\"sortTable(5, 'true')\">Count of items</th><th onclick=\"sortTable(6, 'true')\">Size, mb</th><th onClick='show_hide_column(7,false);'>URL</th></tr>");	 
+out.println("<tr><th onclick=\"sortTable(1)\">Name</th><th>Delete</th><th>Edit</th><th onclick=\"sortTable(4)\">Last updated</th><th onclick=\"sortTable(5, 'true')\">Count of items</th><th onclick=\"sortTable(6, 'true')\">Size, mb</th><th onClick='show_hide_column(7,false);'>URL</th><th onclick=\"sortTable(7, 'true')\">Oldest PubDate</th><th onclick=\"sortTable(8, 'true')\">Newest PubDate</th></tr>");	 
 //out.println("<tr><th>Name</th><th>Delete</th><th>Edit</th><th>Last updated</th><th>Count of items</th><th>Size, mb</th><th onClick='show_hide_column(7,false);' class=\"targ\">URL</th></tr>");	 
 /*
 out.println("<col class=\"col1\"/>");
@@ -89,7 +91,10 @@ out.println("<col class=\"col7\"/>");
 //	out.println("<br><br>");	 
 ////	ObjectsUtills.printXMLObject(rssFeed);
 //}
+SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+
 for(RSS rss : rssListForPrinting) {
+	Date[] oldestNewest = rss.getOldestNewestPubDate();
 	out.println("<td><a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a></td><td>[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]</td>");
 	//out.println("<td>[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+rss.getChannel().getTitle()+"\">Edit</a>]</td>");
 	out.println("<td>[<a href=\"Feed.jsp?action=edit&feedId="+mapRssStringForPrinting.get(rss)+"\">Edit</a>]</td>");
@@ -99,6 +104,8 @@ for(RSS rss : rssListForPrinting) {
 	out.println("<td>"+rss.getChannel().getItem().size()+"</td>");
 	out.println("<td>"+Exec.getFileSizeByFeedId(mapRssStringForPrinting.get(rss))+"</td>");
 	out.println("<td><a href=\""+rss.getChannel().getLink()+"\">"+rss.getChannel().getLink()+"</a></td>");
+	out.println("<td>"+sdf.format(oldestNewest[0])+"</td>");
+	out.println("<td>"+sdf.format(oldestNewest[1])+"</td>");
 	out.println("</tr>");	 
 //	ObjectsUtills.printXMLObject(rssFeed);
 }

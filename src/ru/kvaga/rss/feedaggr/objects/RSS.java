@@ -79,7 +79,7 @@ public class RSS {
 		return getRSSObjectFromXMLFile(new File(ConfigMap.feedsPath + File.separator + feedId + ".xml"));
 	}
     
-    public int removeItemsOlderThanXDays(int xDays) {
+    public synchronized int removeItemsOlderThanXDays(int xDays) {
     	long t1 = new Date().getTime();
     	int countOfDeletedItems=0;
     	ArrayList<Item> updatedListOfItems = new ArrayList<Item>();
@@ -114,7 +114,20 @@ public class RSS {
     	return "RSS channel title ["+channel.getTitle()+"], link ["+channel.getLink()+"], lastBuildDate ["+channel.getLastBuildDate()+"], version ["+version+"]";
     }
     
-    
+    public Date[] getOldestNewestPubDate() {
+    	long t1 = new Date().getTime();
+    	Date oldest = new Date(), newest=new Date();
+    	for(Item item : getChannel().getItem()) {
+    		if(item.getPubDate().before(oldest)) {
+    			oldest=item.getPubDate();
+    		}
+    		if(item.getPubDate().after(newest)) {
+    			newest=item.getPubDate();
+    		}
+    	}
+        MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+    	return new Date[] {oldest, newest};
+    }
    
 }
 

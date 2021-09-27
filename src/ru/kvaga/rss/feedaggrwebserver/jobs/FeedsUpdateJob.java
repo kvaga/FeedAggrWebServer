@@ -116,9 +116,11 @@ public class FeedsUpdateJob implements Runnable {
 //						RSS rssFromFile = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(rssXmlFile, new RSS());
 						RSS rssFromFile = RSS.getRSSObjectFromXMLFile(rssXmlFile);
 						
+						/*
 						int countOfDeletedOldItems = rssFromFile.removeItemsOlderThanXDays(ConfigMap.ttlOfFeedsInDays);
 						log.info("Count of deleted old items ["+countOfDeletedOldItems+"]");
 						MonitoringUtils.sendCommonMetric("FeedsUpdateJob.CountOfDeletedOldItems", countOfDeletedOldItems, new Tag("feedId", feedId));
+						*/
 						
 						long currentTimeInMillis = new Date().getTime();
 						if(!isItTimeToUpdateFeed(currentTimeInMillis, userFeed, rssFromFile)) {
