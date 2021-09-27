@@ -2,7 +2,7 @@
 <%@page import="ru.kvaga.rss.feedaggrwebserver.ConfigMap"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="UTF-8"%>
-    <%@ page
+    <%@ page 
 	import="ru.kvaga.rss.feedaggr.objects.Feed,ru.kvaga.rss.feedaggr.objects.RSS,
 	ru.kvaga.rss.feedaggr.objects.Feed,ru.kvaga.rss.feedaggr.objects.RSSForPrintingComparatorByTitle,
 	ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils,
