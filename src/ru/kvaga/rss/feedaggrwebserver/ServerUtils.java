@@ -91,8 +91,6 @@ public class ServerUtils {
 	}
 	public static synchronized ArrayList<UserFeed> getUserFeedListByUser(String userName) throws Exception {
 		long t1 = new Date().getTime();
-//		String dataDirText="WebContent/data";
-//		String userDirText=String.format("%s/%s", dataDirText,user);
 		ArrayList<Feed> al = new ArrayList<Feed>();
 		log.debug("Getting user configuration file");
 		File userConfigFile = new File(ConfigMap.usersPath.getAbsolutePath() + "/" + userName + ".xml");
@@ -457,6 +455,7 @@ public class ServerUtils {
 		long t1 = new Date().getTime();
 		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + userName + ".xml");
 //		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
+
 		User user = User.getXMLObjectFromXMLFile(userFile);
 		String compositeFeedId = null;
 		if(feedId==null) {
@@ -513,23 +512,24 @@ public class ServerUtils {
 		}
 
 		// Creating new composite rss and channel
-		RSS compositeRSS = new RSS();
-		compositeRSS.setVersion(ConfigMap.rssVersion);
-		Channel compositeChannel = new Channel();
-		compositeChannel.setTitle(appendFeedIdsToComposite? RSS.getRSSObjectByFeedId(compositeFeedId).getChannel().getTitle():compositeRSSTitle);
-		compositeChannel.setDescription(compositeRSSTitle);
-		compositeChannel.setGenerator(ConfigMap.generator);
-		compositeChannel.setLastBuildDate(new Date());
-		compositeChannel.setLink("_link");
-		compositeChannel.setTtl(360);
-		compositeRSS.setChannel(compositeChannel);
+		RSS compositeRSS = null;
+		
 		if(feedId==null) {
+			compositeRSS = 	new RSS();
+			compositeRSS.setVersion(ConfigMap.rssVersion);
+			Channel compositeChannel = new Channel();
+			compositeChannel.setTitle(appendFeedIdsToComposite? RSS.getRSSObjectByFeedId(compositeFeedId).getChannel().getTitle():compositeRSSTitle);
+			compositeChannel.setDescription(compositeRSSTitle);
+			compositeChannel.setGenerator(ConfigMap.generator);
+			compositeChannel.setLastBuildDate(new Date());
+			compositeChannel.setLink("_link");
+			compositeChannel.setTtl(360);
+			compositeRSS.setChannel(compositeChannel);
 			log.debug("Created new compositeRSSFile [" + compositeRSSFile.getAbsolutePath() + "]");
-		}else {
-			log.debug("Updated compositeRSSFile [" + compositeRSSFile.getAbsolutePath() + "]");
+			compositeRSS.saveXMLObjectToFile(compositeRSSFile);
 		}
+
 		// Storing composite RSS and USer to files
-		compositeRSS.saveXMLObjectToFile(compositeRSSFile);
 		log.debug("Composite RSS was successfully saved to the file [" + compositeRSSFile.getAbsolutePath() + "]");
 		user.saveXMLObjectToFile(userFile);
 		log.debug("User's ["+userName+"] configuration was successfully saved to the file [" + userFile.getAbsolutePath() + "]");
@@ -538,7 +538,7 @@ public class ServerUtils {
 		return compositeFeedId;
 	}
 
-	public static synchronized int[] updateCompositeRSSFilesOfUser(String userName, String singleCompositeFeedIdForUpdatingAfterAddingNewFeeds) throws JAXBException {
+	public static synchronized int[] updateCompositeRSSFilesOfUser(String userName, String singleCompositeFeedIdForUpdatingAfterAddingNewFeeds, ArrayList<String> newlyAddedFeedIdsList) throws JAXBException {
 		long t1 = new Date().getTime();
 		int allFeedsCount=0, successFeedsCount=0;
 		Date deleteItemsWhichOlderThanThisDate = getDateSinceToday(-ConfigMap.UPDATE_COMPOSITE_RSS_FILES_DAYS_COUNT_FOR_DELETION);
@@ -565,29 +565,36 @@ public class ServerUtils {
 //					RSS rss = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(xmlFile, new RSS());
 					RSS rss = RSS.getRSSObjectFromXMLFile(xmlFile);
 					log.debug("Got rss from the file [" + xmlFile.getAbsolutePath() + "] with ["+ rss.getChannel().getItem().size() + "] items");
-					Iterator<Item> iterator = rss.getChannel().getItem().iterator();
+					Iterator<Item> iteratorFromRSSItemsForSpecificFeedId = rss.getChannel().getItem().iterator();
 //					for (Item item : rss.getChannel().getItem()) {
-					while(iterator.hasNext()){
-						Item itemFromCommonRSSFile = iterator.next();
-						itemFromCommonRSSFile.setTitle("["+rss.getChannel().getTitle()+"] "+itemFromCommonRSSFile.getTitle());
-						if (!compositeRSS.getChannel().containsItem(itemFromCommonRSSFile)) {
+					while(iteratorFromRSSItemsForSpecificFeedId.hasNext()){
+						Item itemFromRSSFileForSpecificFeedId = iteratorFromRSSItemsForSpecificFeedId.next();
+						itemFromRSSFileForSpecificFeedId.setTitle("["+rss.getChannel().getTitle()+"] "+itemFromRSSFileForSpecificFeedId.getTitle());
+						if (!compositeRSS.getChannel().containsItem(itemFromRSSFileForSpecificFeedId)) {
 							if(singleCompositeFeedIdForUpdatingAfterAddingNewFeeds!=null) {
-								// Set a new date and then we will countdown lifetime from that date and delete all old items
-								itemFromCommonRSSFile.setPubDate(new Date()); 
-								compositeRSS.getChannel().getItem().add(itemFromCommonRSSFile);
-								log.debug("Added item [" + itemFromCommonRSSFile + "] to the composite ["+compositeRSS+"] items list with newest pubDate ["+itemFromCommonRSSFile.getPubDate()+"]");
+								// Set a new date for newly added feed ids and then we will countdown lifetime from that date and delete all old items
+								if(newlyAddedFeedIdsList.contains(feedId)) {// change pubDate only for newly added feeds to the composite
+									itemFromRSSFileForSpecificFeedId.setPubDate(new Date());
+									compositeRSS.getChannel().getItem().add(itemFromRSSFileForSpecificFeedId);
+								}else { // leave old items
+									if(!compositeRSS.getChannel().getItem().contains(itemFromRSSFileForSpecificFeedId)) {
+										System.out.println("itemFromRSSFileForSpecificFeedId: " + itemFromRSSFileForSpecificFeedId.getGuid().getValue() + ", pubDate: " + itemFromRSSFileForSpecificFeedId.getPubDate());
+										compositeRSS.getChannel().getItem().add(itemFromRSSFileForSpecificFeedId);
+									}
+								}
+								log.debug("Added item [" + itemFromRSSFileForSpecificFeedId + "] to the composite ["+compositeRSS+"] items list with newest pubDate ["+itemFromRSSFileForSpecificFeedId.getPubDate()+"]");
 							}else { // if doesn't exists in the compose 
 //								Item existedItem = compositeRSS.getChannel().getItem().get(compositeRSS.getChannel().getItem().indexOf(item));
 								//Item existedItem = compositeRSS.getChannel().getItemByGuid(item.getGuid().getValue());
-								if(itemFromCommonRSSFile.getPubDate().before(deleteItemsWhichOlderThanThisDate)) { // check if old
-									log.debug(itemFromCommonRSSFile + " was skipped and wasn't added to the compose ["+compositeRSS+"] because it older than ["+deleteItemsWhichOlderThanThisDate+"] date");
+								if(itemFromRSSFileForSpecificFeedId.getPubDate().before(deleteItemsWhichOlderThanThisDate)) { // check if old
+									log.debug(itemFromRSSFileForSpecificFeedId + " was skipped and wasn't added to the compose ["+compositeRSS+"] because it older than ["+deleteItemsWhichOlderThanThisDate+"] date");
 								}else {
-									compositeRSS.getChannel().getItem().add(itemFromCommonRSSFile);
-									log.debug("Added item [" + itemFromCommonRSSFile + "] to the composite ["+compositeRSS+"] items list because it newer than ["+deleteItemsWhichOlderThanThisDate+"] date");
+									compositeRSS.getChannel().getItem().add(itemFromRSSFileForSpecificFeedId);
+									log.debug("Added item [" + itemFromRSSFileForSpecificFeedId + "] to the composite ["+compositeRSS+"] items list because it newer than ["+deleteItemsWhichOlderThanThisDate+"] date");
 								}
 							}      
 						}else { // cpmposite feed has already this item therefore we will check the age of this item and delete if it is old
-							Item itemFromCompositeRSSFile = compositeRSS.getChannel().getItemByGuid(itemFromCommonRSSFile.getGuid().getValue());
+							Item itemFromCompositeRSSFile = compositeRSS.getChannel().getItemByGuid(itemFromRSSFileForSpecificFeedId.getGuid().getValue());
 							if(itemFromCompositeRSSFile.getPubDate().before(deleteItemsWhichOlderThanThisDate)) {
 //								iterator.remove(); 
 								compositeRSS.getChannel().getItem().remove(itemFromCompositeRSSFile);

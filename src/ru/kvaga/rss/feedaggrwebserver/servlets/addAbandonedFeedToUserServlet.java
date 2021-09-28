@@ -102,14 +102,14 @@ public class addAbandonedFeedToUserServlet extends HttpServlet {
 
 		if(request.getParameter("batch")!=null) {
 			log.debug("Got batch parameter");
-			Iterator<String> iter = request.getParameterNames().asIterator();
-			while(iter.hasNext()) {
-				feedId = iter.next();
-				if(feedId.startsWith("feed_id_")) {
-					feedId=feedId.replace("feed_id_", "");
+			//Iterator<String> iter = request.getParameterNames().asIterator();
+			for(String fId: request.getParameterValues("feed_id_")) {
+				
+				
+					feedId=fId.replace("feed_id_", "");
 					addAbandonedFeedToUser(feedId, request, response);
 					out.print("<font color=green>Abandoned feed id ["+feedId + "] was added to the user ["+request.getSession().getAttribute("login")+"]</font><br>");
-				}
+				
 			}
 		}else {
 			log.debug("Got feedId ["+request.getParameter("feedId")+"]");

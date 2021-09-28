@@ -2,6 +2,7 @@ package ru.kvaga.rss.feedaggrwebserver.objects.user;
 
 import java.io.File;
 import java.math.BigInteger;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -691,5 +692,20 @@ public class User {
 		 if(true) throw new Exception("Unimplemented");
 		
 		return zombieFeedIdsList;
+	}
+
+	public static File getUsersFileByUserName(String userName) {
+		File file = new File(ConfigMap.usersPath + File.pathSeparator + userName + ".xml");
+		return file; 
+	}
+	public static User createUser(String userName) throws JAXBException {
+		User user = new User(userName);
+		user.saveXMLObjectToFileByLogin(userName);
+		return user;
+	}
+	
+	public static boolean deleteUser(String userName) {
+		File userFile = getUsersFileByUserName(userName);
+		return userFile.delete();
 	}
 }

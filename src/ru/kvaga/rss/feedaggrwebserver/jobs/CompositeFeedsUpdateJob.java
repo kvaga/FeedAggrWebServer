@@ -40,7 +40,7 @@ public class CompositeFeedsUpdateJob implements Runnable {
 			}
 			try {
 //				User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
-				int result[] = ServerUtils.updateCompositeRSSFilesOfUser(userFile.getName().replace(".xml", ""), null);
+				int result[] = ServerUtils.updateCompositeRSSFilesOfUser(userFile.getName().replace(".xml", ""), null, new ArrayList<String>());
 				log.debug("Processed composite feeds: all ["+result[0]+"], successful ["+result[1]+"], failed ["+result[2]+"]");
 				MonitoringUtils.sendCommonMetric("Processed composite feeds", result[0], new Tag("status","all"));
 				MonitoringUtils.sendCommonMetric("Processed composite feeds", result[1], new Tag("status","successful"));

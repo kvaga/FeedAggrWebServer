@@ -25,12 +25,12 @@ public class BackgroudJobManager implements ServletContextListener{
 
 	final static Logger log = LogManager.getLogger(BackgroudJobManager.class);
 	private static boolean jobsEnabled = true;
-	
+	 
 	public void contextInitialized (ServletContextEvent event) {
 		if(ConfigMap.TEST_MODE) {
 			jobsEnabled = false;
 			log.debug("Jobs were disabled beacuse of jobsEnabled=["+jobsEnabled+"], ConfigMap.TEST_MODE=["+ConfigMap.TEST_MODE+"]");
-		}
+		} 
 		
 		
 		long t1 = new Date().getTime();
