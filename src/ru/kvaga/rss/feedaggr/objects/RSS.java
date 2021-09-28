@@ -116,7 +116,7 @@ public class RSS {
     
     public Date[] getOldestNewestPubDate() {
     	long t1 = new Date().getTime();
-    	Date oldest = new Date(), newest=new Date();
+    	Date oldest = new Date(), newest = new Date(Long.MIN_VALUE);
     	for(Item item : getChannel().getItem()) {
     		if(item.getPubDate().before(oldest)) {
     			oldest=item.getPubDate();
