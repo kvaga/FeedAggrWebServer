@@ -2,6 +2,8 @@ package ru.kvaga.rss.feedaggrwebserver.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -28,19 +30,38 @@ public class deleteFeed extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * @throws Exception 
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public deleteFeed() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+//	public deleteFeed() {
+//		super();
+//		// TODO Auto-generated constructor stub
+//	}
 
+	public HashMap<String, Boolean> delete(String userName, String[] parameterValues, StringBuilder sb, PrintWriter out) throws Exception {
+		HashMap<String, Boolean> ret = new HashMap<String, Boolean>();
+		for(String feedId : parameterValues) {
+			log.debug("Got request for deleteing feed id ["+feedId+"] for the user ["+userName+"]");
+			sb.append("Status of deletion of feedId ["+feedId+"]: ");
+			if(User.deleteFeed(feedId, userName)) {
+				sb.append(Exec.getHTMLSuccessText("SUCCESS"));
+				ret.put(feedId, true);
+			}else {
+				sb.append(Exec.getHTMLFailText("FAIL"));
+				ret.put(feedId, false);
+			}
+			sb.append("<br>");
+		}
+		sb.append("<br></html>");
+		out.print(sb.toString());
+		return ret;
+	}
+	
 	/**
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//String feedId = request.getParameter("feedId");
-		
 		String userName=(String) request.getSession().getAttribute("login");
 		StringBuilder sb = new StringBuilder();
 		log.debug("Got parameter: redirectTo ["+request.getParameter("redirectTo")+"]");
@@ -49,19 +70,7 @@ public class deleteFeed extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		try {
-
-			for(String feedId : request.getParameterValues("feedId")) {
-				log.debug("Got request for deleteing feed id ["+feedId+"] for the user ["+userName+"]");
-				sb.append("Status of deletion of feedId ["+feedId+"]: ");
-				if(User.deleteFeed(feedId, userName)) {
-					sb.append(Exec.getHTMLSuccessText("SUCCESS"));
-				}else {
-					sb.append(Exec.getHTMLFailText("FAIL"));
-				}
-				sb.append("<br>");
-			}
-			sb.append("<br></html>");
-			out.print(sb.toString());
+			delete(userName, request.getParameterValues("feedId"), sb, out);
 		} catch (Exception e) {
 			log.error("DeleteFeed exception", e);
 			log.error("Can't remove feed.");

@@ -1,6 +1,7 @@
 package ru.kvaga.rss.feedaggrwebserver.objects.user;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -313,7 +314,8 @@ public class User {
 		boolean deletedFeedId = false;
 		boolean deletedFeedIdFromAllComposites = false;
 		HashSet<UserFeed> userFeedNew = new HashSet<UserFeed>();
-		File userConfigFile = new File(ConfigMap.usersPath + "/" + userName + ".xml");
+		File userConfigFile = //new File(ConfigMap.usersPath + "/" + userName + ".xml");
+				User.getUsersFileByUserName(userName);
 //		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userConfigFile, new User());
 		User user = User.getXMLObjectFromXMLFile(userConfigFile);
 		log.debug("Successfully read file [" + userConfigFile + "]");
@@ -380,7 +382,7 @@ public class User {
 		log.debug("File [" + feedFile.getAbsolutePath() + "] deleted? status ["+deletedFile+"], Feed id ["+feedId+"] deleted from user ["+userName+"]? status ["+deletedUserFeedBol+"]");
 
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
-		return deletedFile && deletedUserFeedBol;
+		return deletedFile || deletedUserFeedBol;
 	}
 	public boolean removeFeedFromCompositeUserFeed(String feedId, String compositeFeedId) {
 		long t1 = new Date().getTime();
@@ -604,16 +606,21 @@ public class User {
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 	}
 
-	public synchronized void saveXMLObjectToFileByLogin(String login) throws JAXBException {
+	public synchronized File saveXMLObjectToFileByLogin() throws JAXBException {
+		return saveXMLObjectToFileByLogin(name);
+	}
+	
+	@Deprecated
+	public synchronized File saveXMLObjectToFileByLogin(String login) throws JAXBException {
 		long t1 = new Date().getTime();
-		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + login + ".xml");
+		File userFile = getUsersFileByUserName(login);
 		JAXBContext jc = JAXBContext.newInstance(this.getClass());
 		Marshaller m = jc.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		m.marshal(this, userFile);
 		log.debug("Object user [" + getName() + "] successfully saved to the [" + userFile + "] file");
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
-
+		return userFile;
 	}
 
 	public static synchronized ArrayList<User> getAllUsersList() throws GetFeedsListByUser, JAXBException {
@@ -695,17 +702,23 @@ public class User {
 	}
 
 	public static File getUsersFileByUserName(String userName) {
-		File file = new File(ConfigMap.usersPath + File.pathSeparator + userName + ".xml");
+		File file = new File(ConfigMap.usersPath.getAbsoluteFile() + File.separator + userName + ".xml");
 		return file; 
 	}
 	public static User createUser(String userName) throws JAXBException {
 		User user = new User(userName);
-		user.saveXMLObjectToFileByLogin(userName);
-		return user;
+		File usersFile = user.saveXMLObjectToFileByLogin(userName); 
+		if(usersFile!=null && usersFile.exists())
+			return user;
+		else return null;
 	}
 	
 	public static boolean deleteUser(String userName) {
 		File userFile = getUsersFileByUserName(userName);
 		return userFile.delete();
+	}
+	
+	public boolean deleteUser() {
+		return User.deleteUser(name);
 	}
 }

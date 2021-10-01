@@ -103,8 +103,12 @@ public class ServerUtils {
 //		User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userConfigFile, new User());
 		User user = User.getXMLObjectFromXMLFile(userConfigFile);
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
-
-		return (ArrayList<UserFeed>) user.getUserFeeds();
+		ArrayList<UserFeed> userFeedsArrayList = new ArrayList<UserFeed>();
+		for(Object uf : user.getUserFeeds().toArray()) {
+			userFeedsArrayList.add((UserFeed)uf);
+		}
+		//return (ArrayList<UserFeed>) user.getUserFeeds();
+		return userFeedsArrayList;
 	}
 
 	private static synchronized ArrayList<Feed> getFeedsList(String realPath) throws GetFeedsListByUser, JAXBException {

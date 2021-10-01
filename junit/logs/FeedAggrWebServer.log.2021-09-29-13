@@ -1,0 +1,280 @@
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:28 - #Looking for configuration file based on the catalina.base system property and constructed like $catalina.base/conf/feedaggrwebserver.conf
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:30 - #Got config file path: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:33 - #Loaded config file: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:34 - #Looking for data.file parameter
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:36 - #Found parameter data.path=C:\eclipseWorkspace\FeedAggrWebServer\data
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:38 - #Created parameter ConfigMap.usersPath=C:\eclipseWorkspace\FeedAggrWebServer\data\users
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:40 - #Created parameter ConfigMap.feedsPath=C:\eclipseWorkspace\FeedAggrWebServer\data\feeds
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:42 - #Loaded parameter admin.login=kvaga
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:44 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:46 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:55 - #Loaded parameter influxdb.enabled=true
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:61 - #Loaded parameter influxdb.host=130.61.122.117
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:63 - #Loaded parameter influxdb.dbname=feedaggrwebserver
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:66 - #Loaded parameter influxdb.threads.numder=10 and set to the InfluxDB
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:72 - #Loaded parameter influxdb.port=8086
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:80 - #Loaded parameter influxdb.attempts=5
+2021-09-29 12:18:26 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:87 - #Loaded parameter influxdb.timeout=5000
+2021-09-29 12:18:28 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.StartStopListener:98 - #InfluXDB successfully started
+2021-09-29 12:18:28 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:102 - #InfluxDB: InfluxDB2 instance parameters [influxdbDatabaseName=feedaggrwebserver, influxdbHost=130.61.122.117, influxdbPort=8086, retentionPolicyName=defaultPolicy, retentionPolicyDuration=7d, userName=q]
+2021-09-29 12:18:28 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:107 - #Loaded parameter TEST_MODE=false
+2021-09-29 12:18:28 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:111 - #Loaded parameter timeout.waittime_after_get_content_url_exception_in_millis=3600000, hh:mm:ss [01:00:00]
+2021-09-29 12:18:28 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:118 - #Loaded parameter servlet.show_feed.buffer_read_bytes [512]
+2021-09-29 12:18:28 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:125 - #Loaded parameter update_composite_rss_files.days_count_for_deletion=32
+2021-09-29 12:18:28 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:135 - #FeedAggrWebServer initialized
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:28 - #Looking for configuration file based on the catalina.base system property and constructed like $catalina.base/conf/feedaggrwebserver.conf
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:30 - #Got config file path: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:33 - #Loaded config file: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:34 - #Looking for data.file parameter
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:36 - #Found parameter data.path=C:\eclipseWorkspace\FeedAggrWebServer\data
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:38 - #Created parameter ConfigMap.usersPath=C:\eclipseWorkspace\FeedAggrWebServer\data\users
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:40 - #Created parameter ConfigMap.feedsPath=C:\eclipseWorkspace\FeedAggrWebServer\data\feeds
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:42 - #Loaded parameter admin.login=kvaga
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:44 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:46 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:55 - #Loaded parameter influxdb.enabled=true
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:61 - #Loaded parameter influxdb.host=130.61.122.117
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:63 - #Loaded parameter influxdb.dbname=feedaggrwebserver
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:66 - #Loaded parameter influxdb.threads.numder=10 and set to the InfluxDB
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:72 - #Loaded parameter influxdb.port=8086
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:80 - #Loaded parameter influxdb.attempts=5
+2021-09-29 12:18:46 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:87 - #Loaded parameter influxdb.timeout=5000
+2021-09-29 12:18:48 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.StartStopListener:98 - #InfluXDB successfully started
+2021-09-29 12:18:48 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:102 - #InfluxDB: InfluxDB2 instance parameters [influxdbDatabaseName=feedaggrwebserver, influxdbHost=130.61.122.117, influxdbPort=8086, retentionPolicyName=defaultPolicy, retentionPolicyDuration=7d, userName=q]
+2021-09-29 12:18:48 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:107 - #Loaded parameter TEST_MODE=false
+2021-09-29 12:18:48 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:111 - #Loaded parameter timeout.waittime_after_get_content_url_exception_in_millis=3600000, hh:mm:ss [01:00:00]
+2021-09-29 12:18:48 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:118 - #Loaded parameter servlet.show_feed.buffer_read_bytes [512]
+2021-09-29 12:18:48 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:125 - #Loaded parameter update_composite_rss_files.days_count_for_deletion=32
+2021-09-29 12:18:48 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:135 - #FeedAggrWebServer initialized
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:28 - #Looking for configuration file based on the catalina.base system property and constructed like $catalina.base/conf/feedaggrwebserver.conf
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:30 - #Got config file path: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:33 - #Loaded config file: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:34 - #Looking for data.file parameter
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:36 - #Found parameter data.path=C:\eclipseWorkspace\FeedAggrWebServer\data
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:38 - #Created parameter ConfigMap.usersPath=C:\eclipseWorkspace\FeedAggrWebServer\data\users
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:40 - #Created parameter ConfigMap.feedsPath=C:\eclipseWorkspace\FeedAggrWebServer\data\feeds
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:42 - #Loaded parameter admin.login=kvaga
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:44 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:46 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:55 - #Loaded parameter influxdb.enabled=true
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:61 - #Loaded parameter influxdb.host=130.61.122.117
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:63 - #Loaded parameter influxdb.dbname=feedaggrwebserver
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:66 - #Loaded parameter influxdb.threads.numder=10 and set to the InfluxDB
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:72 - #Loaded parameter influxdb.port=8086
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:80 - #Loaded parameter influxdb.attempts=5
+2021-09-29 12:21:40 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:87 - #Loaded parameter influxdb.timeout=5000
+2021-09-29 12:21:42 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.StartStopListener:98 - #InfluXDB successfully started
+2021-09-29 12:21:42 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:102 - #InfluxDB: InfluxDB2 instance parameters [influxdbDatabaseName=feedaggrwebserver, influxdbHost=130.61.122.117, influxdbPort=8086, retentionPolicyName=defaultPolicy, retentionPolicyDuration=7d, userName=q]
+2021-09-29 12:21:42 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:107 - #Loaded parameter TEST_MODE=false
+2021-09-29 12:21:42 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:111 - #Loaded parameter timeout.waittime_after_get_content_url_exception_in_millis=3600000, hh:mm:ss [01:00:00]
+2021-09-29 12:21:42 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:118 - #Loaded parameter servlet.show_feed.buffer_read_bytes [512]
+2021-09-29 12:21:42 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:125 - #Loaded parameter update_composite_rss_files.days_count_for_deletion=32
+2021-09-29 12:21:42 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:135 - #FeedAggrWebServer initialized
+2021-09-29 12:21:43 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.objects.user.User:615 - #Object user [testUser] successfully saved to the [C:\eclipseWorkspace\FeedAggrWebServer\data\users\testUser.xml] file
+2021-09-29 12:26:43 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:28 - #Looking for configuration file based on the catalina.base system property and constructed like $catalina.base/conf/feedaggrwebserver.conf
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:28 - #Looking for configuration file based on the catalina.base system property and constructed like $catalina.base/conf/feedaggrwebserver.conf
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:30 - #Got config file path: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:33 - #Loaded config file: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:34 - #Looking for data.file parameter
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:36 - #Found parameter data.path=C:\eclipseWorkspace\FeedAggrWebServer\data
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:38 - #Created parameter ConfigMap.usersPath=C:\eclipseWorkspace\FeedAggrWebServer\data\users
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:40 - #Created parameter ConfigMap.feedsPath=C:\eclipseWorkspace\FeedAggrWebServer\data\feeds
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:42 - #Loaded parameter admin.login=kvaga
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:44 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:46 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:55 - #Loaded parameter influxdb.enabled=true
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:61 - #Loaded parameter influxdb.host=130.61.122.117
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:63 - #Loaded parameter influxdb.dbname=feedaggrwebserver
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:66 - #Loaded parameter influxdb.threads.numder=10 and set to the InfluxDB
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:72 - #Loaded parameter influxdb.port=8086
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:80 - #Loaded parameter influxdb.attempts=5
+2021-09-29 12:27:52 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:87 - #Loaded parameter influxdb.timeout=5000
+2021-09-29 12:27:54 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.StartStopListener:98 - #InfluXDB successfully started
+2021-09-29 12:27:54 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:102 - #InfluxDB: InfluxDB2 instance parameters [influxdbDatabaseName=feedaggrwebserver, influxdbHost=130.61.122.117, influxdbPort=8086, retentionPolicyName=defaultPolicy, retentionPolicyDuration=7d, userName=q]
+2021-09-29 12:27:54 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:107 - #Loaded parameter TEST_MODE=false
+2021-09-29 12:27:54 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:111 - #Loaded parameter timeout.waittime_after_get_content_url_exception_in_millis=3600000, hh:mm:ss [01:00:00]
+2021-09-29 12:27:54 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:118 - #Loaded parameter servlet.show_feed.buffer_read_bytes [512]
+2021-09-29 12:27:54 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:125 - #Loaded parameter update_composite_rss_files.days_count_for_deletion=32
+2021-09-29 12:27:54 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:135 - #FeedAggrWebServer initialized
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:28 - #Looking for configuration file based on the catalina.base system property and constructed like $catalina.base/conf/feedaggrwebserver.conf
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:30 - #Got config file path: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:33 - #Loaded config file: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:34 - #Looking for data.file parameter
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:36 - #Found parameter data.path=C:\eclipseWorkspace\FeedAggrWebServer\data
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:38 - #Created parameter ConfigMap.usersPath=C:\eclipseWorkspace\FeedAggrWebServer\data\users
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:40 - #Created parameter ConfigMap.feedsPath=C:\eclipseWorkspace\FeedAggrWebServer\data\feeds
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:42 - #Loaded parameter admin.login=kvaga
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:44 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:46 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:55 - #Loaded parameter influxdb.enabled=true
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:61 - #Loaded parameter influxdb.host=130.61.122.117
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:63 - #Loaded parameter influxdb.dbname=feedaggrwebserver
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:66 - #Loaded parameter influxdb.threads.numder=10 and set to the InfluxDB
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:72 - #Loaded parameter influxdb.port=8086
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:80 - #Loaded parameter influxdb.attempts=5
+2021-09-29 12:31:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:87 - #Loaded parameter influxdb.timeout=5000
+2021-09-29 12:31:21 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.StartStopListener:98 - #InfluXDB successfully started
+2021-09-29 12:31:21 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:102 - #InfluxDB: InfluxDB2 instance parameters [influxdbDatabaseName=feedaggrwebserver, influxdbHost=130.61.122.117, influxdbPort=8086, retentionPolicyName=defaultPolicy, retentionPolicyDuration=7d, userName=q]
+2021-09-29 12:31:21 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:107 - #Loaded parameter TEST_MODE=false
+2021-09-29 12:31:21 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:111 - #Loaded parameter timeout.waittime_after_get_content_url_exception_in_millis=3600000, hh:mm:ss [01:00:00]
+2021-09-29 12:31:21 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:118 - #Loaded parameter servlet.show_feed.buffer_read_bytes [512]
+2021-09-29 12:31:21 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:125 - #Loaded parameter update_composite_rss_files.days_count_for_deletion=32
+2021-09-29 12:31:21 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:135 - #FeedAggrWebServer initialized
+2021-09-29 12:31:22 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.objects.user.User:615 - #Object user [testUser] successfully saved to the [C:\eclipseWorkspace\FeedAggrWebServer\data\users\testUser.xml] file
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:28 - #Looking for configuration file based on the catalina.base system property and constructed like $catalina.base/conf/feedaggrwebserver.conf
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:30 - #Got config file path: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:33 - #Loaded config file: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:34 - #Looking for data.file parameter
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:36 - #Found parameter data.path=C:\eclipseWorkspace\FeedAggrWebServer\data
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:38 - #Created parameter ConfigMap.usersPath=C:\eclipseWorkspace\FeedAggrWebServer\data\users
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:40 - #Created parameter ConfigMap.feedsPath=C:\eclipseWorkspace\FeedAggrWebServer\data\feeds
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:42 - #Loaded parameter admin.login=kvaga
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:44 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:46 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:55 - #Loaded parameter influxdb.enabled=true
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:61 - #Loaded parameter influxdb.host=130.61.122.117
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:63 - #Loaded parameter influxdb.dbname=feedaggrwebserver
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:66 - #Loaded parameter influxdb.threads.numder=10 and set to the InfluxDB
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:72 - #Loaded parameter influxdb.port=8086
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:80 - #Loaded parameter influxdb.attempts=5
+2021-09-29 12:32:30 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:87 - #Loaded parameter influxdb.timeout=5000
+2021-09-29 12:32:33 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.StartStopListener:98 - #InfluXDB successfully started
+2021-09-29 12:32:33 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:102 - #InfluxDB: InfluxDB2 instance parameters [influxdbDatabaseName=feedaggrwebserver, influxdbHost=130.61.122.117, influxdbPort=8086, retentionPolicyName=defaultPolicy, retentionPolicyDuration=7d, userName=q]
+2021-09-29 12:32:33 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:107 - #Loaded parameter TEST_MODE=false
+2021-09-29 12:32:33 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:111 - #Loaded parameter timeout.waittime_after_get_content_url_exception_in_millis=3600000, hh:mm:ss [01:00:00]
+2021-09-29 12:32:33 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:118 - #Loaded parameter servlet.show_feed.buffer_read_bytes [512]
+2021-09-29 12:32:33 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:125 - #Loaded parameter update_composite_rss_files.days_count_for_deletion=32
+2021-09-29 12:32:33 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:135 - #FeedAggrWebServer initialized
+2021-09-29 12:32:33 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.objects.user.User:615 - #Object user [testUser] successfully saved to the [C:\eclipseWorkspace\FeedAggrWebServer\data\users\testUser.xml] file
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:28 - #Looking for configuration file based on the catalina.base system property and constructed like $catalina.base/conf/feedaggrwebserver.conf
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:30 - #Got config file path: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:33 - #Loaded config file: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:34 - #Looking for data.file parameter
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:36 - #Found parameter data.path=C:\eclipseWorkspace\FeedAggrWebServer\data
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:38 - #Created parameter ConfigMap.usersPath=C:\eclipseWorkspace\FeedAggrWebServer\data\users
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:40 - #Created parameter ConfigMap.feedsPath=C:\eclipseWorkspace\FeedAggrWebServer\data\feeds
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:42 - #Loaded parameter admin.login=kvaga
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:44 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:46 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:55 - #Loaded parameter influxdb.enabled=true
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:61 - #Loaded parameter influxdb.host=130.61.122.117
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:63 - #Loaded parameter influxdb.dbname=feedaggrwebserver
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:66 - #Loaded parameter influxdb.threads.numder=10 and set to the InfluxDB
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:72 - #Loaded parameter influxdb.port=8086
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:80 - #Loaded parameter influxdb.attempts=5
+2021-09-29 12:41:14 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:87 - #Loaded parameter influxdb.timeout=5000
+2021-09-29 12:41:16 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.StartStopListener:98 - #InfluXDB successfully started
+2021-09-29 12:41:16 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:102 - #InfluxDB: InfluxDB2 instance parameters [influxdbDatabaseName=feedaggrwebserver, influxdbHost=130.61.122.117, influxdbPort=8086, retentionPolicyName=defaultPolicy, retentionPolicyDuration=7d, userName=q]
+2021-09-29 12:41:16 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:107 - #Loaded parameter TEST_MODE=false
+2021-09-29 12:41:16 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:111 - #Loaded parameter timeout.waittime_after_get_content_url_exception_in_millis=3600000, hh:mm:ss [01:00:00]
+2021-09-29 12:41:16 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:118 - #Loaded parameter servlet.show_feed.buffer_read_bytes [512]
+2021-09-29 12:41:16 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:125 - #Loaded parameter update_composite_rss_files.days_count_for_deletion=32
+2021-09-29 12:41:16 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:135 - #FeedAggrWebServer initialized
+2021-09-29 12:41:16 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.objects.user.User:615 - #Object user [testUser] successfully saved to the [C:\eclipseWorkspace\FeedAggrWebServer\data\users\testUser.xml] file
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:28 - #Looking for configuration file based on the catalina.base system property and constructed like $catalina.base/conf/feedaggrwebserver.conf
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:30 - #Got config file path: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:33 - #Loaded config file: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:34 - #Looking for data.file parameter
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:36 - #Found parameter data.path=C:\eclipseWorkspace\FeedAggrWebServer\data
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:38 - #Created parameter ConfigMap.usersPath=C:\eclipseWorkspace\FeedAggrWebServer\data\users
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:40 - #Created parameter ConfigMap.feedsPath=C:\eclipseWorkspace\FeedAggrWebServer\data\feeds
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:42 - #Loaded parameter admin.login=kvaga
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:44 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:46 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:55 - #Loaded parameter influxdb.enabled=true
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:61 - #Loaded parameter influxdb.host=130.61.122.117
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:63 - #Loaded parameter influxdb.dbname=feedaggrwebserver
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:66 - #Loaded parameter influxdb.threads.numder=10 and set to the InfluxDB
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:72 - #Loaded parameter influxdb.port=8086
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:80 - #Loaded parameter influxdb.attempts=5
+2021-09-29 12:42:25 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:87 - #Loaded parameter influxdb.timeout=5000
+2021-09-29 12:42:27 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.StartStopListener:98 - #InfluXDB successfully started
+2021-09-29 12:42:27 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:102 - #InfluxDB: InfluxDB2 instance parameters [influxdbDatabaseName=feedaggrwebserver, influxdbHost=130.61.122.117, influxdbPort=8086, retentionPolicyName=defaultPolicy, retentionPolicyDuration=7d, userName=q]
+2021-09-29 12:42:27 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:107 - #Loaded parameter TEST_MODE=false
+2021-09-29 12:42:27 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:111 - #Loaded parameter timeout.waittime_after_get_content_url_exception_in_millis=3600000, hh:mm:ss [01:00:00]
+2021-09-29 12:42:27 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:118 - #Loaded parameter servlet.show_feed.buffer_read_bytes [512]
+2021-09-29 12:42:27 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:125 - #Loaded parameter update_composite_rss_files.days_count_for_deletion=32
+2021-09-29 12:42:27 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:135 - #FeedAggrWebServer initialized
+2021-09-29 12:42:28 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.objects.user.User:615 - #Object user [testUser] successfully saved to the [C:\eclipseWorkspace\FeedAggrWebServer\data\users\testUser.xml] file
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:28 - #Looking for configuration file based on the catalina.base system property and constructed like $catalina.base/conf/feedaggrwebserver.conf
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:30 - #Got config file path: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:33 - #Loaded config file: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:34 - #Looking for data.file parameter
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:36 - #Found parameter data.path=C:\eclipseWorkspace\FeedAggrWebServer\data
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:38 - #Created parameter ConfigMap.usersPath=C:\eclipseWorkspace\FeedAggrWebServer\data\users
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:40 - #Created parameter ConfigMap.feedsPath=C:\eclipseWorkspace\FeedAggrWebServer\data\feeds
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:42 - #Loaded parameter admin.login=kvaga
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:44 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:46 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:55 - #Loaded parameter influxdb.enabled=true
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:61 - #Loaded parameter influxdb.host=130.61.122.117
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:63 - #Loaded parameter influxdb.dbname=feedaggrwebserver
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:66 - #Loaded parameter influxdb.threads.numder=10 and set to the InfluxDB
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:72 - #Loaded parameter influxdb.port=8086
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:80 - #Loaded parameter influxdb.attempts=5
+2021-09-29 12:57:19 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:87 - #Loaded parameter influxdb.timeout=5000
+2021-09-29 12:57:22 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.StartStopListener:98 - #InfluXDB successfully started
+2021-09-29 12:57:22 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:102 - #InfluxDB: InfluxDB2 instance parameters [influxdbDatabaseName=feedaggrwebserver, influxdbHost=130.61.122.117, influxdbPort=8086, retentionPolicyName=defaultPolicy, retentionPolicyDuration=7d, userName=q]
+2021-09-29 12:57:22 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:107 - #Loaded parameter TEST_MODE=false
+2021-09-29 12:57:22 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:111 - #Loaded parameter timeout.waittime_after_get_content_url_exception_in_millis=3600000, hh:mm:ss [01:00:00]
+2021-09-29 12:57:22 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:118 - #Loaded parameter servlet.show_feed.buffer_read_bytes [512]
+2021-09-29 12:57:22 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:125 - #Loaded parameter update_composite_rss_files.days_count_for_deletion=32
+2021-09-29 12:57:22 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:135 - #FeedAggrWebServer initialized
+2021-09-29 12:57:22 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.objects.user.User:615 - #Object user [testUser] successfully saved to the [C:\eclipseWorkspace\FeedAggrWebServer\data\users\testUser.xml] file
+2021-09-29 12:57:22 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.ServerUtils:95 - #Getting user configuration file
+2021-09-29 12:57:22 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.ServerUtils:101 - #Getting Feeds list from the file [C:\eclipseWorkspace\FeedAggrWebServer\data\users\testUser.xml]
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:28 - #Looking for configuration file based on the catalina.base system property and constructed like $catalina.base/conf/feedaggrwebserver.conf
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:30 - #Got config file path: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:33 - #Loaded config file: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:34 - #Looking for data.file parameter
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:36 - #Found parameter data.path=C:\eclipseWorkspace\FeedAggrWebServer\data
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:38 - #Created parameter ConfigMap.usersPath=C:\eclipseWorkspace\FeedAggrWebServer\data\users
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:40 - #Created parameter ConfigMap.feedsPath=C:\eclipseWorkspace\FeedAggrWebServer\data\feeds
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:42 - #Loaded parameter admin.login=kvaga
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:44 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:46 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:55 - #Loaded parameter influxdb.enabled=true
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:61 - #Loaded parameter influxdb.host=130.61.122.117
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:63 - #Loaded parameter influxdb.dbname=feedaggrwebserver
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:66 - #Loaded parameter influxdb.threads.numder=10 and set to the InfluxDB
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:72 - #Loaded parameter influxdb.port=8086
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:80 - #Loaded parameter influxdb.attempts=5
+2021-09-29 12:59:15 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:87 - #Loaded parameter influxdb.timeout=5000
+2021-09-29 12:59:17 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.StartStopListener:98 - #InfluXDB successfully started
+2021-09-29 12:59:17 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:102 - #InfluxDB: InfluxDB2 instance parameters [influxdbDatabaseName=feedaggrwebserver, influxdbHost=130.61.122.117, influxdbPort=8086, retentionPolicyName=defaultPolicy, retentionPolicyDuration=7d, userName=q]
+2021-09-29 12:59:17 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:107 - #Loaded parameter TEST_MODE=false
+2021-09-29 12:59:17 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:111 - #Loaded parameter timeout.waittime_after_get_content_url_exception_in_millis=3600000, hh:mm:ss [01:00:00]
+2021-09-29 12:59:17 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:118 - #Loaded parameter servlet.show_feed.buffer_read_bytes [512]
+2021-09-29 12:59:17 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:125 - #Loaded parameter update_composite_rss_files.days_count_for_deletion=32
+2021-09-29 12:59:17 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:135 - #FeedAggrWebServer initialized
+2021-09-29 12:59:17 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.objects.user.User:615 - #Object user [testUser] successfully saved to the [C:\eclipseWorkspace\FeedAggrWebServer\data\users\testUser.xml] file
+2021-09-29 12:59:18 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.ServerUtils:95 - #Getting user configuration file
+2021-09-29 12:59:18 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.ServerUtils:101 - #Getting Feeds list from the file [C:\eclipseWorkspace\FeedAggrWebServer\data\users\testUser.xml]
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:28 - #Looking for configuration file based on the catalina.base system property and constructed like $catalina.base/conf/feedaggrwebserver.conf
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:30 - #Got config file path: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:33 - #Loaded config file: C:\eclipseWorkspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\feedaggrwebserver.conf
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:34 - #Looking for data.file parameter
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:36 - #Found parameter data.path=C:\eclipseWorkspace\FeedAggrWebServer\data
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:38 - #Created parameter ConfigMap.usersPath=C:\eclipseWorkspace\FeedAggrWebServer\data\users
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:40 - #Created parameter ConfigMap.feedsPath=C:\eclipseWorkspace\FeedAggrWebServer\data\feeds
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:42 - #Loaded parameter admin.login=kvaga
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:44 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:46 - #Loaded parameter admin.password=f51dbcf2b651209b26a80e5216f63e97
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:55 - #Loaded parameter influxdb.enabled=true
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:61 - #Loaded parameter influxdb.host=130.61.122.117
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:63 - #Loaded parameter influxdb.dbname=feedaggrwebserver
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:66 - #Loaded parameter influxdb.threads.numder=10 and set to the InfluxDB
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:72 - #Loaded parameter influxdb.port=8086
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:80 - #Loaded parameter influxdb.attempts=5
+2021-09-29 13:00:03 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:87 - #Loaded parameter influxdb.timeout=5000
+2021-09-29 13:00:06 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.StartStopListener:98 - #InfluXDB successfully started
+2021-09-29 13:00:06 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:102 - #InfluxDB: InfluxDB2 instance parameters [influxdbDatabaseName=feedaggrwebserver, influxdbHost=130.61.122.117, influxdbPort=8086, retentionPolicyName=defaultPolicy, retentionPolicyDuration=7d, userName=q]
+2021-09-29 13:00:06 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:107 - #Loaded parameter TEST_MODE=false
+2021-09-29 13:00:06 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:111 - #Loaded parameter timeout.waittime_after_get_content_url_exception_in_millis=3600000, hh:mm:ss [01:00:00]
+2021-09-29 13:00:06 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:118 - #Loaded parameter servlet.show_feed.buffer_read_bytes [512]
+2021-09-29 13:00:06 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:125 - #Loaded parameter update_composite_rss_files.days_count_for_deletion=32
+2021-09-29 13:00:06 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:135 - #FeedAggrWebServer initialized
+2021-09-29 13:00:07 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.objects.user.User:615 - #Object user [testUser] successfully saved to the [C:\eclipseWorkspace\FeedAggrWebServer\data\users\testUser.xml] file
+2021-09-29 13:00:07 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.ServerUtils:95 - #Getting user configuration file
+2021-09-29 13:00:07 [main] DEBUG ru.kvaga.rss.feedaggrwebserver.ServerUtils:101 - #Getting Feeds list from the file [C:\eclipseWorkspace\FeedAggrWebServer\data\users\testUser.xml]
+2021-09-29 14:17:24 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:28 - #Looking for configuration file based on the catalina.base system property and constructed like $catalina.base/conf/feedaggrwebserver.conf

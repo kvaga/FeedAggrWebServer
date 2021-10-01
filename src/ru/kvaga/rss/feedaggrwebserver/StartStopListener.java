@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import ru.kvaga.monitoring.influxdb2.InfluxDB;
 import ru.kvaga.rss.feedaggr.Exec;
+import ru.kvaga.rss.feedaggrwebserver.monitoring.MonitoringUtils;
 
 import org.apache.logging.log4j.LogManager;;
 
@@ -47,10 +48,11 @@ public class StartStopListener implements ServletContextListener{
 			
 			try {
 				ConfigMap.INFLUXDB_ENABLED=Boolean.parseBoolean(props.getProperty("influxdb.enabled"));
+				
 				if(ConfigMap.INFLUXDB_ENABLED) {
-					//InfluxDB.enable();
+					MonitoringUtils.enable();
 				}else {
-					//InfluxDB.disable();
+					MonitoringUtils.disable();
 				}
 				log.info("Loaded parameter influxdb.enabled="+ConfigMap.INFLUXDB_ENABLED);
 			}catch(Exception e) {
@@ -94,7 +96,8 @@ public class StartStopListener implements ServletContextListener{
 				//InfluxDB.setCountOfAttemptsIfFails(10);
 				//InfluxDB.setTimeoutInMillis(1000);
 				//InfluxDB.getInstance(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME, ConfigMap.INFLUXDB_THREAD_NUMBER);
-				InfluxDB.getInstance(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME);
+				//InfluxDB.getInstance(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME);
+				MonitoringUtils.init(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME);
 				log.debug("InfluXDB successfully started");
 			}catch(Exception e) {
 				log.error("Couldn't start InfluxDB monitoring sending", e);

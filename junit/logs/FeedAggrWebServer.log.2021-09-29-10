@@ -1,0 +1,1 @@
+2021-09-29 12:17:43 [main] INFO  ru.kvaga.rss.feedaggrwebserver.StartStopListener:28 - #Looking for configuration file based on the catalina.base system property and constructed like $catalina.base/conf/feedaggrwebserver.conf

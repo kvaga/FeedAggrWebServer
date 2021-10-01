@@ -96,6 +96,9 @@ public class RSS {
     	return countOfDeletedItems;
     }
     
+    public synchronized void saveXMLObjectToFileByFeedId(String feedId) throws JAXBException {
+    	saveXMLObjectToFile(getRSSFileByFeedId(feedId));
+    }
     public synchronized void saveXMLObjectToFile(File file) throws JAXBException {
     	long t1 = new Date().getTime();
         JAXBContext jc = JAXBContext.newInstance(this.getClass());
@@ -129,6 +132,10 @@ public class RSS {
     	return new Date[] {oldest, newest};
     }
    
+    public static File getRSSFileByFeedId(String feedId) {
+		File file = new File(ConfigMap.feedsPath.getAbsoluteFile() + File.separator + feedId + ".xml");
+		return file; 
+	}
 }
 
 

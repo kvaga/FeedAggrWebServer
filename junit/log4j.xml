@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36}:%L - %msg%n"/>
+    </Console>
+    <!--  
+    <File name="MyFile" fileName="${catalina.base}/logs/FeedAggrWebServer1.log">
+      <PatternLayout>
+        <Pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36}:%L - %msg%n</Pattern>
+      </PatternLayout>
+    </File>
+    -->
+    <RollingRandomAccessFile name="LogB" fileName="junit/logs/FeedAggrWebServer.log" filePattern="junit/logs/FeedAggrWebServer.log.%d{yyyy-MM-dd-HH}">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36}:%L - #%msg%n"/>
+            <Policies>
+					<OnStartupTriggeringPolicy />
+					<SizeBasedTriggeringPolicy size="20 MB" />
+					<TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingRandomAccessFile>
+  </Appenders>
+  <Loggers>
+    <Root level="ERROR">
+      <AppenderRef ref="Console"/>
+    </Root>
+    
+	<Logger name="ru.kvaga" level="debug" additivity="false">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="LogB"/>
+    </Logger>
+   
+    <Logger name="custom" level="debug" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    
+  </Loggers>
+</Configuration>
