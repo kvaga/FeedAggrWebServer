@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
+
+import javax.xml.bind.JAXBException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,26 +29,28 @@ import ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed;
 class CompositeUserFeedTest {
 	final private static Logger log = LogManager.getLogger(CompositeUserFeedTest.class);
 
-	private static User user1, user2, user3;
+	private static User user1, user2, user3, user4;
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		JUnitUtils.serverInit();
-		user1 = User.createUser();
-		user2 = User.createUser();
-		user3 = User.createUser();
+//		user1 = User.createUser();
+//		user2 = User.createUser();
+//		user3 = User.createUser();
+		user4 = User.createUser();
 		
-		assertNotNull(user1);
-		assertNotNull(user2);
-		assertNotNull(user3);
-
+//		assertNotNull(user1);
+//		assertNotNull(user2);
+//		assertNotNull(user3);
+		assertNotNull(user4);
 	}
 
 	@AfterAll
 	static void tearDownAfterClass() throws Exception {
-		assertTrue(user1.deleteUser());
-		assertTrue(user2.deleteUser());
-		assertTrue(user3.deleteUser());
+//		assertTrue(user1.deleteUser());
+//		assertTrue(user2.deleteUser());
+//		assertTrue(user3.deleteUser());
+//		assertTrue(user4.deleteUser());
 	}
 
 	@BeforeEach
@@ -56,6 +61,7 @@ class CompositeUserFeedTest {
 	void tearDown() throws Exception {
 	}
 
+	/*
 	@Test
 	void testCreateCompositeFeedAndAddNewFeeds() {
 		log.debug("User user ["+user1.getName()+"] for test testCreateCompositeFeedAndAddNewFeeds");
@@ -175,12 +181,70 @@ class CompositeUserFeedTest {
 		}
 	}
 
-	
+	*/
 	@Test
 	void testUpdateItemsInCompositeRSSFilesOfUser() {
-		fail("Not yet implemented");
+		String userName =user4.getName();
+		ArrayList<Item> itemsForDeletion = new ArrayList<Item>();
+		ArrayList<Item> itemsForSaving = new ArrayList<Item>();
+		ArrayList<String> clearRSSFeedIds = new ArrayList<String>();
+		CompositeUserFeed cuf = null;
+		int countOfAllFeeds = 10;
+		try {
+			cuf = CompositeUserFeed.createCompositeRSS(userName, "compositeRSSTitle");
+			// reload user's information
+			user4 = User.getXMLObjectFromXMLFileByUserName(userName);
+			for(int i=0; i<countOfAllFeeds; i++) {
+				UserFeed uf = JUnitUtils.createUserFeedTestAndBindToUser(userName);
+				assertNotNull(uf);
+				RSS rss = RSS.getRSSObjectByFeedId(uf.getId());
+				Item item = JUnitUtils.createItem();
+				item.setPubDate(ServerUtils.getDateSinceToday(-5));
+				if(i%2==0) {
+					item.setPubDate(ServerUtils.getDateSinceToday(-(new Random().nextInt(100 - 35) + 35)));
+					itemsForDeletion.add(item);
+				}else {
+					itemsForSaving.add(item);
+				}
+				rss.getChannel().getItem().add(item);
+				rss.saveXMLObjectToFileByFeedId(uf.getId());
+				clearRSSFeedIds.add(uf.getId());
+				user4.getCompositeUserFeedById(cuf.getId()).getFeedIds().add(uf.getId());
+			}
+			RSS cufRSS = RSS.getRSSObjectByFeedId(cuf.getId());
+			for(Item item : itemsForDeletion) {
+				cufRSS.getChannel().getItem().add(item);
+			}
+			cufRSS.saveXMLObjectToFileByFeedId(cuf.getId());
+			user4.saveXMLObjectToFileByLogin();
+			
+			int result[] = CompositeUserFeed.updateItemsInCompositeRSSFilesOfUser(userName);
+			assertEquals(1, result[0]); 
+			assertEquals(1, result[1]);
+			assertEquals(0, result[2]);
+			assertEquals(itemsForDeletion.size(), result[3]);
+		} catch (Exception e) {
+			fail("Exception on testUpdateItemsInCompositeRSSFilesOfUser", e);
+			e.printStackTrace();
+		}finally {
+//			for(String feedId : clearRSSFeedIds) {
+//				try {
+//					assertTrue(RSS.deleteRSSFile(feedId));
+//				} catch (JAXBException e) {
+//					fail("Exception on cleaning after testUpdateItemsInCompositeRSSFilesOfUser", e);
+//					e.printStackTrace();
+//				}
+//			}
+//			if(cuf!=null) {
+//				try {
+//					assertTrue(RSS.deleteRSSFile(cuf.getId()));
+//				} catch (JAXBException e) {
+//					fail("Exception on cleaning after testUpdateItemsInCompositeRSSFilesOfUser", e);
+//					e.printStackTrace();
+//				}
+//			}
+		}
 	}
 
 	
-
 }

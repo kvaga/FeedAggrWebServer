@@ -63,7 +63,7 @@ public class Item{
 //		return guid.getValue().getBytes().hashCode();
 //	}
 	public String toString() {
-		return "Feed title ["+title+"], link ["+link+"], pubDate ["+pubDate+"], guid ["+guid.getValue()+"]";
+		return "Feed title ["+title+"], link ["+link+"], pubDate ["+pubDate+"], guid ["+(guid==null?null:guid.getValue())+"]";
 	}
 	
 }

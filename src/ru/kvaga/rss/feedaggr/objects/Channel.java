@@ -94,15 +94,16 @@ public class Channel {
 
 	public boolean containsItem(Item item) {
 		long t1 = new Date().getTime();
+		if(item==null) {
+			return false;
+		}
 		for (Item _i : getItem()) {
 			if (item.getGuid().getValue().equals(_i.getGuid().getValue())) {
 				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
-
 				return true;
 			}
 		}
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
-
 		return false;
 	}
 
@@ -124,7 +125,7 @@ public class Channel {
 			itemLink = itemLink.replaceAll("\\{%" + itemLinkNumber + "}", itemFromHtmlBody.get(itemLinkNumber));
 			itemLink = Exec.checkItemURLForFullness(url, itemLink);
 
-			//цикл для замены всех {%Х} на значения
+			//пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ {%пїЅ} пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			for (int i = 1; i <= itemFromHtmlBody.length(); i++) {
 				try {
 					itemTitle = itemTitle.replaceAll("\\{%" + i + "}", itemFromHtmlBody.get(i));
