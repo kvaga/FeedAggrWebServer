@@ -67,7 +67,7 @@ public class CompositeUserFeed {
 	}
 	
 	
-	
+	 
 	/**
 	 * Create new empty composite RSS file and add newly created CompositeUserFeed to the user's file
 	 * @param userName - a name of user
