@@ -16,3 +16,4 @@ src/custom/*
 junit/*
 _lib*
 _lib/*
+!ru.kvaga.rss.feedaggrwebserver.junit*

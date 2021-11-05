@@ -107,11 +107,16 @@ public class RSS {
         m.marshal(this, file);
         log.debug("Object rss [" + getChannel().getTitle() + "] successfully saved to the [" + file + "] file");
         MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
-
 	}
     public synchronized void saveXMLObjectToFile(String file) throws JAXBException {
     	saveXMLObjectToFile(new File(file));
 	}
+    
+    public static synchronized boolean deleteRSSFile(String feedId) throws JAXBException {
+    	return getRSSFileByFeedId(feedId).delete();
+	}
+    
+    
     
     public String toString() {
     	return "RSS channel title ["+channel.getTitle()+"], link ["+channel.getLink()+"], lastBuildDate ["+channel.getLastBuildDate()+"], version ["+version+"]";

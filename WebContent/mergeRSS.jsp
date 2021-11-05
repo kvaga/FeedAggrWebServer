@@ -37,15 +37,13 @@ File userFile = null;
 User user = null;
 CompositeUserFeed compositeUserFeed=null;
 if(request.getParameter("feedId")!=null){
-	out.println("<input type=\"hidden\" name=\"feedId\" value=\""+request.getParameter("feedId")+"\">");
+	out.println("<input type=\"hidden\" name=\"compositeFeedId\" value=\""+request.getParameter("feedId")+"\">");
 	userFile=new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + request.getSession().getAttribute("login") + ".xml");
 	//user=(User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
 	user=User.getXMLObjectFromXMLFile(userFile);
 	compositeUserFeed=user.getCompositeUserFeedById(request.getParameter("feedId"));
 }
 
-
-int k=0;
 ArrayList<RSS> rssListForPrinting = new ArrayList<RSS>();
 HashMap<RSS,String> mapRssStringForPrinting = new HashMap<RSS, String>();
 for(Feed feedOnServer : ServerUtils.getFeedsList(true, false)) {
@@ -58,9 +56,9 @@ Collections.sort(rssListForPrinting, new RSSForPrintingComparatorByTitle());
 for(RSS rss : rssListForPrinting){
 	out.println("<tr>");
 	if(request.getParameter("feedId")!=null && compositeUserFeed.doesHaveCompositeFeedId(mapRssStringForPrinting.get(rss))){
-		out.println("<td valign=\"top\"><input type=\"checkbox\" id=\"vehicle1\" name=\"id_"+(k)+"\" value=\""+mapRssStringForPrinting.get(rss)+"\" checked></td>");
+		out.println("<td valign=\"top\"><input type=\"checkbox\" id=\"vehicle1\" name=\"feedId\" value=\""+mapRssStringForPrinting.get(rss)+"\" checked></td>");
 	}else{
-		out.println("<td valign=\"top\"><input type=\"checkbox\" id=\"vehicle1\" name=\"id_"+(k)+"\" value=\""+mapRssStringForPrinting.get(rss)+"\"></td>");
+		out.println("<td valign=\"top\"><input type=\"checkbox\" id=\"vehicle1\" name=\"feedId\" value=\""+mapRssStringForPrinting.get(rss)+"\"></td>");
 	}
 	out.println("<td><a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>");
 	out.println("<br>");	 
@@ -68,7 +66,6 @@ for(RSS rss : rssListForPrinting){
 	out.println("<br>");	 
 	out.println("Last updated: " + rss.getChannel().getLastBuildDate());
 	out.println("</td></tr>");	 
-k++;
 }
 
 

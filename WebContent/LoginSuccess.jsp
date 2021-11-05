@@ -42,7 +42,11 @@ if(cookies!=null){
 	
 	
 	<br>
-	
+	<%
+		if(request.getAttribute("responseStatus")!=null){
+			out.write(request.getAttribute("responseStatus").toString());
+		}
+	%>
     <br>
 	<form action="LogoutServlet" method="post">
 		<input type="submit" value="Logout">

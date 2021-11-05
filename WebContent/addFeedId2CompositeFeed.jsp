@@ -39,18 +39,18 @@ Set<CompositeUserFeed> cufSet = user.getCompositeUserFeeds();
 
 %>
 <form action="mergeRSS">
-<input type="hidden" name="appendSingleFeedIds" value="true"></input>
+
 <%
 if(request.getParameterValues("feedId")!=null && request.getParameterValues("feedId").length>0){
 	out.write("The list of feed ids for merging: ");
 	for(String feedId: request.getParameterValues("feedId")){
 		out.write(feedId+" ");
-		out.write("<input type=\"hidden\" name=\"id_"+feedId+"\" value=\""+feedId+"\">");
+		out.write("<input type=\"hidden\" name=\"feedId\" value=\""+feedId+"\">");
 	}
 }else{
 %>
 <br/>
-Single Feed id: <input type="text" name="id_<%=request.getParameter("feedId")%>" value="<%= request.getParameter("feedId")!=null? request.getParameter("feedId"):"" %>"></input>
+Single Feed id: <input type="text" name="feedId" value="<%= request.getParameter("feedId")!=null? request.getParameter("feedId"):"" %>"></input>
 <br/>
 <%
 }
@@ -81,7 +81,7 @@ Collections.sort(rssCompositeListForPrinting, new RSSForPrintingComparatorByTitl
 for(RSS rss : rssCompositeListForPrinting) {
 	out.println("<br>");
 	%>
-	<input type="radio" id="feedId" name="feedId" value="<%=mapRssStringForPrinting.get(rss)%>"/>
+	<input type="radio" id="compositeFeedId" name="compositeFeedId" value="<%=mapRssStringForPrinting.get(rss)%>"/>
 	<%
 	out.println("<a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]");
 	out.println("&nbsp&nbsp&nbsp[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+rss.getChannel().getTitle()+"\">Edit</a>]");

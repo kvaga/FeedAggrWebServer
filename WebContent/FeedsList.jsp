@@ -70,7 +70,7 @@ if(sb.length()!=0){
 }
 Collections.sort(rssListForPrinting, new RSSForPrintingComparatorByTitle());
 out.println("<table id=\"table\" border=1 style=\"white-space:nowrap;\">");
-out.println("<tr><th onclick=\"sortTable(1)\">Name</th><th>Delete</th><th>Edit</th><th onclick=\"sortTable(4)\">Last updated</th><th onclick=\"sortTable(5, 'true')\">Count of items</th><th onclick=\"sortTable(6, 'true')\">Size, mb</th><th onClick='show_hide_column(7,false);'>URL</th><th onclick=\"sortTable(7, 'true')\">Oldest PubDate</th><th onclick=\"sortTable(8, 'true')\">Newest PubDate</th></tr>");	 
+out.println("<tr><th onclick=\"sortTable(1)\">Name</th><th>Delete</th><th>Edit</th><th onclick=\"sortTable(4)\">Last updated</th><th onclick=\"sortTable(5, 'true')\">Count of items</th><th onclick=\"sortTable(6, 'true')\">Size, mb</th><th onClick='show_hide_column(7,false);'>URL</th><th onclick=\"sortTable(8, 'true')\">Oldest PubDate</th><th onclick=\"sortTable(9, 'true')\">Newest PubDate</th></tr>");	 
 //out.println("<tr><th>Name</th><th>Delete</th><th>Edit</th><th>Last updated</th><th>Count of items</th><th>Size, mb</th><th onClick='show_hide_column(7,false);' class=\"targ\">URL</th></tr>");	 
 /*
 out.println("<col class=\"col1\"/>");

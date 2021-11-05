@@ -29,6 +29,11 @@
       <AppenderRef ref="Console"/>
       <AppenderRef ref="LogB"/>
     </Logger>
+    
+    <Logger name="telegrambot" level="debug" additivity="false">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="LogB"/>
+    </Logger>
    
     <Logger name="custom" level="debug" additivity="false">
       <AppenderRef ref="Console"/>
