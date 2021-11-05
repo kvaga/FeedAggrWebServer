@@ -21,7 +21,7 @@ import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
 public class CompositeUserFeed {
 	final private static Logger log = LogManager.getLogger(CompositeUserFeed.class);
-
+ 
 	private String id;
 	private ArrayList<String> feedIds = new ArrayList<String>();
 	
