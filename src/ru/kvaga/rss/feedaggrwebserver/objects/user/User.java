@@ -158,6 +158,14 @@ public class User {
 		return map;
 	}
 
+//	public static ArrayList<User> getAllUsersList() throws JAXBException{
+//		ArrayList<User> al = new ArrayList<User>();
+//		for(File file : ConfigMap.usersPath.listFiles()) {
+//			al.add(User.getXMLObjectFromXMLFile(file));
+//		}
+//		return al;
+//	}
+	
 	/**
 	 * 
 	 * @return map<(String) feedId, (String) url>

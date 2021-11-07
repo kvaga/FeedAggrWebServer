@@ -51,7 +51,11 @@ public class BackgroudJobManager implements ServletContextListener{
 //        scheduler.schedule("7 8-22 * * *", new Task());
 //        scheduler.start();
 //        servletContextEvent.getServletContext().setAttribute("SCHEDULER", scheduler);
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		if(!ConfigMap.TEST_MODE) {
+			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		}else {
+			MonitoringUtils.disable();
+		}
 	}
 	
 

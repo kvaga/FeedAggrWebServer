@@ -1,6 +1,7 @@
 package ru.kvaga.rss.feedaggrwebserver.objects.user;
 
 import java.io.File;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +21,7 @@ import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
+@XmlRootElement
 public class CompositeUserFeed {
 	final private static Logger log = LogManager.getLogger(CompositeUserFeed.class);
  
