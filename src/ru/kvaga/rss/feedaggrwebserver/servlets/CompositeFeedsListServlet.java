@@ -53,7 +53,7 @@ public class CompositeFeedsListServlet extends HttpServlet {
 			log.debug("Sent the response attribute compositeFeedList with value size ["+((ArrayList<CompositeFeedTotalInfo>)request.getAttribute("compositeFeedList")).size()+"]");
 		}catch (Exception e) {
 			log.error("Exception on CompositeFeedsListServlet", e);
-			request.setAttribute("responseResultException", e);
+			request.setAttribute("Exception", e);
 		}	finally {
 			rd.include(request, response);
 		}
