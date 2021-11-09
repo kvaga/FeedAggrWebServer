@@ -25,12 +25,14 @@ if(request.getAttribute("userList")!=null){
 	request.setAttribute("userList", request.getAttribute("userList"));
 %>
 The list of Users to assign Composite User Feed
-<ul>
+
 	<c:forEach items="${userList}" var="item">
-		<li>${item.getName()}</li>
+		<input type="radio" id="userName" name="userName" value="${item.getName()}"/>
+    	<label for="${item.getName()}">${item.getName()}</label>
 	</c:forEach>
-</ul>
+<br/>
 <form method="post" action="ImportCompositeUserFeed" enctype="multipart/form-data">
+
     Choose a file: <input type="file" name="multiPartServlet" />
     <input type="hidden" name="redirectTo" value="/CompositeFeedsImport.jsp"/>
     <input type="submit" value="Upload" />

@@ -8,6 +8,8 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -24,7 +26,10 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
+import ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed;
+import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 
 /**
  * Servlet implementation class ImportCompositeUserFeed
@@ -50,14 +55,29 @@ public class ImportCompositeUserFeedServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String redirectTo = request.getParameter("redirectTo");
 		String source = request.getParameter("source");
-		String userName = request.getParameter("userName");
+//		String userName = request.getParameter("userName");
+		String userName = "kvaga";
 		log.debug("Got parameters "+ServerUtils.listOfParametersToString("redirectTo", redirectTo, "source", source, "userName", userName));
 		RequestDispatcher rd = redirectTo !=null? getServletContext().getRequestDispatcher(redirectTo) : (source!=null ? getServletContext().getRequestDispatcher(source) : getServletContext().getRequestDispatcher("/LoginSuccess.jsp"));
 		String fileName = "";
 
 		try {
-		    StringBuilder textBuilder = new StringBuilder();
-			for (Part part : request.getParts()) {
+			CompositeUserFeed importedCompositeUserFeed = importCompositeUserFeedServletExec(userName, request.getParts());
+		   
+			request.setAttribute("ResponseResult", "CompositeUserFeed with new compositeUserFeedId ["+importedCompositeUserFeed.getId()+"] imported successfully to the user ["+userName+"]!");
+		}catch (Exception e) {
+			log.error("Exception on ImportCompositeUserFeedServlet", e);
+			request.setAttribute("Exception", e);
+		}	finally {
+			rd.include(request, response);
+		}
+
+	}
+	
+	public CompositeUserFeed importCompositeUserFeedServletExec(String userName, Collection<Part> collection) throws Exception {
+		String fileName="";
+		 StringBuilder textBuilder = new StringBuilder();
+			for (Part part : collection) {
 			    fileName = getFileName(part);			   
 			    try (Reader reader = new BufferedReader(new InputStreamReader
 			      ( part.getInputStream(), Charset.forName(StandardCharsets.UTF_8.name())))) {
@@ -69,19 +89,34 @@ public class ImportCompositeUserFeedServlet extends HttpServlet {
 			    break;
 			}
 			ExportCompositeFeedServletResult exportCompositeFeedServletResult = getExportCompositeFeedServletResultFromString(textBuilder.toString());
-			
+			User user = User.getXMLObjectFromXMLFileByUserName(userName);
+			String newCompouseFeedId = "composite_"+ServerUtils.getNewFeedId();
+			exportCompositeFeedServletResult.getCompositeUserFeed().setId(newCompouseFeedId);
+			// 
+			ArrayList<String> newFeedIds = new ArrayList<String>(); 
+			for(RSS feedRSS : exportCompositeFeedServletResult.getFeedRSSList()) {
+				String newFeedId = ServerUtils.getNewFeedId();
+				newFeedIds.add(newFeedId);
+//				// replace old feed id with new one in the CompositeUserFeed feeds list
+//				exportCompositeFeedServletResult.getCompositeUserFeed().getFeedIds().remove(oldFeedId);
+//				exportCompositeFeedServletResult.getCompositeUserFeed().getFeedIds().add(newFeedId);
+				// Save RSS of feed with new feed id
+				feedRSS.saveXMLObjectToFileByFeedId(newFeedId);
+			}
+			// Update compositeUserFeed with new feed ids
+			exportCompositeFeedServletResult.getCompositeUserFeed().setFeedIds(newFeedIds);
+			// set new composite feed id
+			user.getCompositeUserFeeds().add(exportCompositeFeedServletResult.getCompositeUserFeed());
+			// save RSS of composite user feed
+			RSS compositeUserFeedRSS = exportCompositeFeedServletResult.getCompositeRSS();
+			compositeUserFeedRSS.getChannel().setTitle(compositeUserFeedRSS.getChannel().getTitle() + " [Imported at "+new Date()+"]");
+			compositeUserFeedRSS.saveXMLObjectToFileByFeedId(newCompouseFeedId);
+			user.saveXMLObjectToFileByLogin();			
 			log.debug("Content of file: " + textBuilder.toString());
 			log.debug("File " + fileName + " has uploaded successfully!");
-			request.setAttribute("ResponseResult", "File " + fileName + " has uploaded successfully!");
-		}catch (Exception e) {
-			log.error("Exception on ImportCompositeUserFeedServlet", e);
-			request.setAttribute("Exception", e);
-		}	finally {
-			rd.include(request, response);
-		}
-
+		return user.getCompositeUserFeedById(newCompouseFeedId);
 	}
-	
+
 	private String getFileName(Part part) {
     	for (String content : part.getHeader("content-disposition").split(";")) {
 	        if (content.trim().startsWith("filename")) {
