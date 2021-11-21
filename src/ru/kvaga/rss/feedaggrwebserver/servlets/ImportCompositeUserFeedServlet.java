@@ -56,12 +56,14 @@ public class ImportCompositeUserFeedServlet extends HttpServlet {
 		String redirectTo = request.getParameter("redirectTo");
 		String source = request.getParameter("source");
 //		String userName = request.getParameter("userName");
-		String userName = "kvaga";
-		log.debug("Got parameters "+ServerUtils.listOfParametersToString("redirectTo", redirectTo, "source", source, "userName", userName));
+		String userName = (String)request.getSession().getAttribute("login");
 		RequestDispatcher rd = redirectTo !=null? getServletContext().getRequestDispatcher(redirectTo) : (source!=null ? getServletContext().getRequestDispatcher(source) : getServletContext().getRequestDispatcher("/LoginSuccess.jsp"));
 		String fileName = "";
 
 		try {
+
+			
+			log.debug("Got parameters "+ServerUtils.listOfParametersToString("redirectTo", redirectTo, "source", source, "userName", userName));
 			CompositeUserFeed importedCompositeUserFeed = importCompositeUserFeedServletExec(userName, request.getParts());
 		   
 			request.setAttribute("ResponseResult", "CompositeUserFeed with new compositeUserFeedId ["+importedCompositeUserFeed.getId()+"] imported successfully to the user ["+userName+"]!");
@@ -74,9 +76,19 @@ public class ImportCompositeUserFeedServlet extends HttpServlet {
 
 	}
 	
+	private String getParameter(Part part, String parameter) {
+    	for (String content : part.getHeader("content-disposition").split(";")) {
+	        if (content.trim().startsWith(parameter)) {
+	            return content.substring(content.indexOf("=") + 2, content.length() - 1);
+	        }
+	    }
+	    return null;
+	}
+
 	public CompositeUserFeed importCompositeUserFeedServletExec(String userName, Collection<Part> collection) throws Exception {
 		String fileName="";
 		 StringBuilder textBuilder = new StringBuilder();
+		 	// getting the file name
 			for (Part part : collection) {
 			    fileName = getFileName(part);			   
 			    try (Reader reader = new BufferedReader(new InputStreamReader
@@ -88,6 +100,7 @@ public class ImportCompositeUserFeedServlet extends HttpServlet {
 			    }
 			    break;
 			}
+			
 			ExportCompositeFeedServletResult exportCompositeFeedServletResult = getExportCompositeFeedServletResultFromString(textBuilder.toString());
 			User user = User.getXMLObjectFromXMLFileByUserName(userName);
 			String newCompouseFeedId = "composite_"+ServerUtils.getNewFeedId();
@@ -117,6 +130,7 @@ public class ImportCompositeUserFeedServlet extends HttpServlet {
 		return user.getCompositeUserFeedById(newCompouseFeedId);
 	}
 
+	
 	private String getFileName(Part part) {
     	for (String content : part.getHeader("content-disposition").split(";")) {
 	        if (content.trim().startsWith("filename")) {
