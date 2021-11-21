@@ -323,7 +323,7 @@ public class ServerUtils {
 				sb.append("&szlig;");
 				break;
 			case 'ù':
-				sb.append("&ugrave;");
+				sb.append("&ugrave;"); 
 				break;
 			case 'Ù':
 				sb.append("&Ugrave;");
