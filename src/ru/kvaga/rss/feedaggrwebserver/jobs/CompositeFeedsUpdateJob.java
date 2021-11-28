@@ -19,7 +19,7 @@ import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 import ru.kvaga.rss.feedaggrwebserver.servlets.mergeRSSServlet;
 
 public class CompositeFeedsUpdateJob implements Runnable {
-
+	public static boolean isWorkingNow=false;
 	private static Logger log = LogManager.getLogger(CompositeFeedsUpdateJob.class);
 
 	private File compositeRSSFile = null;
@@ -29,6 +29,7 @@ public class CompositeFeedsUpdateJob implements Runnable {
 
 	public void run() {
 		long t1 = new Date().getTime();
+		isWorkingNow=true;
 		MonitoringUtils.sendCommonMetric("JobsWork", 1, new Tag("job", "CompositeFeedsUpdateJob"));
 
 //		ArrayList<String> al = new ArrayList<String>();
@@ -66,7 +67,7 @@ public class CompositeFeedsUpdateJob implements Runnable {
 		log.debug("CompositeFeedsUpdateJob finished for ["+(Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(new Date().getTime()-t1))+"]");
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		MonitoringUtils.sendCommonMetric("JobsWork", 0, new Tag("job", "CompositeFeedsUpdateJob"));
-
+		isWorkingNow=false;
 	}
 
 }

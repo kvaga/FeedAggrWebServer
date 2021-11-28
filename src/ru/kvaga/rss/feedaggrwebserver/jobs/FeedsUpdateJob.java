@@ -33,7 +33,8 @@ import ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed;
 
 public class FeedsUpdateJob implements Runnable {
 	final static Logger log = LogManager.getLogger(FeedsUpdateJob.class);
-
+	public static boolean isWorkingNow=false;
+	
 //	private static Logger log= LogManager.getLogger(FeedsUpdateJob.class);
 
 
@@ -83,7 +84,7 @@ public class FeedsUpdateJob implements Runnable {
 			throw new RuntimeException("The list size of files for path [" + ConfigMap.usersPath + "]=0");
 		}
 		try {
-			// Пробегаемся по всем пользователям
+			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			for (File userFile : listOfUsersFiles) {
 				if (!userFile.getName().endsWith(".xml")) {
 					continue;
@@ -92,7 +93,7 @@ public class FeedsUpdateJob implements Runnable {
 //				User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
 				User user = User.getXMLObjectFromXMLFile(userFile);
 
-				// Находим у каждого пользователя список feed id и соответствующие им
+				// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ feed id пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ
 				// item*Templates
 
 				if (user.getUserFeeds() == null || user.getUserFeeds().size() == 0) {
@@ -112,7 +113,7 @@ public class FeedsUpdateJob implements Runnable {
 						String rssXmlFile = ConfigMap.feedsPath.getAbsolutePath() + "/" + userFeed.getId() + ".xml";
 						
 						log.debug("Found rssXmlFile [" + rssXmlFile + "] for users file [" + userFile + "]");
-						// Получаем feed объект из файла
+						// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ feed пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 //						RSS rssFromFile = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(rssXmlFile, new RSS());
 						RSS rssFromFile = RSS.getRSSObjectFromXMLFile(rssXmlFile);
 						
@@ -131,7 +132,7 @@ public class FeedsUpdateJob implements Runnable {
 						
 //				ObjectsUtils.printXMLObject(rssFromFile); 
 
-						// Получаем вспомогательную информацию для получения feed (RSS) объекта из Web
+						// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ feed (RSS) пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ Web
 						url = rssFromFile.getChannel().getLink();
 						url = (url.contains("youtube.com") && !url.contains("youtube.com/feeds/videos.xml")) ? Exec.getYoutubeFeedURL(url): url;
 						log.debug("Feed id [" + feedId + "] contains url [" + url + "]. Trying to get URL's content");
@@ -152,13 +153,13 @@ public class FeedsUpdateJob implements Runnable {
 
 						substringForHtmlBodySplit = Exec.getSubstringForHtmlBodySplit(repeatableSearchPattern);
 
-						// Получаем feed (RSS) объект из Web
+						// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ feed (RSS) пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ Web
 						RSS rssFromWeb = Exec.getRSSFromWeb(url, responseHtmlBody, substringForHtmlBodySplit,
 								repeatableSearchPattern, itemTitleTemplate, itemLinkTemplate, itemContentTemplate,
 								filterWords);
 //					ObjectsUtils.printXMLObject(rssFromWeb);
 
-						// Сравниванием списки item из Web и Файла
+						// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ item пїЅпїЅ Web пїЅ пїЅпїЅпїЅпїЅпїЅ
 						for (ru.kvaga.rss.feedaggr.objects.Item itemFromWeb : rssFromWeb.getChannel().getItem()) {
 							boolean foundItemBol = false;
 							itemFromWeb.setLink(Exec.checkItemURLForFullness(url, itemFromWeb.getLink()));
@@ -169,20 +170,20 @@ public class FeedsUpdateJob implements Runnable {
 								}
 							}
 							if (!foundItemBol) {
-								log.debug("Такого item [" + itemFromWeb.getTitle() + "] с guid ["
-										+ itemFromWeb.getGuid().getValue() + "] нет в файле");
+								log.debug("пїЅпїЅпїЅпїЅпїЅпїЅ item [" + itemFromWeb.getTitle() + "] пїЅ guid ["
+										+ itemFromWeb.getGuid().getValue() + "] пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ");
 								itemFromWeb.setDescription(itemFromWeb.getDescription());
 								log.debug("Added title to the end of itemFromWeb because thiw item is a new one");
 								rssFromFile.getChannel().getItem().add(itemFromWeb);
-								log.debug("itemFromWeb [" + itemFromWeb.getTitle() + "] с guid ["
-										+ itemFromWeb.getGuid().getValue() + "] добавлен в rssFromFile");
+								log.debug("itemFromWeb [" + itemFromWeb.getTitle() + "] пїЅ guid ["
+										+ itemFromWeb.getGuid().getValue() + "] пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ rssFromFile");
 								countOfNewlyAddedItemsToTheCurrentFeedId++;
 							}
 						}
 						rssFromFile.getChannel().setLastBuildDate(new Date());
 //						ObjectsUtils.saveXMLObjectToFile(rssFromFile, rssFromFile.getClass(), new File(rssXmlFile));
 						rssFromFile.saveXMLObjectToFile(new File(rssXmlFile));
-						log.debug("Объект rssFromFile сохранен в файл [" + rssXmlFile + "]");
+						log.debug("пїЅпїЅпїЅпїЅпїЅпїЅ rssFromFile пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ [" + rssXmlFile + "]");
 						successFeedsCount++;
 						MonitoringUtils.sendCommonMetric("FeedsUpdateJob.CountOfNewlyAddedItemsToTheCurrentFeedId", countOfNewlyAddedItemsToTheCurrentFeedId, new Tag("feedId", feedId));
 
@@ -220,6 +221,7 @@ public class FeedsUpdateJob implements Runnable {
 	}
 
 	public void run() {
+		isWorkingNow=true;
 		log.info("Job started");
 		int[] result;
 		long t1 = new Date().getTime();
@@ -245,9 +247,11 @@ public class FeedsUpdateJob implements Runnable {
 			log.error("IOException", e);
 		} catch (Exception e) {
 			log.error("Exception", e);
+		}finally {
+			isWorkingNow=false;
 		}
 		log.info("Job finished for ["+(Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(new Date().getTime()-t1))+"]");
-
+		
 	}
 
 }
