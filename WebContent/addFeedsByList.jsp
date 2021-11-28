@@ -51,7 +51,7 @@ if (request.getParameter("listOfURLs") == null) {
 		User user = User.getXMLObjectFromXMLFile(ServerUtils.getUserFileByLogin((String) request.getSession().getAttribute("login")));
 		HashMap<String, String> localUrlsCache = user.getAllUserUrlsAndFeedIdsMap();
 		log.debug("localUrlsCache size ["+localUrlsCache.size()+"]");
-		out.write("<table border=\"1\"><tr><td><input type=\"checkbox\" onClick=\"toggle(this)\"></td><td>URL</td><td>Status</td><td>Add to composite</td></tr>");
+		out.write("<table border=\"1\"><tr><td><input type=\"checkbox\" onClick=\"toggle(this)\"></td><td>Title</td><td>URL</td><td>Status</td><td>Add to composite</td></tr>");
 		
 		for (String url : ((String) request.getParameter("listOfURLs")).split("\r\n")) {
 			try {
@@ -90,13 +90,10 @@ if (request.getParameter("listOfURLs") == null) {
 										Don't forget to correct code below
 									*/
 									if (size > 0) {
-										out.write("<tr><td><input type=\"checkbox\" id=\"feed_id\" name=\"feedId\" value=\""+createdFeedId+"\" ></td><td>" + url + "</td><td>" + size + "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId
-												+ "\">Add to composite</a></td></tr>");
+										out.write("<tr><td><input type=\"checkbox\" id=\"feed_id\" name=\"feedId\" value=\""+createdFeedId+"\" ></td><td>"+responseForAddRSSFeedByURLAutomaticlyMethod.getFeedTitle()+"</td><td>" + responseForAddRSSFeedByURLAutomaticlyMethod.getUrl() + "</td><td>" + size + "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId	+ "\">Add to composite</a></td></tr>");
 
 									} else {
-										out.write("<tr><td><input type=\"checkbox\"disabled></td><td>" + Exec.getHTMLFailText(url) + "</td><td>" + size
-												+ "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId
-												+ "\">Add to composite</a></td></tr>");
+										out.write("<tr><td><input type=\"checkbox\"disabled></td><td>"+responseForAddRSSFeedByURLAutomaticlyMethod.getFeedTitle()+"</td><td>" + Exec.getHTMLFailText(responseForAddRSSFeedByURLAutomaticlyMethod.getUrl()) + "</td><td>" + size	+ "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId	+ "\">Add to composite</a></td></tr>");
 									}
 								} catch (Exception e) {
 									out.write("<tr><td><input type=\"checkbox\" disabled></td></td><td>" + Exec.getHTMLFailText(url) + "</font></td><td>" + Exec.getHTMLFailText(e.getMessage())+ "</td><td></td></tr>");
@@ -117,17 +114,18 @@ if (request.getParameter("listOfURLs") == null) {
 							.addRSSFeedByURLAutomaticly(url, (String) request.getSession().getAttribute("login"),
 									localUrlsCache, durationMillisecondsForUpdatingFeeds);
 					int size = responseForAddRSSFeedByURLAutomaticlyMethod.getSize();
+					
 					String createdFeedId = responseForAddRSSFeedByURLAutomaticlyMethod.getFeedId();
 					if (size > 0) {
-						out.write("<tr><td><input type=\"checkbox\"  id=\"feed_id\" name=\"feedId\" value=\""+createdFeedId+"\"  ></td><td>" + url + "</td><td>" + size + "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId
+						out.write("<tr><td><input type=\"checkbox\"  id=\"feed_id\" name=\"feedId\" value=\""+createdFeedId+"\"  ></td><td>"+responseForAddRSSFeedByURLAutomaticlyMethod.getFeedTitle()+"</td><td>" + responseForAddRSSFeedByURLAutomaticlyMethod.getUrl() + "</td><td>" + size + "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId
 								+ "\">Add to composite</a></td></tr>");					
 					} else {
-						out.write("<tr><td><input type=\"checkbox\"disabled></td><td>" + Exec.getHTMLFailText(url) + "</td><td>" + size
+						out.write("<tr><td><input type=\"checkbox\"disabled></td><td>"+responseForAddRSSFeedByURLAutomaticlyMethod.getFeedTitle()+"</td><td>" + Exec.getHTMLFailText(responseForAddRSSFeedByURLAutomaticlyMethod.getUrl()) + "</td><td>" + size
 								+ "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId
 								+ "\">Add to composite</a></td></tr>");
 					}
 				} catch (Exception e) {
-					out.write("<tr><td><input type=\"checkbox\" disabled></td></td><td>" + Exec.getHTMLFailText(url) + "</font></td><td>" + Exec.getHTMLFailText(e.getMessage())+ "</td><td></td></tr>");
+					out.write("<tr><td><input type=\"checkbox\" disabled></td></td><td>"+Exec.getHTMLFailText(url) + "</font></td><td>" + Exec.getHTMLFailText(e.getMessage())+ "</td><td></td></tr>");
 					log.error("ShowResultTableException", e);
 				}
 			}

@@ -761,7 +761,7 @@ public class ServerUtils {
 		// ---
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 //		return items.size();
-		return new ResponseForAddRSSFeedByURLAutomaticlyMethod(items.size(), feedId);
+		return new ResponseForAddRSSFeedByURLAutomaticlyMethod(items.size(), feedId, url, feedTitle);
 	}
 	
 	public synchronized static ResponseForAddRSSFeedByURLAutomaticlyMethod addRSSFeedByURLAutomaticly(String url, String login, String titlePrefixForYoutubePlaylist) throws Exception {
