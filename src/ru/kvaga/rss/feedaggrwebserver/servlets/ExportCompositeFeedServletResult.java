@@ -16,12 +16,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.MonitoringUtils;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed;
+import ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed;
 
 @XmlRootElement
 public class ExportCompositeFeedServletResult {
 	private CompositeUserFeed compositeUserFeed;
 	private RSS compositeRSS;
 	private ArrayList<RSS> feedRSSList;
+	ArrayList<UserFeed> userFeedList;
 	
 	public RSS getCompositeRSS() {
 		return compositeRSS;
@@ -34,11 +36,20 @@ public class ExportCompositeFeedServletResult {
 	public ExportCompositeFeedServletResult() {
 	}
 	
-	public ExportCompositeFeedServletResult(CompositeUserFeed compositeUserFeed, RSS compositeRSS, ArrayList<RSS> feedRSSList) {
+	public ExportCompositeFeedServletResult(CompositeUserFeed compositeUserFeed, RSS compositeRSS, ArrayList<RSS> feedRSSList, ArrayList<UserFeed> userFeedList) {
 		this.compositeUserFeed=compositeUserFeed;
 		this.compositeRSS=compositeRSS;
 		this.feedRSSList=feedRSSList;
+		this.userFeedList=userFeedList;
 	}
+	public ArrayList<UserFeed> getUserFeedList() {
+		return userFeedList;
+	}
+
+	public void setUserFeedList(ArrayList<UserFeed> userFeedList) {
+		this.userFeedList = userFeedList;
+	}
+
 	public ArrayList<RSS> getFeedRSSList() {
 		return feedRSSList;
 	}

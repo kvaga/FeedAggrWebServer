@@ -26,6 +26,7 @@ import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.MonitoringUtils;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
+import ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed;
 
 /**
  * Servlet implementation class ExportCompositeFeedServlet
@@ -95,8 +96,13 @@ public class ExportCompositeFeedServlet extends HttpServlet {
 		for(String feedId : cuf.getFeedIds()) {
 			feedRSSList.add(RSS.getRSSObjectByFeedId(feedId));
 		}
+		// export UserFeeds from User
+		ArrayList<UserFeed> userFeedList = new ArrayList<UserFeed>();
+		for(UserFeed userFeed : user.getUserFeeds()) {
+			userFeedList.add(userFeed);
+		}
 //		return new ExportCompositeFeedServletResult(cuf, compositeRSS, feedRSSList);
-		return new ExportCompositeFeedServletResult(cuf, compositeRSS, feedRSSList);
+		return new ExportCompositeFeedServletResult(cuf, compositeRSS, feedRSSList, userFeedList);
 
 	}
 	

@@ -24,12 +24,30 @@
 if(request.getAttribute("userList")!=null){
 	request.setAttribute("userList", request.getAttribute("userList"));
 %>
-<ul>
+Upload file to the user <%= session.getAttribute("login") %>
+<!-- 
+The list of Users to assign Composite User Feed
+-->
+
+<form method="post" action="ImportCompositeUserFeed" enctype="multipart/form-data">
+<!--
 	<c:forEach items="${userList}" var="item">
-		<li>${item.getName()}</li>
+		<input type="radio" id="userName" name="userName" value="${item.getName()}"/>
+    	<label for="${item.getName()}">${item.getName()}</label>
 	</c:forEach>
-</ul>
+	
+<br/>
+ -->
+    Choose a file: <input type="file" name="multiPartServlet" />
+    <input type="hidden" name="redirectTo" value="/CompositeFeedsImport.jsp"/>
+    <input type="submit" value="Upload" />
+</form>
 <%
+}else if(request.getAttribute("ResponseResult")!=null){
+	request.setAttribute("ResponseResult", request.getAttribute("ResponseResult"));
+%>
+<c:out value="${ResponseResult}"></c:out>
+<% 		
 }else{
 	if(request.getAttribute("Exception")!=null){
 		Exception e = (Exception)request.getAttribute("responseResultException");

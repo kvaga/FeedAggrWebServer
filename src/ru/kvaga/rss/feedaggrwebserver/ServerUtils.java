@@ -235,6 +235,15 @@ public class ServerUtils {
 			case '"':
 				sb.append("&quot;");
 				break;
+			case ':':
+				sb.append("%3A");
+				break;
+			case '[':
+				sb.append("%5B");
+				break;
+			case ']':
+				sb.append("%5D");
+				break;
 			/*case 'à':
 				sb.append("&agrave;");
 				break;
@@ -314,7 +323,7 @@ public class ServerUtils {
 				sb.append("&Ouml;");
 				break;
 			case 'ø':
-				sb.append("&oslash;");
+				sb.append("&oslash;"); 
 				break;
 			case 'Ø':
 				sb.append("&Oslash;");
