@@ -13,7 +13,7 @@
 <%
 	}else{
 	%>
-	<jsp:forward page="/Monitoring?redirectTo=/Header.jsp"/> 
+	<jsp:forward page="/Monitoring"/> 
 	
 	<%
 	}

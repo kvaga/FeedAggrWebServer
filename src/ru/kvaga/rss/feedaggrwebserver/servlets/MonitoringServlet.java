@@ -1,6 +1,8 @@
 package ru.kvaga.rss.feedaggrwebserver.servlets;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -46,6 +48,9 @@ public class MonitoringServlet extends HttpServlet {
 		
 		String source = (String)request.getParameter("source");
 		log.debug("Got parameters " + ServerUtils.listOfParametersToString("redirectTo", redirectTo, "source", source));
+		if(source == null && redirectTo == null) {
+			source = getSource(request);
+		}
 		RequestDispatcher rd = redirectTo !=null? getServletContext().getRequestDispatcher(redirectTo) : (source!=null ? getServletContext().getRequestDispatcher(source) : getServletContext().getRequestDispatcher("/LoginSuccess.jsp"));
 
 		try {
@@ -60,6 +65,19 @@ public class MonitoringServlet extends HttpServlet {
 		}	finally {
 			rd.include(request, response);
 		}
+	}
+
+	Pattern p = Pattern.compile(".*/(?<source>.*)");
+	private String getSource(HttpServletRequest request) {
+		String referer = request.getHeader("referer");
+		log.debug("Referer is ["+referer+"]");		
+		Matcher m = p.matcher(referer);
+		if(m.find()) {
+			referer = "/" + m.group("source");
+		}else {
+			referer = "/";
+		}
+		return referer;
 	}
 
 }
