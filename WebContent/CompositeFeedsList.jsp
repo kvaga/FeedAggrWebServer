@@ -68,8 +68,11 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 for(RSS rss : rssCompositeListForPrinting) {
 	Date[] oldestNewest = rss.getOldestNewestPubDate();
 	out.println("<tr><td><a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a></td><td>[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]</td>");
-	out.println("<td>[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+ServerUtils.escapeHTML(rss.getChannel().getTitle())+"\">Edit</a>]</td>");
-
+	try{
+	out.println("<td>[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+ServerUtils.escapeHTML(rss.getChannel().getTitle()==null?"null":rss.getChannel().getTitle())+"\">Edit</a>]</td>");
+	}catch(Exception e){
+		out.println(Exec.getHTMLFailText(e));
+	}
 	out.println("<td>"+rss.getChannel().getLastBuildDate()+"</td>");
 	out.println("<td>"+rss.getChannel().getItem().size()+"</td>");
 	out.println("<td>"+Exec.getFileSizeByFeedId(mapRssStringForPrinting.get(rss))+"</td>");

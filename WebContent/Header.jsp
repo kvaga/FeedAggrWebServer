@@ -12,8 +12,9 @@
 		<c:set var="monitoringInfo" scope="session" value="${monitoringInfo}"/>
 <%
 	}else{
+		// <jsp:forward page="/Monitoring1"/>
 	%>
-	<jsp:forward page="/Monitoring"/> 
+	
 	
 	<%
 	}
@@ -39,6 +40,7 @@
 		<td><a href="addFeedId2CompositeFeed.jsp">addFeedId2CompositeFeed</a><br/><a href="DeleteOldFeedItems.jsp">DeleteOldFeedItems.jsp</a></td>
 		<td><a href="deleteFeedsByList.jsp">deleteFeedsByList</a><br/><a href=""></a></td>
 		<td><a href="CompositeFeedsList?redirectTo=/CompositeFeedsExport.jsp&amp;userName=kvaga">Composite Feeds Export</a><br/><a href="UserList?redirectTo=/CompositeFeedsImport.jsp">Composite Feeds Import</a></td>
+		<!--  
 		<td>
 			<c:if test="${monitoringInfo.getFeedsUpdateJobIsWorkingNow()}"><span>&#128308;</span></c:if>
 			<c:if test="${not monitoringInfo.getFeedsUpdateJobIsWorkingNow()}"><span>&#128994;</span></c:if>
@@ -46,12 +48,13 @@
 		    <br/>
 		    <c:if test="${monitoringInfo.getCompositeFeedUpdateJobIsWorkingNow()}"><span>&#128308;</span></c:if>
 			<c:if test="${not monitoringInfo.getCompositeFeedUpdateJobIsWorkingNow()}"><span>&#128994;</span></c:if>
-		    CompositeFeedsUpdateJob Status</td>
+		    CompositeFeedsUpdateJob Status
+		 </td>
+		 -->
 	</tr>
 	
 </table>
-<hr/>
-<h3>Composite Feeds Export</h3>
+
   
 </body>
 </html>

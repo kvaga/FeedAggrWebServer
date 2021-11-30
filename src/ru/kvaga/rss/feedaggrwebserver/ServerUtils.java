@@ -367,7 +367,7 @@ public class ServerUtils {
 				sb.append(c);
 				break;
 			}
-		}
+		}//Composite Feeds Export
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return sb.toString();
 	}
