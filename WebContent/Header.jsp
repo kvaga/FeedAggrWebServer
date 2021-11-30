@@ -29,14 +29,14 @@
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
-            var data = xhr.responseText;
+            var data = JSON && JSON.parse(xhr.responseText);
             //alert(data);
-            if(data.feedsUpdateJobIsWorkingNow == 'true'){
+            if(data.feedsUpdateJobIsWorkingNow){
                 document.getElementById("FeedsUpdateJobStatus").innerHTML='<span>&#128308;</span>';
             }else{
                 document.getElementById("FeedsUpdateJobStatus").innerHTML='<span>&#128994;</span>';
             }
-            if(data.compositeFeedUpdateJobIsWorkingNow == 'true'){
+            if(data.compositeFeedUpdateJobIsWorkingNow){
                 document.getElementById("CompositeFeedsUpdateJobStatus").innerHTML='<span>&#128308;</span>';
             }else{
                 document.getElementById("CompositeFeedsUpdateJobStatus").innerHTML='<span>&#128994;</span>';
