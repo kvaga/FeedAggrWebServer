@@ -13,11 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.ObjectMessage;
 
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 import ru.kvaga.rss.feedaggrwebserver.jobs.CompositeFeedsUpdateJob;
 import ru.kvaga.rss.feedaggrwebserver.jobs.FeedsUpdateJob;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed;
+import com.fasterxml.jackson.databind.*;
 
 /**
  * Servlet implementation class MonitoringServlet
@@ -36,14 +38,14 @@ public class MonitoringServlet extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 	/**
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String redirectTo = (String)request.getParameter("redirectTo");
-		if(redirectTo==null) {
-			redirectTo=(String)request.getAttribute("redirectTo");
-		}
+		String redirectTo = (String) request.getParameter("redirectTo");
+		String responseType = (String) request.getParameter("type");
+		
 		//System.err.println("Referer: " + request.getHeader("referer"));
 		
 		String source = (String)request.getParameter("source");
@@ -51,19 +53,26 @@ public class MonitoringServlet extends HttpServlet {
 		if(source == null && redirectTo == null) {
 			source = getSource(request);
 		}
-		RequestDispatcher rd = redirectTo !=null? getServletContext().getRequestDispatcher(redirectTo) : (source!=null ? getServletContext().getRequestDispatcher(source) : getServletContext().getRequestDispatcher("/LoginSuccess.jsp"));
+		
 
 		try {
 			MonitoringInfo monitoringInfo = new MonitoringInfo();
 			monitoringInfo.setCompositeFeedUpdateJobIsWorkingNow(CompositeFeedsUpdateJob.isWorkingNow);
 			monitoringInfo.setFeedsUpdateJobIsWorkingNow(FeedsUpdateJob.isWorkingNow);
-			request.setAttribute("monitoringInfo", monitoringInfo);
-			//Thread.sleep(50000);
+			if(responseType!=null && responseType.equals("json")) {
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(OBJECT_MAPPER.writeValueAsString(monitoringInfo));
+			}else {
+				RequestDispatcher rd = redirectTo !=null? getServletContext().getRequestDispatcher(redirectTo) : (source!=null ? getServletContext().getRequestDispatcher(source) : getServletContext().getRequestDispatcher("/LoginSuccess.jsp"));
+
+				request.setAttribute("monitoringInfo", monitoringInfo);
+				//Thread.sleep(50000);
+				rd.include(request, response);
+			}
 		} catch (Exception e) {
 			log.error("UserListServlet exception", e);
 			request.setAttribute("Exception", e);
-		}	finally {
-			rd.include(request, response);
 		}
 	}
 
