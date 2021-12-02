@@ -102,7 +102,7 @@ public class mergeRSSServlet extends HttpServlet {
 				sbResponseStatus.append(Exec.getHTMLSuccessText("Composite feed ["+compositeRSSTitle+"] successfully updated with new feed ids ["+ServerUtils.getStringFromArrayListWithItemsDelimeteredByComma(feedIdList)+"]<br>"));
 			}
 			
-			if(updateRSSTitleOfComposeFeed(compositeRSSTitle, compositeFeedID, userName)) {
+			if(compositeRSSTitle!=null && updateRSSTitleOfComposeFeed(compositeRSSTitle, compositeFeedID, userName)) {
 				sbResponseStatus.append(Exec.getHTMLSuccessText("Composite feed's title was changed to the ["+compositeRSSTitle+"]<br>"));
 			}
 		}

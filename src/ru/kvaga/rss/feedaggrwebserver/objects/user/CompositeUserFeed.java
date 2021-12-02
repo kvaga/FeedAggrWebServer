@@ -281,8 +281,10 @@ public class CompositeUserFeed {
 						if (!compositeRSS.getChannel().containsItem(itemFromRSSFileForSpecificFeedId)) {
 							
 							// this branch is for Items which compositeFeed doesn't contain then add these items
-							// to the compositeFeed with new current pubDate
+							// to the compositeFeed with new current pubDate and title with prefix of parent
 							itemFromRSSFileForSpecificFeedId.setPubDate(new Date());
+							itemFromRSSFileForSpecificFeedId.setTitle("["+rss.getChannel().getTitle()+"] "+itemFromRSSFileForSpecificFeedId.getTitle());
+
 							compositeRSS.getChannel().getItem().add(itemFromRSSFileForSpecificFeedId);   
 							log.debug("Added new item ["+itemFromRSSFileForSpecificFeedId+"] to the compositeUserFeed ["+compositeUserFeed+"]");
 						}else { 
@@ -309,6 +311,8 @@ public class CompositeUserFeed {
 					log.debug(item + " was deleted from rss composite ["+compositeRSS+"] list because it older than ["+deleteItemsWhichOlderThanThisDate+"] date");
 					countOfDeletedOldItems++;
 					countOfDeletedOldItemsTotal++;
+				}else {
+					log.error("Couldn't remove item " + item + " from the compositeRSS ["+compositeRSS.getChannel().getTitle()+"]");
 				}
 			}
 			compositeRSS.saveXMLObjectToFile(compositeRSSFile);
