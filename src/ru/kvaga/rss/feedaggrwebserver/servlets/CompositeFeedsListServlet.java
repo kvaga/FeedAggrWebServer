@@ -15,6 +15,8 @@ import javax.xml.bind.JAXBException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetFeedsListByUser;
 import ru.kvaga.rss.feedaggr.objects.Feed;
@@ -27,6 +29,7 @@ import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 @WebServlet("/CompositeFeedsList")
 public class CompositeFeedsListServlet extends HttpServlet {
 	final private static Logger log = LogManager.getLogger(CompositeFeedsListServlet.class);
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	private static final long serialVersionUID = 1L;
        
@@ -45,18 +48,27 @@ public class CompositeFeedsListServlet extends HttpServlet {
 		String redirectTo = request.getParameter("redirectTo");
 		String source = request.getParameter("source");
 		String userName = request.getParameter("userName");
-		log.debug("Got parameters "+ServerUtils.listOfParametersToString("redirectTo", redirectTo, "source", source, "userName", userName));
-		RequestDispatcher rd = redirectTo !=null? getServletContext().getRequestDispatcher(redirectTo) : (source!=null ? getServletContext().getRequestDispatcher(source) : getServletContext().getRequestDispatcher("/LoginSuccess.jsp"));
+		String responseType = request.getParameter("type");
+		log.debug("Got parameters "+ServerUtils.listOfParametersToString("redirectTo", redirectTo, "source", source, "userName", userName, "type", responseType));
+		
+		
 		
 		try {
-			request.setAttribute("compositeFeedList", getCompositeFeedList(userName));
-			log.debug("Sent the response attribute compositeFeedList with value size ["+((ArrayList<CompositeFeedTotalInfo>)request.getAttribute("compositeFeedList")).size()+"]");
+			if(responseType!=null && responseType.equals("json")) {
+					response.setContentType("application/json");
+					response.setCharacterEncoding("UTF-8");
+					response.getWriter().write(OBJECT_MAPPER.writeValueAsString(getCompositeFeedList(userName).toArray()));
+			}else {
+				RequestDispatcher rd = redirectTo !=null? getServletContext().getRequestDispatcher(redirectTo) : (source!=null ? getServletContext().getRequestDispatcher(source) : getServletContext().getRequestDispatcher("/LoginSuccess.jsp"));
+				request.setAttribute("compositeFeedList", getCompositeFeedList(userName));
+				rd.include(request, response);
+				log.debug("Sent the response attribute compositeFeedList with value size ["+((ArrayList<CompositeFeedTotalInfo>)request.getAttribute("compositeFeedList")).size()+"]");
+			}
+
 		}catch (Exception e) {
 			log.error("Exception on CompositeFeedsListServlet", e);
 			request.setAttribute("Exception", e);
-		}	finally {
-			rd.include(request, response);
-		}
+		}	
 
 	}
 

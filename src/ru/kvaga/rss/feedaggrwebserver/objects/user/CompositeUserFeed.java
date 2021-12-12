@@ -287,16 +287,17 @@ public class CompositeUserFeed {
 
 							compositeRSS.getChannel().getItem().add(itemFromRSSFileForSpecificFeedId);   
 							log.debug("Added new item ["+itemFromRSSFileForSpecificFeedId+"] to the compositeUserFeed ["+compositeUserFeed+"]");
-						}else { 
-							// this branch is for items which compositeFeed has already them
-							// and check the age of these item's pubDate
-							// if pubDate is older than needed then mark them to delete
-							Item itemFromCompositeRSSFile = compositeRSS.getChannel().getItemByGuid(itemFromRSSFileForSpecificFeedId.getGuid().getValue());
-							if(itemFromCompositeRSSFile.getPubDate().before(deleteItemsWhichOlderThanThisDate)) {
-								oldCompositeFeedItemsForDeletionFromCurrentCompositeFeed.add(itemFromCompositeRSSFile);
-								log.debug(itemFromCompositeRSSFile + " was marked for deletion (as older than ["+deleteItemsWhichOlderThanThisDate+"] from the compositeUserFeed ["+compositeUserFeed.getId()+"]");
-							} 
 						}
+//						else { 
+//							// this branch is for items which compositeFeed has already them
+//							// and check the age of these item's pubDate
+//							// if pubDate is older than needed then mark them to delete
+//							Item itemFromCompositeRSSFile = compositeRSS.getChannel().getItemByGuid(itemFromRSSFileForSpecificFeedId.getGuid().getValue());
+//							if(itemFromCompositeRSSFile.getPubDate().before(deleteItemsWhichOlderThanThisDate)) {
+//								oldCompositeFeedItemsForDeletionFromCurrentCompositeFeed.add(itemFromCompositeRSSFile);
+//								log.debug(itemFromCompositeRSSFile + " was marked for deletion (as older than ["+deleteItemsWhichOlderThanThisDate+"] from the compositeUserFeed ["+compositeUserFeed.getId()+"]");
+//							} 
+//						}
 					}
 				}
 				compositeRSS.getChannel().setLastBuildDate(new Date());
@@ -306,15 +307,9 @@ public class CompositeUserFeed {
 				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 				continue;
 			}
-			for(Item item : oldCompositeFeedItemsForDeletionFromCurrentCompositeFeed) {
-				if(compositeRSS.getChannel().getItem().remove(item)) {
-					log.debug(item + " was deleted from rss composite ["+compositeRSS+"] list because it older than ["+deleteItemsWhichOlderThanThisDate+"] date");
-					countOfDeletedOldItems++;
-					countOfDeletedOldItemsTotal++;
-				}else {
-					log.error("Couldn't remove item " + item + " from the compositeRSS ["+compositeRSS.getChannel().getTitle()+"]");
-				}
-			}
+			
+			
+			removeOldItems(compositeRSS, deleteItemsWhichOlderThanThisDate);
 			compositeRSS.saveXMLObjectToFile(compositeRSSFile);
 			successFeedsCount++;
 			MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJob.CountOfDeletedOldItems", countOfDeletedOldItems, new Tag("compositeFeedId",compositeUserFeed.getId()));
@@ -324,6 +319,26 @@ public class CompositeUserFeed {
 		return new int[] {allFeedsCount, successFeedsCount, allFeedsCount-successFeedsCount, countOfDeletedOldItemsTotal};
 	}
 	
+	private static int removeOldItems(RSS compositeRSS, Date deleteItemsWhichOlderThanThisDate) {
+		int countOfDeletedOldItemsTotal = 0;
+		ArrayList<Item> oldCompositeFeedItemsForDeletionFromCurrentCompositeFeed = new ArrayList<Item>();
+		for(Item item : compositeRSS.getChannel().getItem()) {
+			if(item.getPubDate().before(deleteItemsWhichOlderThanThisDate)) {
+				oldCompositeFeedItemsForDeletionFromCurrentCompositeFeed.add(item);
+			}
+		}
+		
+		for(Item item : oldCompositeFeedItemsForDeletionFromCurrentCompositeFeed) {
+			if(compositeRSS.getChannel().getItem().remove(item)) {
+				log.debug(item + " was deleted from rss composite ["+compositeRSS+"] list because it older than ["+deleteItemsWhichOlderThanThisDate+"] date");
+//				countOfDeletedOldItems++;
+				countOfDeletedOldItemsTotal++;
+			}else {
+				log.error("Couldn't remove item " + item + " from the compositeRSS ["+compositeRSS.getChannel().getTitle()+"]");
+			}
+		}
+		return countOfDeletedOldItemsTotal;
+	}
 	/**
 	 * Delete all feed ids from composite user feed {@code compositeFeedId} despite {@code feedIdListToSave}
 	 * @param userName

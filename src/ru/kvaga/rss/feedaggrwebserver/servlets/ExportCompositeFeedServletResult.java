@@ -26,7 +26,7 @@ public class ExportCompositeFeedServletResult {
 	ArrayList<UserFeed> userFeedList;
 	
 	public RSS getCompositeRSS() {
-		return compositeRSS;
+		return compositeRSS; 
 	}
 
 	public void setCompositeRSS(RSS compositeRSS) {

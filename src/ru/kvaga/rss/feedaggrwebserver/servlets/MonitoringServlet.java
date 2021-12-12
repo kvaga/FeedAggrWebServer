@@ -19,6 +19,8 @@ import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 import ru.kvaga.rss.feedaggrwebserver.jobs.CompositeFeedsUpdateJob;
 import ru.kvaga.rss.feedaggrwebserver.jobs.FeedsUpdateJob;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed;
+import ru.kvaga.rss.feedaggrwebserver.servlets.utils.ServletUtils;
+
 import com.fasterxml.jackson.databind.*;
 
 /**
@@ -51,7 +53,7 @@ public class MonitoringServlet extends HttpServlet {
 		String source = (String)request.getParameter("source");
 		log.debug("Got parameters " + ServerUtils.listOfParametersToString("redirectTo", redirectTo, "source", source));
 		if(source == null && redirectTo == null) {
-			source = getSource(request);
+			source = ServletUtils.getSource(request);
 		}
 		
 
@@ -76,17 +78,6 @@ public class MonitoringServlet extends HttpServlet {
 		}
 	}
 
-	Pattern p = Pattern.compile(".*/(?<source>.*)");
-	private String getSource(HttpServletRequest request) {
-		String referer = request.getHeader("referer");
-		log.debug("Referer is ["+referer+"]");		
-		Matcher m = p.matcher(referer);
-		if(m.find()) {
-			referer = "/" + m.group("source");
-		}else {
-			referer = "/";
-		}
-		return referer;
-	}
+	
 
 }

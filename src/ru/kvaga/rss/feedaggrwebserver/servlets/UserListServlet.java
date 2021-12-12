@@ -15,9 +15,12 @@ import javax.xml.bind.JAXBException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetFeedsListByUser;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
+import ru.kvaga.rss.feedaggrwebserver.servlets.utils.ServletUtils;
 
 /**
  * Servlet implementation class UserListServlet
@@ -26,6 +29,8 @@ import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 public class UserListServlet extends HttpServlet {
 	final private static Logger log = LogManager.getLogger(UserListServlet.class);
 	private static final long serialVersionUID = 1L;
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -41,17 +46,33 @@ public class UserListServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String redirectTo = (String)request.getParameter("redirectTo");
 		String source = (String)request.getParameter("source");
-		log.debug("Got parameters " + ServerUtils.listOfParametersToString("redirectTo", redirectTo, "source", source));
-		RequestDispatcher rd = redirectTo !=null? getServletContext().getRequestDispatcher(redirectTo) : (source!=null ? getServletContext().getRequestDispatcher(source) : getServletContext().getRequestDispatcher("/LoginSuccess.jsp"));
+		String responseType = (String) request.getParameter("type");
+
+		log.debug("Got parameters " + ServerUtils.listOfParametersToString("redirectTo", redirectTo, "source", source, "type", responseType));
+		if(source == null && redirectTo == null) {
+			source = ServletUtils.getSource(request);
+		}
+		
+		//RequestDispatcher rd = redirectTo !=null? getServletContext().getRequestDispatcher(redirectTo) : (source!=null ? getServletContext().getRequestDispatcher(source) : getServletContext().getRequestDispatcher("/LoginSuccess.jsp"));
 
 		try {
-			request.setAttribute("userList", getUserList());
+			//request.setAttribute("userList", getUserList());
+			if(responseType!=null && responseType.equals("json")) {
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(OBJECT_MAPPER.writeValueAsString(getUserList().toArray()));
+				//System.err.println(OBJECT_MAPPER.writeValueAsString(getUserList()));
+			}else {
+				RequestDispatcher rd = redirectTo !=null? getServletContext().getRequestDispatcher(redirectTo) : (source!=null ? getServletContext().getRequestDispatcher(source) : getServletContext().getRequestDispatcher("/LoginSuccess.jsp"));
+
+				request.setAttribute("userList", getUserList());
+				//Thread.sleep(50000);
+				rd.include(request, response);
+			}
 		} catch (Exception e) {
 			log.error("UserListServlet exception", e);
 			request.setAttribute("Exception", e);
-		}	finally {
-			rd.include(request, response);
-		}
+		}	
 	}
 
 	public ArrayList<User> getUserList() throws GetFeedsListByUser, JAXBException {

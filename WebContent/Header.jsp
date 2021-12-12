@@ -26,10 +26,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <script>
+try{
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
-            var data = JSON && JSON.parse(xhr.responseText);
+            //var data = JSON and JSON.parse(xhr.responseText);
+            var data = JSON.parse(xhr.responseText);
             //alert(data);
             if(data.feedsUpdateJobIsWorkingNow){
                 document.getElementById("FeedsUpdateJobStatus").innerHTML='<span>&#128308;</span>';
@@ -45,6 +47,11 @@
     }
     xhr.open('GET', '${pageContext.request.contextPath}/Monitoring?type=json', true);
     xhr.send(null);
+}catch(err){
+	document.getElementById("FeedsUpdateJobStatus").innerHTML=err.message;
+    document.getElementById("CompositeFeedsUpdateJobStatus").innerHTML=err.message;
+
+}
 </script>
 <title>Header</title>
 </head>
@@ -60,7 +67,7 @@
 		<td><a href="Test">Test page</a><br/><a href="HealthCheck.jsp">Health Check page</a></td>
 		<td><a href="addFeedId2CompositeFeed.jsp">addFeedId2CompositeFeed</a><br/><a href="DeleteOldFeedItems.jsp">DeleteOldFeedItems.jsp</a></td>
 		<td><a href="deleteFeedsByList.jsp">deleteFeedsByList</a><br/><a href=""></a></td>
-		<td><a href="CompositeFeedsList?redirectTo=/CompositeFeedsExport.jsp&amp;userName=kvaga">Composite Feeds Export</a><br/><a href="UserList?redirectTo=/CompositeFeedsImport.jsp">Composite Feeds Import</a></td>
+		<td><a href="CompositeFeedsExport.jsp">Composite Feeds Export</a><br/><a href="CompositeFeedsImport.jsp">Composite Feeds Import</a></td>
 		<td>
 			<div id="FeedsUpdateJobStatus"></div>&nbsp;FeedsUpdateJob Status<br/>
 			<div id="CompositeFeedsUpdateJobStatus"></div>&nbsp;CompositeFeedsUpdateJob Status<br/>
