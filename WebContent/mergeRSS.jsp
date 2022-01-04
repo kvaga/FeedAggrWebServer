@@ -53,6 +53,24 @@ for(Feed feedOnServer : ServerUtils.getFeedsList(true, false)) {
 	mapRssStringForPrinting.put(rssFeed, feedOnServer.getId());
 }
 Collections.sort(rssListForPrinting, new RSSForPrintingComparatorByTitle());
+// Previously print only feeds wich subscribed
+
+for(RSS rss : rssListForPrinting){
+	out.println("<tr>");
+	if(request.getParameter("feedId")!=null && compositeUserFeed.doesHaveCompositeFeedId(mapRssStringForPrinting.get(rss))){
+		out.println("<td valign=\"top\"><input type=\"checkbox\" disabled=\"disabled\" checked=\"checked\"></td>");
+		out.println("<td><a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>");
+		out.println("<br>");	 
+		out.println("Source URL: "+rss.getChannel().getLink());
+		out.println("<br>");	 
+		out.println("Last updated: " + rss.getChannel().getLastBuildDate());
+		out.println("</td></tr>");	 
+	}
+	
+}
+//out.println("<hr>");	 
+
+// Print full list of feeds
 for(RSS rss : rssListForPrinting){
 	out.println("<tr>");
 	if(request.getParameter("feedId")!=null && compositeUserFeed.doesHaveCompositeFeedId(mapRssStringForPrinting.get(rss))){
