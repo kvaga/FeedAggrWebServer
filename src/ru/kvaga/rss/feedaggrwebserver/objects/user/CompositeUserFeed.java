@@ -385,4 +385,10 @@ public class CompositeUserFeed {
 		return false;
 	}
 	
+	public static int getCountOfFeeds(String compositeFeedId, String userName) throws Exception {
+		User user = User.getXMLObjectFromXMLFileByUserName(userName);
+		if(user.getCompositeUserFeedById(compositeFeedId)==null) throw new Exception("User ["+userName+"] doesn't have the ["+compositeFeedId+"] feed");
+		return user.getCompositeUserFeedById(compositeFeedId).getFeedIds().size();
+	}
+	
 }

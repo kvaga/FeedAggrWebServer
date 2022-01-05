@@ -1,3 +1,4 @@
+<%@page import="ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="ru.kvaga.rss.feedaggr.objects.RSSForPrintingComparatorByTitle"%>
 <%@page import="ru.kvaga.rss.feedaggrwebserver.ConfigMap"%>
@@ -63,17 +64,18 @@ for(Feed feedOnServer : ServerUtils.getFeedsList(false, true)) {
 Collections.sort(rssCompositeListForPrinting, new RSSForPrintingComparatorByTitle());
 out.println("<table id=\"table\" border=1>");
 //out.println("<tr><td>Name</td><td>Delete</td><td>Edit</td><td>Last updated</td><td>Count of items</td><td>Size, mb</td></tr>");	 
-out.println("<tr><th onclick=\"sortTable(1)\">Name</th><th>Delete</th><th>Edit</th><th onclick=\"sortTable(4)\">Last updated</th><th onclick=\"sortTable(5, 'true')\">Count of items</th><th onclick=\"sortTable(6, 'true')\">Size, mb</th><th onclick=\"sortTable(7, 'true')\">Oldest PubDate</th><th onclick=\"sortTable(8, 'true')\">Newest PubDate</th></tr>");	 
+out.println("<tr><th onclick=\"sortTable(1)\">Name</th><th>Delete</th><th>Edit</th><th onclick=\"sortTable(4)\">Last updated</th><th onclick=\"sortTable(5, 'true')\">Count of Feeds</th><th onclick=\"sortTable(6, 'true')\">Count of items</th><th onclick=\"sortTable(7, 'true')\">Size, mb</th><th onclick=\"sortTable(8, 'true')\">Oldest PubDate</th><th onclick=\"sortTable(9, 'true')\">Newest PubDate</th></tr>");	 
 SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 for(RSS rss : rssCompositeListForPrinting) {
 	Date[] oldestNewest = rss.getOldestNewestPubDate();
 	out.println("<tr><td><a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a></td><td>[<a href=\"deleteFeed?feedId="+mapRssStringForPrinting.get(rss)+"\">Delete</a>]</td>");
 	try{
-	out.println("<td>[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+ServerUtils.escapeHTML(rss.getChannel().getTitle()==null?"null":rss.getChannel().getTitle())+"\">Edit</a>]</td>");
+		out.println("<td>[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+ServerUtils.escapeHTML(rss.getChannel().getTitle()==null?"null":rss.getChannel().getTitle())+"\">Edit</a>]</td>");
 	}catch(Exception e){
 		out.println(Exec.getHTMLFailText(e));
 	}
 	out.println("<td>"+rss.getChannel().getLastBuildDate()+"</td>");
+	out.println("<td>"+CompositeUserFeed.getCountOfFeeds(mapRssStringForPrinting.get(rss), (String) request.getSession().getAttribute("login"))+"</td>");
 	out.println("<td>"+rss.getChannel().getItem().size()+"</td>");
 	out.println("<td>"+Exec.getFileSizeByFeedId(mapRssStringForPrinting.get(rss))+"</td>");
 	out.println("<td>"+sdf.format(oldestNewest[0])+"</td>");
