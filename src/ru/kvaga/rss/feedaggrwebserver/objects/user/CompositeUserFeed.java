@@ -319,7 +319,7 @@ public class CompositeUserFeed {
 		return new int[] {allFeedsCount, successFeedsCount, allFeedsCount-successFeedsCount, countOfDeletedOldItemsTotal};
 	}
 	
-	private static int removeOldItems(RSS compositeRSS, Date deleteItemsWhichOlderThanThisDate) {
+	private static synchronized int removeOldItems(RSS compositeRSS, Date deleteItemsWhichOlderThanThisDate) {
 		int countOfDeletedOldItemsTotal = 0;
 		ArrayList<Item> oldCompositeFeedItemsForDeletionFromCurrentCompositeFeed = new ArrayList<Item>();
 		for(Item item : compositeRSS.getChannel().getItem()) {
@@ -347,7 +347,7 @@ public class CompositeUserFeed {
 	 * return ArrayList of deleted feedIds
 	 * @throws Exception 
 	 */
-	public static ArrayList<String> deleteFeedIdsFromCompositeUserFeedDespiteFinalList(String userName, String compositeFeedId, ArrayList<String> finalFeedIdListToSave) throws Exception {
+	public static synchronized ArrayList<String> deleteFeedIdsFromCompositeUserFeedDespiteFinalList(String userName, String compositeFeedId, ArrayList<String> finalFeedIdListToSave) throws Exception {
 		ArrayList<String> deletedFeedsIdsList = new ArrayList<String>();
 		User user = User.getXMLObjectFromXMLFileByUserName(userName);
 		ArrayList<String> feedIdsForDeletion = new ArrayList<String>();
@@ -373,7 +373,7 @@ public class CompositeUserFeed {
 	 * @return 'true' composite feed title was successfully changed and 'false' if previous title equals to the {@code compositeRSSTitle}
 	 * @throws Exception
 	 */
-	public static boolean updateRSSTitleOfComposeFeed(String compositeRSSTitle, String compositeFeedId, String userName) throws Exception {
+	public static synchronized boolean updateRSSTitleOfComposeFeed(String compositeRSSTitle, String compositeFeedId, String userName) throws Exception {
 		User user = User.getXMLObjectFromXMLFileByUserName(userName);
 		if(user.getCompositeUserFeedById(compositeFeedId)==null) throw new Exception("User ["+userName+"] doesn't have the ["+compositeFeedId+"] feed");
 		RSS rss = RSS.getRSSObjectByFeedId(compositeFeedId);
@@ -385,10 +385,37 @@ public class CompositeUserFeed {
 		return false;
 	}
 	
-	public static int getCountOfFeeds(String compositeFeedId, String userName) throws Exception {
+	public static synchronized int getCountOfFeeds(String compositeFeedId, String userName) throws Exception {
 		User user = User.getXMLObjectFromXMLFileByUserName(userName);
 		if(user.getCompositeUserFeedById(compositeFeedId)==null) throw new Exception("User ["+userName+"] doesn't have the ["+compositeFeedId+"] feed");
 		return user.getCompositeUserFeedById(compositeFeedId).getFeedIds().size();
+	}
+	public static synchronized int[] appendUserFeedsToCompositeUserFeed(String compositeFeedID, ArrayList<String> appendedfeedIdsList,
+			String userName) throws Exception {
+		User user = User.getXMLObjectFromXMLFileByUserName(userName);
+		CompositeUserFeed cuf  = user.getCompositeUserFeedById(compositeFeedID);
+		int oldCountOfFeedsInCompositeUserFeed = cuf.getFeedIds().size();
+		RSS rssCompositeUserFeed = RSS.getRSSObjectByFeedId(compositeFeedID);
+		int oldCountOfItemsInCompositeFeedFile = rssCompositeUserFeed.getChannel().getItem().size();
+		for(String feedId : appendedfeedIdsList) {
+			if(!cuf.getFeedIds().contains(feedId)) {
+				// append userFeedsIds to the Compoite user feed
+				cuf.getFeedIds().add(feedId);
+				// append feed items from appended userFeeds to a composite feed file
+				RSS rss = RSS.getRSSObjectByFeedId(feedId);
+				for(Item item : rss.getChannel().getItem()) {
+					item.setPubDate(new Date());
+					if(!rssCompositeUserFeed.getChannel().containsItem(item)) {
+						rssCompositeUserFeed.getChannel().getItem().add(item);
+					}
+				}
+			}
+		}
+		rssCompositeUserFeed.saveXMLObjectToFileByFeedId(compositeFeedID);
+		int newCountOfItemsInCompositeFeedFile = rssCompositeUserFeed.getChannel().getItem().size();
+		user.saveXMLObjectToFileByLogin();
+		int newCountOfFeedsInCompositeUserFeed = cuf.getFeedIds().size();
+		return new int[] {newCountOfFeedsInCompositeUserFeed - oldCountOfFeedsInCompositeUserFeed, newCountOfItemsInCompositeFeedFile - oldCountOfItemsInCompositeFeedFile};
 	}
 	
 }

@@ -550,7 +550,7 @@ public class User {
 
 	public static synchronized User getXMLObjectFromXMLFileByUserName(String login) throws JAXBException {
 		long t1 = new Date().getTime();
-		log.debug("Loading xml file file by user id [" + login + "]");
+		log.debug("Loading xml file by user id [" + login + "]");
 		File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + login + ".xml");
 		JAXBContext jaxbContext;
 		jaxbContext = JAXBContext.newInstance(User.class);

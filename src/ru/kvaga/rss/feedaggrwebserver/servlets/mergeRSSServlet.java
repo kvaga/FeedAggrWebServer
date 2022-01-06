@@ -98,7 +98,7 @@ public class mergeRSSServlet extends HttpServlet {
 				compositeFeedID = resultCreateCompositeFeedAndAddNewFeeds.getFeedId();
 			}
 		}else {
-			if(addNewFeedIds2ExistedCompositeFeed(compositeFeedID, feedIdList, userName)!=null) {
+			if(addNewFeedItems2ExistedCompositeFeed(compositeFeedID, feedIdList, userName)!=null) {
 				sbResponseStatus.append(Exec.getHTMLSuccessText("Composite feed ["+compositeRSSTitle+"] successfully updated with new feed ids ["+ServerUtils.getStringFromArrayListWithItemsDelimeteredByComma(feedIdList)+"]<br>"));
 			}
 			
@@ -174,7 +174,7 @@ public class mergeRSSServlet extends HttpServlet {
 	 * @param userName
 	 * @throws Exception 
 	 */
-	private RSS addNewFeedIds2ExistedCompositeFeed(String compositeFeedId, ArrayList<String> feedIdList, String userName) throws Exception {
+	private RSS addNewFeedItems2ExistedCompositeFeed(String compositeFeedId, ArrayList<String> feedIdList, String userName) throws Exception {
 		ArrayList<String> newlyAddedFeedIdList = new ArrayList<String>();
 
 		// Get a list of feeds ids which are new for the current list for specific user
