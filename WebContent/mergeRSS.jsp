@@ -42,6 +42,8 @@ if(request.getParameter("feedId")!=null){
 	//user=(User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
 	user=User.getXMLObjectFromXMLFile(userFile);
 	compositeUserFeed=user.getCompositeUserFeedById(request.getParameter("feedId"));
+	out.println("<br>");
+	out.println("Count of merged feeds: " + CompositeUserFeed.getCountOfFeeds(request.getParameter("feedId"), (String) request.getSession().getAttribute("login")));
 }
 
 ArrayList<RSS> rssListForPrinting = new ArrayList<RSS>();

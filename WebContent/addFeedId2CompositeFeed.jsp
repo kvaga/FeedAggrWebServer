@@ -87,8 +87,10 @@ for(RSS rss : rssCompositeListForPrinting) {
 	out.println("&nbsp&nbsp&nbsp[<a href=\"mergeRSS.jsp?feedId="+mapRssStringForPrinting.get(rss)+"&feedTitle="+rss.getChannel().getTitle()+"\">Edit</a>]");
 	out.println("<br>");	 
 	out.println("&nbsp&nbsp&nbsp&nbsp&nbsp&nbspSource URL: "+rss.getChannel().getLink());
-	out.println("<br>");	 
+	out.println("&nbsp|&nbsp");	 
 	out.println("&nbsp&nbsp&nbsp&nbsp&nbsp&nbspLast updated: " + rss.getChannel().getLastBuildDate());
+	out.println("<br>");	 
+	out.println("&nbsp&nbsp&nbsp&nbsp&nbsp&nbspCount of merged feeds : " + CompositeUserFeed.getCountOfFeeds(mapRssStringForPrinting.get(rss), (String) request.getSession().getAttribute("login")));
 	out.println("<br><br>");	 
 //	ObjectsUtills.printXMLObject(rssFeed);
 }
