@@ -90,6 +90,7 @@ public class mergeRSSServlet extends HttpServlet {
 		StringBuilder sbResponseStatus = new StringBuilder();
 //		ServerUtils.mergeRSS(compositeRSSTitle, userName, feedIdList, null);
 		if(compositeFeedID==null) {
+			log.debug("Since compositeFeedID=null we need to create composite feed");
 //			compositeFeedID = CompositeUserFeed.createCompositeRSS(userName, compositeRSSTitle, feedIdList);
 //			newlyAddedFeedIds = feedIdList;
 			ResultCreateCompositeFeedAndAddNewFeeds resultCreateCompositeFeedAndAddNewFeeds=null;
@@ -149,9 +150,9 @@ public class mergeRSSServlet extends HttpServlet {
 	 * @throws Exception 
 	 */
 	private ResultCreateCompositeFeedAndAddNewFeeds createCompositeFeedAndAddNewFeeds(String compositeRSSTitle, ArrayList<String> newlyAddedFeedIds, String userName) throws Exception {
-		ArrayList<String> newlyAddedFeedIdList = new ArrayList<String>();
+		//ArrayList<String> newlyAddedFeedIdList = new ArrayList<String>();
 		String compositeFeedId = CompositeUserFeed.createCompositeRSS(userName, compositeRSSTitle).getId();
-		return new ResultCreateCompositeFeedAndAddNewFeeds(compositeFeedId, CompositeUserFeed.addNewFeeds2CompositeFeed(compositeFeedId, newlyAddedFeedIdList, userName));
+		return new ResultCreateCompositeFeedAndAddNewFeeds(compositeFeedId, CompositeUserFeed.addNewFeeds2CompositeFeed(compositeFeedId, newlyAddedFeedIds, userName));
 	}
 	class ResultCreateCompositeFeedAndAddNewFeeds{
 		private String feedId;

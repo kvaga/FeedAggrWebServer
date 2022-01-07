@@ -85,7 +85,7 @@ public class CompositeUserFeed {
 		File userFile = User.getUsersFileByUserName(userName);
 		User user = User.getXMLObjectFromXMLFile(userFile);
 		String compositeFeedId = "composite_" + ServerUtils.getNewFeedId();
-		
+		log.debug("Created new composite feed with id ["+compositeFeedId+"]");
 		File compositeRSSFile = RSS.getRSSFileByFeedId(compositeFeedId);
 
 		// old compatibility
