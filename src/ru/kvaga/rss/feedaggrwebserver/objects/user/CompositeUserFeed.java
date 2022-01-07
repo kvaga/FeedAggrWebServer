@@ -227,6 +227,7 @@ public class CompositeUserFeed {
 			for (Item item : rss.getChannel().getItem()) {
 				if (!compositeRSS.getChannel().containsItem(item)) {
 					item.setPubDate(new Date());
+					item.setTitle("["+rss.getChannel().getTitle() + "] " + item.getTitle());
 					compositeRSS.getChannel().getItem().add(item);
 					log.debug("Added item [" + item.getTitle() + "] to the composite items list");
 				}
@@ -404,8 +405,9 @@ public class CompositeUserFeed {
 				// append feed items from appended userFeeds to a composite feed file
 				RSS rss = RSS.getRSSObjectByFeedId(feedId);
 				for(Item item : rss.getChannel().getItem()) {
-					item.setPubDate(new Date());
 					if(!rssCompositeUserFeed.getChannel().containsItem(item)) {
+						item.setPubDate(new Date());
+						item.setTitle("["+rss.getChannel().getTitle() + "] " + item.getTitle());
 						rssCompositeUserFeed.getChannel().getItem().add(item);
 					}
 				}
