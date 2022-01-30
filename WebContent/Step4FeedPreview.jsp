@@ -236,12 +236,19 @@
 								// Getting domain from url
 								String domain = Exec.getDomainFromURL((String) request.getSession().getAttribute("url"));
 								// save repeatable search patterns
+								try{
 								user.updateRepeatableSearchPatterns(
 										new UserRepeatableSearchPattern(
 												domain,
 												//"<entry>{*}<title>{%}</title>{*}<link rel=\"alternate\" href=\"{%}\"/>{*}<author>{*}<media:description>{%}</media:description>{*}</entry>"
 												(String) request.getSession().getAttribute("repeatableSearchPattern")));
-								
+								}catch(Exception e){
+									log.error("Exception", e);
+									
+									e.printStackTrace();
+									
+									throw new Exception(e);
+								}
 								// save rss output properties templates
 								user.updateRssItemPropertiesPatterns(/*getRssItemPropertiesPatterns().update(*/
 										new UserRssItemPropertiesPatterns(

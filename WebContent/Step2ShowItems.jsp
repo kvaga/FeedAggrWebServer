@@ -69,10 +69,15 @@ out.print("----------------------------<br>");
 				LinkedList<Item> items = null;
 				try{
 					//Exec.getItems((String)request.getSession().getAttribute("responseHtmlBody"), substringForHtmlBodySplit, (String) request.getSession().getAttribute("repeatableSearchPattern"),countOfPercentItemsInSearchPattern);					
+					//out.write("<br>---------<br>");
 					items = ServerUtilsConcurrent.getInstance().getItems((String)request.getSession().getAttribute("responseHtmlBody"), substringForHtmlBodySplit, (String) request.getSession().getAttribute("repeatableSearchPattern"),countOfPercentItemsInSearchPattern);					
 				}catch(Exception e){
 					log.error("Exception", e);
-					out.write("<font color=red>The Exception: " + ServerUtils.escapeHTML(e.getMessage()) + "</font>");
+					if(e!=null)
+						out.write("<font color=red>The Exception: " + ServerUtils.escapeHTML(e.getMessage()) + 
+							"<br>"+
+							"Cause: " + e.getCause() +
+							"</font>");
 					//throw new JspException("Error");
 				}
 				%>
@@ -84,15 +89,17 @@ out.print("----------------------------<br>");
 								<span id="search_status" class="status">
 									<span class="ok">
 											<%
-												if (items.size() > 0) {
-													out.println("OK");
+												if (items!=null && items.size() > 0) {
+													out.println("OK<br>");
 													
 													request.getSession().setAttribute("dataClippedBol", true);
 													//log.debug("[point 2.1] request.getSession().getAttribute(\"dataClippedBol\", true)="+request.getSession().getAttribute("dataClippedBol"));
+													out.println(" (" + items.size() + " items found)");
 												} else {
-													out.println("FAIL");
+													out.println("FAIL<br>");
+													out.println("( NO items found)");
 												}
-												out.println(" (" + items.size() + " items found)");
+												out.print("<br>");
 											%>
 									</span>
 								</span>
@@ -141,6 +148,7 @@ out.print("----------------------------<br>");
 										<textarea cols="120" rows="20"> добавил недавно -->
 										
 												<%
+												if(items!=null){
 													int k = 0;
 													for (Item item : items) {
 														out.println("<h4>Item " + ++k
@@ -161,6 +169,7 @@ out.print("----------------------------<br>");
 														}
 														out.println("</p>");
 													}
+												}
 												%>
 												
 										<!--  		</textarea> -->

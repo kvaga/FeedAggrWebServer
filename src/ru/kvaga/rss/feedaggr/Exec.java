@@ -364,7 +364,7 @@ public class Exec {
         channel.setDescription(feedTitle);
         ArrayList<ru.kvaga.rss.feedaggr.objects.Item> items = new ArrayList<ru.kvaga.rss.feedaggr.objects.Item>();
 
-        // список полученных из html body элементов
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ html body пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         long t2 = new Date().getTime();
 //		LinkedList<Item> itemsFromHtmlBody = Exec.getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,countOfPercentItemsInSearchPattern, filterWords);					
 		LinkedList<Item> itemsFromHtmlBody = ServerUtilsConcurrent.getInstance().getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,countOfPercentItemsInSearchPattern, filterWords);					
@@ -390,7 +390,7 @@ public class Exec {
 				//log.debug("content before: " + itemContent + ", itemContentTemplate: " + itemContentTemplate);
 
 				log.debug(itemFromHtmlBody.getContentForPrinting());
-				//цикл для замены всех {%Х} на значения
+				//пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ {%пїЅ} пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 					for (int i = 1; i <= itemFromHtmlBody.length(); i++) {
 						//log.debug("in cycle: itemFromHtmlBody.get("+i+")="+itemFromHtmlBody.get(i));
 						itemTitle=itemTitle.replaceAll("\\{%"+i+"}", itemFromHtmlBody.get(i));
@@ -541,7 +541,19 @@ public static synchronized HashSet<String> getYoutubeListOfPlaylistsURLs(String 
 	return l;
 }
 
-private static Pattern getDomainFromURLPattern = Pattern.compile("http(s)?:\\/\\/(?<url>.*(\\.com|\\.ru|\\.org))(\\/)?");
+private static Pattern getDomainFromURLPattern = Pattern.compile("http(s)?:\\/\\/(?<url>.*("
+		+ "\\.com"
+		+ "|\\.ru"
+		+ "|\\.org"
+		+ "|\\.net"
+		+ "|\\.io"
+		+ "|\\.co"
+		+ "|\\.ai"
+		+ "|\\.co\\.uk"
+		+ "|\\.ca"
+		+ "|\\.dev"
+		+ "|\\.me"
+		+ "))(\\/)?");
 public synchronized static String getDomainFromURL(String url){
 	long t1 = new Date().getTime();
 	Matcher m = getDomainFromURLPattern.matcher(url);

@@ -24,6 +24,7 @@ ru.kvaga.rss.feedaggrwebserver.ConfigMap
   </style>
 </head>
 <body>
+<h1 style="color:blue;font-size:40px;"><a href="{%2}">{%1}</a></h1>  
 	<%
 		String userName = null;
 		Cookie[] cookies = request.getCookies();
