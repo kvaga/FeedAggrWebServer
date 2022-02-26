@@ -105,6 +105,8 @@ public class ImportCompositeUserFeedServlet extends HttpServlet {
 			User user = User.getXMLObjectFromXMLFileByUserName(userName);
 			String newCompouseFeedId = "composite_"+ServerUtils.getNewFeedId();
 			exportCompositeFeedServletResult.getCompositeUserFeed().setId(newCompouseFeedId);
+			//exportCompositeFeedServletResult.getCompositeUserFeed().setTitle(exportCompositeFeedServletResult.getCompositeUserFeed().getTitle());
+
 			// 
 			ArrayList<String> newFeedIds = new ArrayList<String>(); 
 			for(RSS feedRSS : exportCompositeFeedServletResult.getFeedRSSList()) {

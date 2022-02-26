@@ -50,8 +50,8 @@ public class CompositeFeedsUpdateJob implements Runnable {
 				MonitoringUtils.sendCommonMetric("Processed composite feeds", result[2], new Tag("status","failed"));
 
 			} catch (Exception e) {
-				
 				log.error("CompositeFeedsUpdateJob Exception", e);
+				continue;
 			}
 //				for(CompositeUserFeed compositeUserFeed : user.getCompositeUserFeeds()) {
 //					ArrayList<String> al = new ArrayList<String>();

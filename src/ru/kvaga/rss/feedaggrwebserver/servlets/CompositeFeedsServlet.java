@@ -40,6 +40,9 @@ public class CompositeFeedsServlet extends HttpServlet {
 			throws ServletException, IOException {
     	//if (true) throw new ServletException("unimplemented");
 
+    	if(true) {
+    		throw new ServletException("Deprecated");
+    	}
 		String redirectTo = request.getParameter("redirectTo");
 		String userName = (String) request.getSession().getAttribute("login");
 		String command = (String) request.getParameter("command");
@@ -69,6 +72,9 @@ public class CompositeFeedsServlet extends HttpServlet {
 			request.setAttribute("responseStatus", Exec.getHTMLFailText(e.getMessage()));
 		}
 		
+		if(true) {
+			request.setAttribute("responseStatus", "This servet was deprecated");
+		}
 		rd.include(request, response);
 //		response.sendRedirect("LoginSuccess.jsp");
 

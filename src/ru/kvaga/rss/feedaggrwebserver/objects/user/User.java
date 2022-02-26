@@ -613,7 +613,8 @@ public class User {
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 	}
 
-	public synchronized File saveXMLObjectToFileByLogin() throws JAXBException {
+	public synchronized File saveXMLObjectToFileByLogin() throws Exception {
+		if(name==null) throw new Exception("User's file name can't be null");
 		return saveXMLObjectToFileByLogin(name);
 	}
 	

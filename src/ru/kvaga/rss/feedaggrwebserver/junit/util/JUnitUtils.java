@@ -37,7 +37,7 @@ public class JUnitUtils {
 		String feedId = getNewFeedIdTest();
 		RSS rss = createRSSTest();
 		rss.saveXMLObjectToFileByFeedId(feedId);
-		return new UserFeed(feedId, "itemTitleTemplate", "itemLinkTemplate", "itemContentTemplate", "repeatableSearchPattern", "filterWords", Long.MAX_VALUE);
+		return new UserFeed(feedId, "itemTitleTemplate", "itemLinkTemplate", "itemContentTemplate", "repeatableSearchPattern", "filterWords", Long.MAX_VALUE, rss.getChannel().getTitle(), rss.getChannel().getLink());
 	}
 	
 	public static UserFeed createUserFeedTestAndBindToUser(String userName) throws NoSuchAlgorithmException, JAXBException {
@@ -46,7 +46,7 @@ public class JUnitUtils {
 		rss.saveXMLObjectToFileByFeedId(feedId);
 		File userFile = User.getUsersFileByUserName(userName);
 		User user = User.getXMLObjectFromXMLFile(userFile);
-		UserFeed userFeed = new UserFeed(feedId, "itemTitleTemplate", "itemLinkTemplate", "itemContentTemplate", "repeatableSearchPattern", "filterWords", Long.MAX_VALUE);
+		UserFeed userFeed = new UserFeed(feedId, "itemTitleTemplate", "itemLinkTemplate", "itemContentTemplate", "repeatableSearchPattern", "filterWords", Long.MAX_VALUE, rss.getChannel().getTitle(), rss.getChannel().getLink());
 		if(!user.getUserFeeds().add(userFeed)) {
 			return null;
 		}
@@ -54,7 +54,7 @@ public class JUnitUtils {
 		return userFeed; 
 	}
 	
-	public static boolean deleteUserFeedWithUnbindingFromUser(String userName, String feedId) throws NoSuchAlgorithmException, JAXBException {
+	public static boolean deleteUserFeedWithUnbindingFromUser(String userName, String feedId) throws Exception {
 		User user = User.getXMLObjectFromXMLFileByUserName(userName);
 		UserFeed uf = new UserFeed();
 		uf.setId(feedId);

@@ -1,99 +1,180 @@
-<?xml version="1.0" encoding="UTF-8" ?>
 <%@page import="ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed"%>
-<%@page import="java.util.ArrayList"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="ru.kvaga.rss.feedaggr.objects.RSSForPrintingComparatorByTitle"%>
+<%@page import="ru.kvaga.rss.feedaggrwebserver.ConfigMap"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="UTF-8"%>
     <%@ page
 	import="ru.kvaga.rss.feedaggr.objects.Feed,ru.kvaga.rss.feedaggr.objects.RSS,
+	ru.kvaga.rss.feedaggr.objects.Feed,ru.kvaga.rss.feedaggr.objects.RSSForPrintingComparatorByTitle,
 	ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils,
 	ru.kvaga.rss.feedaggrwebserver.ServerUtils,
-	ru.kvaga.rss.feedaggrwebserver.ConfigMap,
 	java.util.Collections,
 	java.util.HashMap,
-	java.io.File,
-	ru.kvaga.rss.feedaggrwebserver.objects.user.User,
+	java.util.Date,
+	java.util.ArrayList,
 	org.apache.logging.log4j.*,
-	ru.kvaga.rss.feedaggrwebserver.ConfigMap
-	"
-	
-	%>
-    <%
+	ru.kvaga.rss.feedaggrwebserver.ConfigMap,
+	ru.kvaga.rss.feedaggr.Exec
+	"%>
+	<%
 	final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClass().getSimpleName());
-    %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+
+	%>
+    
+<!DOCTYPE html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Create composite RSS</title>
+<script src="sort_table.js"></script>
+<style type="text/css">
+	table, th, td {
+	    border: 1px solid black;
+	}
+	th {
+	    cursor: pointer;
+	}
+</style>
+<script>
+// Get a list of Composite User Feed
+var feedIdsFromCompositeUserFeed;
+try{
+    var getCompositeUserFeedListRequest = new XMLHttpRequest();
+    getCompositeUserFeedListRequest.onreadystatechange = function() {
+        if (getCompositeUserFeedListRequest.readyState == 4) {
+        	feedIdsFromCompositeUserFeed = JSON.parse(getCompositeUserFeedListRequest.responseText);
+        	//document.getElementById("tt").innerHTML=
+        											//dataObj;
+        		//getCompositeUserFeedListRequest.responseText;
+        }
+    }
+
+    getCompositeUserFeedListRequest.open('GET', '${pageContext.request.contextPath}/GetFeedIdsFromCompositeUserFeed?userName=<%= request.getSession().getAttribute("login")%>&compositeFeedId=<%= request.getParameter("feedId")%>', true);
+    getCompositeUserFeedListRequest.send(null);
+}catch(err){
+	//document.getElementById("tt").innerHTML=err.message;
+}
+
+// Get a list of User Feeds
+try{
+    var xhr1 = new XMLHttpRequest();
+    xhr1.onreadystatechange = function() {
+        if (xhr1.readyState == 4) {
+            var dataObj = JSON.parse(xhr1.responseText);
+            fulfillHeaderTable(dataObj, feedIdsFromCompositeUserFeed);
+            fulfillTableUserFeeds(dataObj, feedIdsFromCompositeUserFeed);
+           	/*
+            var table = document.getElementById('gable');
+			 for(var i=0; i<dataObj.length;i++){            
+			 	console.log(dataObj[i].feedId);
+			 	var tr = document.createElement('tr');
+				tr.innerHTML = 
+					'<td>' + dataObj[i].name + '</td>' +
+			    	'<td>' + dataObj[i].name + '</td>' +
+			    	'<td>' + dataObj[i].feedId + '</td>' +
+			    	'<td>' + dataObj[i].countOfUserFeeds + '</td>';
+			    	table.appendChild(tr);
+			 }
+			 */
+           //append_json(xhr.responseText);
+        	//document.getElementById("tt").innerHTML=
+        											//dataObj;
+        		//									xhr1.responseText;
+
+        }
+    }
+
+    xhr1.open('GET', '${pageContext.request.contextPath}/FeedsList?type=json&short=true&userName=<%= request.getSession().getAttribute("login")%>', true);
+    xhr1.send(null);
+}catch(err){
+	//document.getElementById("tt").innerHTML=err.message;
+}
+
+// fulfill header table
+function fulfillHeaderTable(dataObj, feedIdsFromCompositeUserFeed){
+	let table = document.getElementById('checkedTable');
+	 for(let i=0; i<dataObj.length;i++){ 
+		 //console.log('res: ' + feedIdsFromCompositeUserFeed);
+	 	let tr = document.createElement('tr');
+			if (compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, dataObj[i].id) /*compositeUserFeedsList.feedIds.includes(dataObj[i].id)*/) {
+				tr.innerHTML += '<td><input type="checkbox" id="vehicle1" disabled="disabled" name="feedId" value="'+dataObj[i].id+'" checked></td>'; 
+			
+			tr.innerHTML +=
+			//'<td>' + '<input type="checkbox" id="vehicle1" name="feedId" value="'+dataObj[i].id+'">' + '</td>' + 
+			'<td>' + '<a href="${pageContext.request.contextPath}/showFeed?feedId='+dataObj[i].id + '">' + dataObj[i].userFeedTitle +'</a>' + '</td>' +
+	    	'<td>' + '<a href="'+dataObj[i].userFeedUrl+'">' + dataObj[i].userFeedUrl + '</a>'+'</td>';
+	    	table.appendChild(tr);
+			}
+	 }
+	 
+}
+
+//fulfill main tble
+function fulfillTableUserFeeds(dataObj,feedIdsFromCompositeUserFeed){
+
+	
+	let table = document.getElementById('table');
+ 	//console.log(compositeUserFeedsList);
+
+	 for(let i=0; i<dataObj.length;i++){ 
+		 //console.log('res: ' + feedIdsFromCompositeUserFeed);
+	 	let tr = document.createElement('tr');
+			if (compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, dataObj[i].id) /*compositeUserFeedsList.feedIds.includes(dataObj[i].id)*/) {
+				tr.innerHTML += '<td><input type="checkbox" id="vehicle1" name="feedId" value="'+dataObj[i].id+'" checked></td>'; 
+			}else{
+				tr.innerHTML += '<td><input type="checkbox" id="vehicle1" name="feedId" value="'+dataObj[i].id+'"></td>'; 
+			}
+			tr.innerHTML +=
+			//'<td>' + '<input type="checkbox" id="vehicle1" name="feedId" value="'+dataObj[i].id+'">' + '</td>' + 
+			'<td>' + '<a href="${pageContext.request.contextPath}/showFeed?feedId='+dataObj[i].id + '">' + dataObj[i].userFeedTitle +'</a>' + '</td>' +
+	    	'<td>' + '<a href="'+dataObj[i].userFeedUrl+'">' + dataObj[i].userFeedUrl + '</a>'+'</td>';
+	    	table.appendChild(tr);
+	 }
+	 
+}
+
+function compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, feedId){
+	for(let i=0; i<feedIdsFromCompositeUserFeed.length;i++){
+		//console.log(feedIdsFromCompositeUserFeed[i] + ' vs ' + feedId);
+		if(feedIdsFromCompositeUserFeed[i]===feedId){
+			//console.log('yes: ' + feedIdsFromCompositeUserFeed[i] + ' ' + feedId);
+			return true;
+		}
+	}
+	return false;
+}
+
+</script>
+<meta charset="utf-8">
+<title>Merge RSS</title>
 </head>
 <body>
-<h2>Your [<%= request.getSession().getAttribute("login")%>] RSS list:</h2>
-<form action="mergeRSS">
-<table>
-<tr>Title of composite RSS: <input type="text" name="compositeRSSTitle" value="<%= request.getParameter("feedTitle")==null?"":request.getParameter("feedTitle")%>"></input><input type="submit" name="Create"></input></tr>
-<%
-File userFile = null;
-User user = null;
-CompositeUserFeed compositeUserFeed=null;
-if(request.getParameter("feedId")!=null){
-	out.println("<input type=\"hidden\" name=\"compositeFeedId\" value=\""+request.getParameter("feedId")+"\">");
-	userFile=new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + request.getSession().getAttribute("login") + ".xml");
-	//user=(User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
-	user=User.getXMLObjectFromXMLFile(userFile);
-	compositeUserFeed=user.getCompositeUserFeedById(request.getParameter("feedId"));
-	out.println("<br>");
-	out.println("Count of merged feeds: " + CompositeUserFeed.getCountOfFeeds(request.getParameter("feedId"), (String) request.getSession().getAttribute("login")));
-}
-
-ArrayList<RSS> rssListForPrinting = new ArrayList<RSS>();
-HashMap<RSS,String> mapRssStringForPrinting = new HashMap<RSS, String>();
-for(Feed feedOnServer : ServerUtils.getFeedsList(true, false)) {
-	if(feedOnServer.getId().startsWith("composite")) continue;
-	RSS rssFeed = RSS.getRSSObjectFromXMLFile(feedOnServer.getXmlFile());
-	rssListForPrinting.add(rssFeed);
-	mapRssStringForPrinting.put(rssFeed, feedOnServer.getId());
-}
-Collections.sort(rssListForPrinting, new RSSForPrintingComparatorByTitle());
-// Previously print only feeds wich subscribed
-
-for(RSS rss : rssListForPrinting){
-	if(request.getParameter("feedId")!=null && compositeUserFeed.doesHaveCompositeFeedId(mapRssStringForPrinting.get(rss))){
-		out.println("<tr>");
-		out.println("<td valign=\"top\"><input type=\"checkbox\" disabled=\"disabled\" checked=\"checked\"></td>");
-		out.println("<td><a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>");
-		out.println("<br>");	 
-		out.println("Source URL: "+rss.getChannel().getLink());
-		out.println("<br>");	 
-		out.println("Last updated: " + rss.getChannel().getLastBuildDate());
-		out.println("</td></tr>");	 
-	}
-	
-}
-//out.println("<hr>");	 
-
-// Print full list of feeds
-for(RSS rss : rssListForPrinting){
-	out.println("<tr>");
-	if(request.getParameter("feedId")!=null && compositeUserFeed.doesHaveCompositeFeedId(mapRssStringForPrinting.get(rss))){
-		out.println("<td valign=\"top\"><input type=\"checkbox\" id=\"vehicle1\" name=\"feedId\" value=\""+mapRssStringForPrinting.get(rss)+"\" checked></td>");
-	}else{
-		out.println("<td valign=\"top\"><input type=\"checkbox\" id=\"vehicle1\" name=\"feedId\" value=\""+mapRssStringForPrinting.get(rss)+"\"></td>");
-	}
-	out.println("<td><a href=\"showFeed?feedId="+mapRssStringForPrinting.get(rss) +"\">"+rss.getChannel().getTitle()+"</a>");
-	out.println("<br>");	 
-	out.println("Source URL: "+rss.getChannel().getLink());
-	out.println("<br>");	 
-	out.println("Last updated: " + rss.getChannel().getLastBuildDate());
-	out.println("</td></tr>");	 
-}
+<jsp:include page="Header.jsp"></jsp:include>
 
 
+<h3>Feeds List Short Info for '<%= request.getParameter("feedId")%>'</h3>
 
-
-%>
-<tr><td></td><td><input type="submit" name="Create"></input></td></tr>
+<!-- 
+<textarea rows="20" cols="50" id="tt"></textarea>
+ -->
+<h3>Checked</h3>
+<table id="checkedTable">
+		<tr>
+	                <th onclick="sortTable(1)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbsp#</th>
+	                <th onclick="sortTable(2)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspName</th>
+	                <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspURL</th>
+	    </tr>
 </table>
+<form action="mergeRSS">
+<h3>All Other</h3>
+	<table id="table">
+		<tr>
+	                <th onclick="sortTable(1)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbsp#</th>
+	                <th onclick="sortTable(2)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspName</th>
+	                <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspURL</th>
+	    </tr>
+	</table>
+	<input type="submit" name="Merge">
 </form>
+<p id="tt"></p>
 </body>
 </html>

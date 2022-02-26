@@ -55,7 +55,7 @@ try{
 	   		        	Delete.innerHTML='Delete';
 	   		        	
 	   					let Export = row.insertCell(2);
-	   					Export.innerHTML='<a href="ExportCompositeFeed?userName=kvaga&amp;compositeFeedId='+item.feedId+'&amp;source=/CompositeFeedsExport.jsp">Export</a>';
+	   					Export.innerHTML='<a href="ExportCompositeFeed?userName=<%= request.getSession().getAttribute("login")%>&amp;compositeFeedId='+item.feedId+'&amp;source=/CompositeFeedsExport.jsp">Export</a>';
 	   					
 	   					let LastUpdated = row.insertCell(3);
 	   					LastUpdated.innerHTML=item.lastUpdated;
@@ -77,7 +77,7 @@ try{
 	        }
 	    }
 	
-    xhr.open('GET', '${pageContext.request.contextPath}/CompositeFeedsList?type=json&userName=kvaga', true);
+    xhr.open('GET', '${pageContext.request.contextPath}/CompositeFeedsList?type=json&userName=<%= request.getSession().getAttribute("login")%>', true);
     xhr.send(null);
 }catch(err){
 	document.getElementById("compositeFeedList1").innerHTML=err.message;

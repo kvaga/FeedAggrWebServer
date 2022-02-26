@@ -54,6 +54,10 @@ public class FeedsUpdateJob implements Runnable {
 	}
 
 	int[] updateFeeds() throws Exception {
+		if(true) {
+			return new int [1];
+		}
+		
 		long t1 = new Date().getTime();
 //		URL urlLog = org.apache.logging.log4j.LogManager.class.getResource("/log4j.properties");
 //		log.info("==========----------------------------------------------------------------------------------------------------------------------------->>>" + urlLog);
@@ -104,11 +108,6 @@ public class FeedsUpdateJob implements Runnable {
 					allFeedsCount++;
 					int countOfNewlyAddedItemsToTheCurrentFeedId=0;
 					try {
-						if(userFeed.getDurationInMillisForUpdate()==null) {
-							log.debug("DurationInMillisForUpdate parameter in the ["+userFeed.getId()+"] is null. We set default value ["+ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE+"]");
-							userFeed.setDurationInMillisForUpdate(ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE);
-						}
-						
 						String feedId = userFeed.getId();
 						String rssXmlFile = ConfigMap.feedsPath.getAbsolutePath() + "/" + userFeed.getId() + ".xml";
 						
@@ -116,6 +115,23 @@ public class FeedsUpdateJob implements Runnable {
 						// �������� feed ������ �� �����
 //						RSS rssFromFile = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(rssXmlFile, new RSS());
 						RSS rssFromFile = RSS.getRSSObjectFromXMLFile(rssXmlFile);
+						// check userFeed title and url for null value
+						if(user.getUserFeedByFeedId(feedId).getUserFeedTitle()==null) {
+							user.getUserFeedByFeedId(feedId).setUserFeedTitle(rssFromFile.getChannel().getTitle());
+							log.debug("User's ["+user.getName()+"] userFeed [feedId: "+feedId+"] title was null hence the title became ["+rssFromFile.getChannel().getTitle()+"] from the RSS file. These changes will take effect after saving of a user's file");
+						}
+						if(user.getUserFeedByFeedId(feedId).getUserFeedUrl()==null) {
+							user.getUserFeedByFeedId(feedId).setUserFeedUrl(rssFromFile.getChannel().getLink());
+							log.debug("User's ["+user.getName()+"] userFeed [feedId: "+feedId+"] url was null hence the url became ["+rssFromFile.getChannel().getLink()+"] from the RSS file. These changes will take effect after saving of a user's file");
+						}
+						
+						
+						if(userFeed.getDurationInMillisForUpdate()==null) {
+							log.debug("DurationInMillisForUpdate parameter in the ["+userFeed.getId()+"] is null. We set default value ["+ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE+"]");
+							userFeed.setDurationInMillisForUpdate(ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE);
+						}
+						
+						
 						
 						/*
 						int countOfDeletedOldItems = rssFromFile.removeItemsOlderThanXDays(ConfigMap.ttlOfFeedsInDays);
@@ -185,6 +201,9 @@ public class FeedsUpdateJob implements Runnable {
 						rssFromFile.saveXMLObjectToFile(new File(rssXmlFile));
 						log.debug("������ rssFromFile �������� � ���� [" + rssXmlFile + "]");
 						successFeedsCount++;
+						
+						
+						//
 						MonitoringUtils.sendCommonMetric("FeedsUpdateJob.CountOfNewlyAddedItemsToTheCurrentFeedId", countOfNewlyAddedItemsToTheCurrentFeedId, new Tag("feedId", feedId));
 
 					} catch (Exception e) {

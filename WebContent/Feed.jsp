@@ -29,8 +29,14 @@ if(request.getParameter("action")!=null && request.getParameter("action").equals
 		User user = User.getXMLObjectFromXMLFile(userFile);
 		//RSS rss = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(xmlFile, new RSS());
 		RSS rss = RSS.getRSSObjectFromXMLFile(xmlFile);
-		request.getSession().setAttribute("feedTitle", rss.getChannel().getTitle());
-		request.getSession().setAttribute("url", rss.getChannel().getLink());
+		request.getSession().setAttribute("feedTitle", 
+				//rss.getChannel().getTitle()
+				user.getUserFeedByFeedId(request.getParameter("feedId")).getUserFeedTitle()
+				);
+		request.getSession().setAttribute("url", 
+				//rss.getChannel().getLink()
+				user.getUserFeedByFeedId(request.getParameter("feedId")).getUserFeedUrl()
+				);
 		request.getSession().setAttribute("repeatableSearchPattern",user.getRepeatableSearchPatternByFeedId((String)request.getSession().getAttribute("feedId")));
 		request.getSession().setAttribute("itemTitleTemplate", user.getItemTitleTemplateByFeedId((String)request.getSession().getAttribute("feedId")));
 		request.getSession().setAttribute("itemLinkTemplate", user.getItemLinkTemplateByFeedId((String)request.getSession().getAttribute("feedId")));

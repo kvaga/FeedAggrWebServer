@@ -26,6 +26,14 @@ ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Health Check</title>
 <script src="lib.js"></script>
+<style type="text/css">
+	table, th, td {
+	    border: 1px solid black;
+	}
+	th {
+	    cursor: pointer;
+	}
+</style>
 <!--  
 <script language="JavaScript">
 function toggle(source) {
@@ -36,6 +44,83 @@ function toggle(source) {
 	}
 </script>
 -->
+
+<script>
+// Check composite user feed for null titles
+try{
+    var xhr1 = new XMLHttpRequest();
+    xhr1.onreadystatechange = function() {
+        if (xhr1.readyState == 4) {
+            const dataObj = JSON.parse(xhr1.responseText);
+            fulfillTableCompouseUserFeedShort(dataObj);
+        	document.getElementById("tt").innerHTML=
+        											//dataObj;
+        											xhr1.responseText;
+        }
+    }
+
+    xhr1.open('GET', '${pageContext.request.contextPath}/CompositeFeedsList?type=json&short=true&userName=<%= request.getSession().getAttribute("login")%>', true);
+    xhr1.send(null);
+}catch(err){
+	document.getElementById("tt").innerHTML=err.message;
+}
+
+//this function appends the json data to the table 'gable'
+function fulfillTableCompouseUserFeedShort(dataObj){
+	var table = document.getElementById('tableCompositeUserFeed');
+	 for(var i=0; i<dataObj.length;i++){            
+	 	//console.log(dataObj[i].feedId);
+	 	if(!dataObj[i].name){
+		 	var tr = document.createElement('tr');
+			tr.innerHTML = 
+				'<td>' + dataObj[i].feedId + '</td>' +
+		    	'<td>' + '<a href="/mergeRSS.jsp?feedTitle='+dataObj[i].name+'&feedId='+dataObj[i].feedId+'">Edit' + '</a>'+'</td>' +
+		    table.appendChild(tr);
+		 }
+	 }
+}
+
+</script>
+
+<script>
+// Check user feed for null title or url
+try{
+    var xhr2 = new XMLHttpRequest();
+    xhr2.onreadystatechange = function() {
+        if (xhr2.readyState == 4) {
+            const dataObj = JSON.parse(xhr2.responseText);
+            fulfillTableUserFeedShort(dataObj);
+        	document.getElementById("tt").innerHTML=
+        											//dataObj;
+        											xhr2.responseText;
+        }
+    }
+
+    xhr2.open('GET', '${pageContext.request.contextPath}/FeedsList?type=json&short=true&userName=<%= request.getSession().getAttribute("login")%>', true);
+    xhr2.send(null);
+}catch(err){
+	document.getElementById("tt").innerHTML=err.message;
+}
+
+//this function appends the json data to the table 'gable'
+function fulfillTableUserFeedShort(dataObj){
+	var tableUserFeed = document.getElementById('tableUserFeed');
+	 for(var i=0; i<dataObj.length;i++){            
+	 	//console.log(dataObj[i].feedId);
+	 	if(!(dataObj[i].userFeedTitle && dataObj[i].userFeedUrl)){
+		 	var tr = document.createElement('tr');
+			tr.innerHTML = 
+				'<td>' + dataObj[i].id + '</td>' +
+				'<td>' + dataObj[i].userFeedTitle + '</td>' +
+				'<td>' + dataObj[i].userFeedUrl + '</td>' +
+
+		    	'<td>' + '<a href="/Feed.jsp?action=edit&feedId='+dataObj[i].id+'">Edit' + '</a>'+'</td>';
+		    tableUserFeed.appendChild(tr);
+		 }
+	 }
+}
+
+</script>
 </head>
 <body>
 <jsp:include page="Header.jsp"></jsp:include>
@@ -188,5 +273,21 @@ if(commonZombieFeedIds.size()>0){
 	out.write("There is no any zombie feed");
 }
 %>
+<h3>Composite User Feeds with null title of user Kvaga</h3>
+<table id="tableCompositeUserFeed">
+	<tr>
+                <th onclick="sortTable(1)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspFeedId</th>
+                <th onclick="sortTable(2)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspEdit</th>
+    </tr>
+</table>
+<h3>User Feeds with null title or url of user Kvaga</h3>
+<table id="tableUserFeed">
+	<tr>
+                <th onclick="sortTable(1)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspFeedId</th>
+                <th onclick="sortTable(2)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspName</th>
+                <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspURL</th>
+                <th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspEdit</th>
+    </tr>
+</table>
 </body>
 </html>

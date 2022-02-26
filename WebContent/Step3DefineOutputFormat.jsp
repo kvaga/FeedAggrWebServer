@@ -143,7 +143,8 @@ User user = User.getXMLObjectFromXMLFile(userFile);
 											out.print(user.getRssItemPropertiesPatternByDomain(
 												Exec.getDomainFromURL((String)request.getSession().getAttribute("url"))).getPatternDescription());
 										}else{
-											out.print("{%3}&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============ Link ============&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;");
+											//out.print("{%3}&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============ Link ============&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;");
+											out.print("{%3}&lt;br&gt;&lt;h1 style=\"color:blue;font-size:40px;\"&gt;&lt;a href=\"{%2}\"&gt;LINK&lt;/a&gt;&lt;/h1&gt;");
 										}
 %></textarea>
 </td>

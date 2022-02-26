@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -26,17 +27,25 @@ public class CompositeUserFeed {
 	final private static Logger log = LogManager.getLogger(CompositeUserFeed.class);
  
 	private String id;
+	private String compositeUserFeedTitle;
 	private ArrayList<String> feedIds = new ArrayList<String>();
 	
 	public CompositeUserFeed() {}
-	public CompositeUserFeed(String id) {
+	public CompositeUserFeed(String id, String compositeUserFeedTitle) {
 		this.id=id;
+		this.compositeUserFeedTitle=compositeUserFeedTitle;
 	}
 	public String getId() {
 		return id;
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getCompositeUserFeedTitle() {
+		return compositeUserFeedTitle;
+	}
+	public void setCompositeUserFeedTitle(String compositeUserFeedTitle) {
+		this.compositeUserFeedTitle = compositeUserFeedTitle;
 	}
 	public ArrayList<String> getFeedIds() {
 		return feedIds;
@@ -94,14 +103,14 @@ public class CompositeUserFeed {
 		}
 
 		// Creating new CompositeUserFeed and adding to user
-		CompositeUserFeed compositeUserFeed = new CompositeUserFeed();
-		compositeUserFeed.setId(compositeFeedId);
+		CompositeUserFeed compositeUserFeed = new CompositeUserFeed(compositeFeedId, compositeRSSTitle);
+		//compositeUserFeed.setId(compositeFeedId, compositeRSSTitle);
 		//user.getCompositeUserFeeds().add(compositeUserFeed);
 		
 		if(user.getCompositeUserFeeds().add(compositeUserFeed)) {
 			log.debug("Composite feed ["+compositeFeedId+"] was added to the ["+user.getName()+"] user");
 		}else {
-			throw new Exception("Couldn't add composite user feed ["+compositeFeedId+"] to the ["+user.getName()+"] user");
+			throw new Exception("Couldn't add composite user feed [id: "+compositeFeedId+", title: "+compositeRSSTitle+"] to the ["+user.getName()+"] user");
 		}
 
 		// Creating new composite rss and channel
@@ -248,7 +257,7 @@ public class CompositeUserFeed {
 	 * @return int[] - allCompositeFeedsCount, successCompositeFeedsCount, allCompositeFeedsCount-successCompositeFeedsCount (failed), countOfDeletedOldItems
 	 * @throws JAXBException
 	 */
-	public static synchronized int[] updateItemsInCompositeRSSFilesOfUser(String userName) throws JAXBException {
+	public static synchronized int[] updateItemsInCompositeRSSFilesOfUser(String userName) throws Exception {
 		long t1 = new Date().getTime();
 		int allFeedsCount=0, successFeedsCount=0;
 		int countOfDeletedOldItemsTotal=0;
@@ -257,15 +266,19 @@ public class CompositeUserFeed {
 		log.info("Started proccess updateCompositeRSSFilesOfUser for user ["+userName+"]");
 		File userFile = User.getUsersFileByUserName(userName);
 		User user = User.getXMLObjectFromXMLFile(userFile);
-
+		Set<CompositeUserFeed> compositeUserFeedSet = user.getCompositeUserFeeds();
 		// Iterate over all user's composite feeds 
-		for (CompositeUserFeed compositeUserFeed : user.getCompositeUserFeeds()) {
+		for (CompositeUserFeed compositeUserFeed : compositeUserFeedSet) {
 			int countOfDeletedOldItems=0;
 			allFeedsCount++;
 			File compositeRSSFile = ServerUtils.getRssFeedFileByFeedId(compositeUserFeed.getId());
 			RSS compositeRSS = RSS.getRSSObjectFromXMLFile(compositeRSSFile);
 			ArrayList<Item> oldCompositeFeedItemsForDeletionFromCurrentCompositeFeed = new ArrayList<Item>();
-
+			// check compositeUserFeed title for null value
+			if(compositeUserFeed.getCompositeUserFeedTitle()==null) {
+				compositeUserFeed.setCompositeUserFeedTitle(compositeRSS.getChannel().getTitle());
+				log.debug("User's ["+user.getName()+"] compositeUserFeed [feedId: "+compositeUserFeed.getId()+"] title was null hence the title became ["+compositeRSS.getChannel().getTitle()+"] from the RSS file. These changes will take effect after saving of a user's file");
+			}
 			try {
 				// iterate over all feeds of specific compositeUserFeed
 				for (String feedId : compositeUserFeed.getFeedIds()) {
@@ -302,6 +315,8 @@ public class CompositeUserFeed {
 					}
 				}
 				compositeRSS.getChannel().setLastBuildDate(new Date());
+				
+				
 			} catch (Exception e) {
 				log.error("updateCompositeRSSFilesOfUser Exception in the composite feed id ["+compositeUserFeed.getId()+"]", e);
 				//InfluxDB.getInstance().send("response_time,method=ServerUtils.updateCompositeRSSFilesOfUserException", new Date().getTime() - t1);
@@ -315,6 +330,8 @@ public class CompositeUserFeed {
 			successFeedsCount++;
 			MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJob.CountOfDeletedOldItems", countOfDeletedOldItems, new Tag("compositeFeedId",compositeUserFeed.getId()));
 		}
+		user.setCompositeUserFeeds(compositeUserFeedSet);
+		user.saveXMLObjectToFileByLogin();
 		//InfluxDB.getInstance().send("response_time,method=ServerUtils.updateCompositeRSSFilesOfUser", new Date().getTime() - t1);
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
 		return new int[] {allFeedsCount, successFeedsCount, allFeedsCount-successFeedsCount, countOfDeletedOldItemsTotal};
@@ -377,6 +394,8 @@ public class CompositeUserFeed {
 	public static synchronized boolean updateRSSTitleOfComposeFeed(String compositeRSSTitle, String compositeFeedId, String userName) throws Exception {
 		User user = User.getXMLObjectFromXMLFileByUserName(userName);
 		if(user.getCompositeUserFeedById(compositeFeedId)==null) throw new Exception("User ["+userName+"] doesn't have the ["+compositeFeedId+"] feed");
+		user.getCompositeUserFeedById(compositeFeedId).setCompositeUserFeedTitle(compositeFeedId);
+		user.saveXMLObjectToFileByLogin();
 		RSS rss = RSS.getRSSObjectByFeedId(compositeFeedId);
 		if(!rss.getChannel().getTitle().equals(compositeRSSTitle)) {
 			rss.getChannel().setTitle(compositeRSSTitle);

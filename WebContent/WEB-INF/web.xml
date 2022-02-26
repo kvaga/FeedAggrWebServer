@@ -58,4 +58,14 @@
     <error-code>503</error-code>
     <location>/WEB-INF/error.html</location>
   </error-page>
+  <servlet>
+    <description></description>
+    <display-name>getFeedIdsFromCompositeUserFeedServlet</display-name>
+    <servlet-name>getFeedIdsFromCompositeUserFeedServlet</servlet-name>
+    <servlet-class>ru.kvaga.rss.feedaggrwebserver.servlets.CompositeFeedsListServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>getFeedIdsFromCompositeUserFeedServlet</servlet-name>
+    <url-pattern>/getFeedIdsFromCompositeUserFeedServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

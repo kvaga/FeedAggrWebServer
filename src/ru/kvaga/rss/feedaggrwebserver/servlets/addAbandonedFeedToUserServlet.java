@@ -69,7 +69,7 @@ public class addAbandonedFeedToUserServlet extends HttpServlet {
 				if(userRssItemPropertiesPatterns==null) {
 					throw new Exception("Can't find userRssItemPropertiesPatterns for domain ["+domain+"] and user ["+request.getSession().getAttribute("login")+"]");		
 				}
-				UserFeed userFeed = new UserFeed(feedId, userRssItemPropertiesPatterns.getPatternTitle(), userRssItemPropertiesPatterns.getPatternLink(), userRssItemPropertiesPatterns.getPatternDescription(), repeatableSearchPattern, "", ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE);
+				UserFeed userFeed = new UserFeed(feedId, userRssItemPropertiesPatterns.getPatternTitle(), userRssItemPropertiesPatterns.getPatternLink(), userRssItemPropertiesPatterns.getPatternDescription(), repeatableSearchPattern, "", ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE, rss.getChannel().getTitle(), url);
 				if(user.getUserFeeds().add(userFeed)) {
 					user.saveXMLObjectToFileByLogin((String)request.getSession().getAttribute("login"));
 					log.debug("Feed id ["+feedId+"] successfully added to the user ["+request.getSession().getAttribute("login")+"]");		

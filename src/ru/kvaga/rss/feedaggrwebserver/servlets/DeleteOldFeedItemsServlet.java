@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
+import ru.kvaga.rss.feedaggrwebserver.servlets.utils.ServletUtils;
 
 /**
  * Servlet implementation class DeleteOldFeedItemsServlet
@@ -42,6 +43,13 @@ public class DeleteOldFeedItemsServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String userName = (String) request.getSession().getAttribute("login");
 		String redirectTo = request.getParameter("redirectTo");
+		String source = (String)request.getParameter("source");
+
+		log.debug("Got parameters " + ServerUtils.listOfParametersToString("redirectTo", redirectTo, "source", source, "userName", userName, "countOfDaysForDeletion", request.getParameter("countOfDaysForDeletion")));
+		if(source == null && redirectTo == null) {
+			source = ServletUtils.getSource(request);
+		}
+		
 		RequestDispatcher rd = getServletContext().getRequestDispatcher("/"+redirectTo);
 		PrintWriter out = response.getWriter();
 
@@ -54,18 +62,13 @@ public class DeleteOldFeedItemsServlet extends HttpServlet {
 			
 			log.info("Getting list of feed ids of user ["+userName+"] which intends for deletion");
 			ArrayList<String> feedIdList = new ArrayList<String>();
-			Enumeration<String> en = request.getParameterNames();
-			while (en.hasMoreElements()) {
-				String parameter = en.nextElement();
-				if (parameter.startsWith("id_")) {
-					log.debug("Parameter " + parameter + ": " + request.getParameter(parameter));
-					feedIdList.add(request.getParameter(parameter));
-				}
+			for (String feedId : request.getParameterValues("feedId")) {
+				feedIdList.add(feedId);
 			}
 			HashMap<String, Integer> result = new HashMap<String, Integer>();
 			log.info("Got a list of feed ids with size ["+feedIdList.size()+"]");
 			for(String feedId : feedIdList) {
-				if(feedId.startsWith("composite_")) {
+				if(feedId!=null && feedId.startsWith("composite_")) {
 					User user = User.getXMLObjectFromXMLFileByUserName(userName);
 					CompositeUserFeed cuf = user.getCompositeUserFeedById(feedId);
 					for(String childFeedId: cuf.getFeedIds()) {
@@ -79,7 +82,7 @@ public class DeleteOldFeedItemsServlet extends HttpServlet {
 			}
 			//response.sendRedirect(redirectTo);
 		}catch(Exception e) {
-			log.error("Exception during deletion old feed items for user ["+userName+"]. Redirect to ["+redirectTo+"]");
+			log.error("Exception during deletion old feed items for user ["+userName+"]. Redirect to ["+redirectTo+"]", e);
 			out.print("<font color=red>Error during deletion: Message ["+e.getMessage()+"], Cause: ["+e.getCause()+"]</font>");
 		}finally {
 			rd.include(request, response);

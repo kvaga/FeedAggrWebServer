@@ -22,6 +22,8 @@ import ru.kvaga.rss.feedaggr.FeedAggrException.GetFeedsListByUser;
 import ru.kvaga.rss.feedaggr.objects.Feed;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
+import ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed;
+import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 
 /**
  * Servlet implementation class CompositeFeedsList
@@ -49,7 +51,9 @@ public class CompositeFeedsListServlet extends HttpServlet {
 		String source = request.getParameter("source");
 		String userName = request.getParameter("userName");
 		String responseType = request.getParameter("type");
-		log.debug("Got parameters "+ServerUtils.listOfParametersToString("redirectTo", redirectTo, "source", source, "userName", userName, "type", responseType));
+		String shortInfo = request.getParameter("short");
+		
+		log.debug("Got parameters "+ServerUtils.listOfParametersToString("redirectTo", redirectTo, "source", source, "userName", userName, "type", responseType, "short", shortInfo));
 		
 		
 		
@@ -57,7 +61,11 @@ public class CompositeFeedsListServlet extends HttpServlet {
 			if(responseType!=null && responseType.equals("json")) {
 					response.setContentType("application/json");
 					response.setCharacterEncoding("UTF-8");
-					response.getWriter().write(OBJECT_MAPPER.writeValueAsString(getCompositeFeedList(userName).toArray()));
+					if(shortInfo.equals("true")) {
+						response.getWriter().write(OBJECT_MAPPER.writeValueAsString(getCompositeFeedListShortInfo(userName).toArray()));
+					}else {
+						response.getWriter().write(OBJECT_MAPPER.writeValueAsString(getCompositeFeedList(userName).toArray()));
+					}
 			}else {
 				RequestDispatcher rd = redirectTo !=null? getServletContext().getRequestDispatcher(redirectTo) : (source!=null ? getServletContext().getRequestDispatcher(source) : getServletContext().getRequestDispatcher("/LoginSuccess.jsp"));
 				request.setAttribute("compositeFeedList", getCompositeFeedList(userName));
@@ -72,6 +80,16 @@ public class CompositeFeedsListServlet extends HttpServlet {
 
 	}
 
+	public ArrayList<CompositeFeedShortInfo> getCompositeFeedListShortInfo(String userName) throws GetFeedsListByUser, JAXBException, IOException {
+		ArrayList<CompositeFeedShortInfo> compositeFeedShortInfoList = new ArrayList<CompositeFeedShortInfo>();
+		User user = User.getXMLObjectFromXMLFileByUserName(userName);
+		// title compositefeedid countOfFeeds 
+		for(CompositeUserFeed compositeUserFeed : user.getCompositeUserFeeds()) {
+			compositeFeedShortInfoList.add(new CompositeFeedShortInfo(compositeUserFeed.getId(), compositeUserFeed.getCompositeUserFeedTitle(), compositeUserFeed.getFeedIds()));
+		}
+		return compositeFeedShortInfoList;
+	}
+	
 	public ArrayList<CompositeFeedTotalInfo> getCompositeFeedList(String userName) throws GetFeedsListByUser, JAXBException, IOException {
 		ArrayList<CompositeFeedTotalInfo> compositeFeedTotalInfoList = new ArrayList<CompositeFeedTotalInfo>();
 		for(Feed feedOnServer : ServerUtils.getFeedsList(false, true)) {

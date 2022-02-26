@@ -33,6 +33,7 @@ try{
             //var data = JSON and JSON.parse(xhr.responseText);
             var data = JSON.parse(xhr.responseText);
             //alert(data);
+            
             if(data.feedsUpdateJobIsWorkingNow){
                 document.getElementById("FeedsUpdateJobStatus").innerHTML='<span>&#128308;</span>';
             }else{
@@ -62,11 +63,11 @@ try{
 <br/>
 <table border="1">
 	<tr>
-		<td><a href="FeedsList.jsp">Feeds List</a> <br/> <a href="CompositeFeedsList.jsp">Composite Feeds List</a></td>
+		<td><a href="FeedsList.jsp">Feeds List</a><br/><a href="FeedsListShort.jsp">Feeds List Short</a> <br/> <a href="CompositeFeedsList.jsp">Composite Feeds List</a><br/> <a href="CompositeFeedsListShort.jsp">Composite Feeds Short List</a></td>
 		<td><a href="addFeedsByList.jsp">Add feeds by URL list</a><br/><a href="CheckoutPage.jsp">Checkout Page</a></td>
 		<td><a href="Test">Test page</a><br/><a href="HealthCheck.jsp">Health Check page</a></td>
 		<td><a href="addFeedId2CompositeFeed.jsp">addFeedId2CompositeFeed</a><br/><a href="DeleteOldFeedItems.jsp">DeleteOldFeedItems.jsp</a></td>
-		<td><a href="deleteFeedsByList.jsp">deleteFeedsByList</a><br/><a href=""></a></td>
+		<td><a href="deleteFeedsByList.jsp">deleteFeedsByList</a><br/><a href="deleteFeedsFeedsByListShor.jsp">deleteFeedsFeedsByListShor</a></td>
 		<td><a href="CompositeFeedsExport.jsp">Composite Feeds Export</a><br/><a href="CompositeFeedsImport.jsp">Composite Feeds Import</a></td>
 		<td>
 			<div id="FeedsUpdateJobStatus"></div>&nbsp;FeedsUpdateJob Status<br/>
