@@ -54,9 +54,7 @@ public class FeedsUpdateJob implements Runnable {
 	}
 
 	int[] updateFeeds() throws Exception {
-		if(true) {
-			return new int [1];
-		}
+		
 		
 		long t1 = new Date().getTime();
 //		URL urlLog = org.apache.logging.log4j.LogManager.class.getResource("/log4j.properties");
@@ -240,6 +238,7 @@ public class FeedsUpdateJob implements Runnable {
 	}
 
 	public void run() {
+		
 		isWorkingNow=true;
 		log.info("Job started");
 		int[] result;

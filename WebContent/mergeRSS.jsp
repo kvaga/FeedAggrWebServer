@@ -93,16 +93,15 @@ try{
 function fulfillHeaderTable(dataObj, feedIdsFromCompositeUserFeed){
 	let table = document.getElementById('checkedTable');
 	 for(let i=0; i<dataObj.length;i++){ 
-		 //console.log('res: ' + feedIdsFromCompositeUserFeed);
+		//console.log('res: ' + feedIdsFromCompositeUserFeed);
 	 	let tr = document.createElement('tr');
 			if (compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, dataObj[i].id) /*compositeUserFeedsList.feedIds.includes(dataObj[i].id)*/) {
-				tr.innerHTML += '<td><input type="checkbox" id="vehicle1" disabled="disabled" name="feedId" value="'+dataObj[i].id+'" checked></td>'; 
-			
-			tr.innerHTML +=
-			//'<td>' + '<input type="checkbox" id="vehicle1" name="feedId" value="'+dataObj[i].id+'">' + '</td>' + 
-			'<td>' + '<a href="${pageContext.request.contextPath}/showFeed?feedId='+dataObj[i].id + '">' + dataObj[i].userFeedTitle +'</a>' + '</td>' +
-	    	'<td>' + '<a href="'+dataObj[i].userFeedUrl+'">' + dataObj[i].userFeedUrl + '</a>'+'</td>';
-	    	table.appendChild(tr);
+				tr.innerHTML += '<td><input type="checkbox" id="vehicle1" disabled="disabled" value="'+dataObj[i].id+'" checked></td>'; 
+				tr.innerHTML +=
+				//'<td>' + '<input type="checkbox" id="vehicle1" name="feedId" value="'+dataObj[i].id+'">' + '</td>' + 
+				'<td>' + '<a href="${pageContext.request.contextPath}/showFeed?feedId='+dataObj[i].id + '">' + dataObj[i].userFeedTitle +'</a>' + '</td>' +
+	    		'<td>' + '<a href="'+dataObj[i].userFeedUrl+'">' + dataObj[i].userFeedUrl + '</a>'+'</td>';
+	    		table.appendChild(tr);
 			}
 	 }
 	 
@@ -110,8 +109,6 @@ function fulfillHeaderTable(dataObj, feedIdsFromCompositeUserFeed){
 
 //fulfill main tble
 function fulfillTableUserFeeds(dataObj,feedIdsFromCompositeUserFeed){
-
-	
 	let table = document.getElementById('table');
  	//console.log(compositeUserFeedsList);
 
@@ -151,7 +148,10 @@ function compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, feedId){
 <jsp:include page="Header.jsp"></jsp:include>
 
 
-<h3>Feeds List Short Info for '<%= request.getParameter("feedId")%>'</h3>
+<h2>Feeds List Short Info for '<%= request.getParameter("feedTitle")%>'</h3>
+<form action="mergeRSS">
+
+Title of composite RSS: <input type="text" name="compositeRSSTitle" value="<%= request.getParameter("feedTitle")%>"></input>
 
 <!-- 
 <textarea rows="20" cols="50" id="tt"></textarea>
@@ -164,8 +164,9 @@ function compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, feedId){
 	                <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspURL</th>
 	    </tr>
 </table>
-<form action="mergeRSS">
 <h3>All Other</h3>
+	<input type="submit" name="Merge">
+
 	<table id="table">
 		<tr>
 	                <th onclick="sortTable(1)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbsp#</th>
@@ -174,6 +175,8 @@ function compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, feedId){
 	    </tr>
 	</table>
 	<input type="submit" name="Merge">
+	<input type="hidden" name="compositeFeedId" value="<%= request.getParameter("feedId")%>">
+	
 </form>
 <p id="tt"></p>
 </body>

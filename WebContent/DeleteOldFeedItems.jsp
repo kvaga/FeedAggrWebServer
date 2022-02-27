@@ -26,6 +26,8 @@
 <html>
 <head>
 <script src="sort_table.js"></script>
+<script src="lib.js"></script>
+
 <style type="text/css">
 	table, th, td {
 	    border: 1px solid black;
@@ -43,9 +45,6 @@ try{
         if (xhr0.readyState == 4) {
             const dataObj = JSON.parse(xhr0.responseText);
             fulfillTableCompositeFeedsList(dataObj);
-        	document.getElementById("tt").innerHTML=
-        											//dataObj;
-        		xhr0.responseText;
         }
     }
 
@@ -62,9 +61,9 @@ function fulfillTableCompositeFeedsList(dataObj){
 	 	//console.log(dataObj[i].feedId);
 	 	var tr = document.createElement('tr');
 		tr.innerHTML =
-			'<td>' + '<input type="checkbox" id="vehicle" name ="feedId" value="'+dataObj[i].feedId+'">' + '</td>' +
+			'<td>' + '<input type="checkbox" id="feed_id" name="feedId" value="'+dataObj[i].feedId+'">' + '</td>' +
 			'<td>' + '<a href="${pageContext.request.contextPath}/showFeed?feedId='+dataObj[i].feedId + '">' + dataObj[i].name +'</a>' + '</td>' +
-	    	'<td>' + dataObj[i].countOfUserFeeds + '</td>';
+	    	'<td>' + dataObj[i].feedIds.length + '</td>';
 	    	table.appendChild(tr);
 	 }
 }
@@ -79,9 +78,6 @@ try{
         if (xhr1.readyState == 4) {
             const dataObj = JSON.parse(xhr1.responseText);
             fulfillTableFeedsList(dataObj);
-        	document.getElementById("tt").innerHTML=
-        											//dataObj;
-        											xhr1.responseText;
         }
     }
 
@@ -98,7 +94,7 @@ function fulfillTableFeedsList(dataObj){
 	 	//console.log(dataObj[i].feedId);
 	 	var tr = document.createElement('tr');
 		tr.innerHTML =
-			'<td>' + '<input type="checkbox" id="vehicle" name ="feedId" value="'+dataObj[i].id+'">' + '</td>' +
+			'<td>' + '<input type="checkbox" id="feed_id" name ="feedId" value="'+dataObj[i].id+'">' + '</td>' +
 			'<td>' + '<a href="${pageContext.request.contextPath}/showFeed?feedId='+dataObj[i].id + '">' + dataObj[i].userFeedTitle +'</a>' + '</td>' +
 	    	'<td>' + '<a href="'+dataObj[i].userFeedUrl+'">' + dataObj[i].userFeedUrl + '</a>'+'</td>';
 	    	table.appendChild(tr);
@@ -113,7 +109,7 @@ function fulfillTableFeedsList(dataObj){
 <jsp:include page="Header.jsp"></jsp:include>
 
 
-<h3>Delete Feeds by List Short</h3>
+<h3>Delete Old Feeds</h3>
 <!-- 
 <textarea rows="20" cols="50" id="tt"></textarea>
  -->
@@ -122,15 +118,15 @@ function fulfillTableFeedsList(dataObj){
  <h3>Composite Feeds List</h3>
 	<table id="tableCompositeFeedsList">
 		<tr>
-			        <th						  ><span class="glyphicon glyphicon-sort"></span>&nbsp&nbsp#</th>
+			        <th	onClick="toggle(this)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbsp#</th>
 	                <th onclick="sortTable(2)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspName</th>
-	               	<th onclick="sortTable(2)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspCount of Feeds</th>
+	               	<th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspCount of Feeds</th>
 	    </tr>
 	</table>
 	<h3>Feeds List</h3>
 	<table id="tableFeedsList">
 		<tr>
-			        <th						  ><span class="glyphicon glyphicon-sort"></span>&nbsp&nbsp#</th>
+			        <th	onClick="toggle(this)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbsp#</th>
 	                <th onclick="sortTable(2)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspName</th>
 	                <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspURL</th>
 	    </tr>

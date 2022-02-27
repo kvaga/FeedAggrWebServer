@@ -18,8 +18,8 @@ import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed;
 
-/**
- * Servlet implementation class CompositeFeedsServlet
+/** 
+ * Used for adding newly created feeds from addFeedId2CompositeFeed.jsp to composite feed
  */
 @WebServlet("/CompositeFeeds")
 public class CompositeFeedsServlet extends HttpServlet {
@@ -33,16 +33,19 @@ public class CompositeFeedsServlet extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
-	/**
+	/** 
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
 	 */
     protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
     	//if (true) throw new ServletException("unimplemented");
 
-    	if(true) {
-    		throw new ServletException("Deprecated");
-    	}
+//    	if(true) {
+//    		throw new ServletException("Deprecated");
+//    	}
+//    	if(true) {
+//			request.setAttribute("responseStatus", "This servet was deprecated");
+//		}
 		String redirectTo = request.getParameter("redirectTo");
 		String userName = (String) request.getSession().getAttribute("login");
 		String command = (String) request.getParameter("command");
@@ -72,9 +75,7 @@ public class CompositeFeedsServlet extends HttpServlet {
 			request.setAttribute("responseStatus", Exec.getHTMLFailText(e.getMessage()));
 		}
 		
-		if(true) {
-			request.setAttribute("responseStatus", "This servet was deprecated");
-		}
+		
 		rd.include(request, response);
 //		response.sendRedirect("LoginSuccess.jsp");
 

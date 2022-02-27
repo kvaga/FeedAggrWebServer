@@ -83,9 +83,9 @@ try{
 			 }
 			 */
            //append_json(xhr.responseText);
-        	document.getElementById("tt").innerHTML=
+        	//document.getElementById("tt").innerHTML=        											xhr1.responseText;
+
         											//dataObj;
-        											xhr1.responseText;
 
         }
     }
@@ -106,7 +106,7 @@ function fulfillTableCompouseUserFeedShort(dataObj){
 			'<td>' + '<a href="${pageContext.request.contextPath}/showFeed?feedId='+dataObj[i].feedId+'">' + dataObj[i].name + '</a>' + '</td>' +
 	    	'<td>' + '<a href="${pageContext.request.contextPath}/deleteFeed?redirectTo=/CompositeFeedsListShort.jsp&feedId='+dataObj[i].feedId+'">Delete' + '</a>'+'</td>' +
 	    	'<td>' + '<a href="${pageContext.request.contextPath}/mergeRSS.jsp?feedTitle='+fixedEncodeURIComponent(dataObj[i].name)+'&feedId='+dataObj[i].feedId+'"">Edit' + '</a>'+'</td>' +
-	    	'<td>' + dataObj[i].countOfUserFeeds + '</td>';
+	    	'<td>' + dataObj[i].feedIds.length + '</td>';
 	    	table.appendChild(tr);
 	 }
     /*

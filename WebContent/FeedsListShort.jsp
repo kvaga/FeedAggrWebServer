@@ -60,9 +60,9 @@ try{
 			 }
 			 */
            //append_json(xhr.responseText);
-        	document.getElementById("tt").innerHTML=
+        	//document.getElementById("tt").innerHTML= xhr1.responseText;
+
         											//dataObj;
-        											xhr1.responseText;
 
         }
     }

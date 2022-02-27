@@ -44,8 +44,9 @@ public class CompositeUserFeed {
 	public String getCompositeUserFeedTitle() {
 		return compositeUserFeedTitle;
 	}
-	public void setCompositeUserFeedTitle(String compositeUserFeedTitle) {
+	public CompositeUserFeed setCompositeUserFeedTitle(String compositeUserFeedTitle) {
 		this.compositeUserFeedTitle = compositeUserFeedTitle;
+		return this;
 	}
 	public ArrayList<String> getFeedIds() {
 		return feedIds;
@@ -394,7 +395,8 @@ public class CompositeUserFeed {
 	public static synchronized boolean updateRSSTitleOfComposeFeed(String compositeRSSTitle, String compositeFeedId, String userName) throws Exception {
 		User user = User.getXMLObjectFromXMLFileByUserName(userName);
 		if(user.getCompositeUserFeedById(compositeFeedId)==null) throw new Exception("User ["+userName+"] doesn't have the ["+compositeFeedId+"] feed");
-		user.getCompositeUserFeedById(compositeFeedId).setCompositeUserFeedTitle(compositeFeedId);
+		user.getCompositeUserFeedById(compositeFeedId).setCompositeUserFeedTitle(compositeRSSTitle);
+		System.err.print("----------- " + user.getCompositeUserFeedById(compositeFeedId).getCompositeUserFeedTitle());
 		user.saveXMLObjectToFileByLogin();
 		RSS rss = RSS.getRSSObjectByFeedId(compositeFeedId);
 		if(!rss.getChannel().getTitle().equals(compositeRSSTitle)) {
