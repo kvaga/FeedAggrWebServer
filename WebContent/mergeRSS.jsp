@@ -37,7 +37,7 @@
 <script>
 // Get a list of Composite User Feed
 var feedIdsFromCompositeUserFeed;
-var feedIdParameter=<%= request.getParameter("feedId")%>;
+var feedIdParameter=<%= request.getParameter("feedId")==null?null:"'"+request.getParameter("feedId")+"'"%>;
 if(feedIdParameter){
 	try{
 	    var getCompositeUserFeedListRequest = new XMLHttpRequest();
