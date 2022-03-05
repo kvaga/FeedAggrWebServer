@@ -30,6 +30,10 @@ public class CompositeUserFeed {
 	private String compositeUserFeedTitle;
 	private ArrayList<String> feedIds = new ArrayList<String>();
 	
+	public String toString() {
+		return "CompositeFeedTitle: " + compositeUserFeedTitle + ", id: " + id;
+	}
+	
 	public CompositeUserFeed() {}
 	public CompositeUserFeed(String id, String compositeUserFeedTitle) {
 		this.id=id;

@@ -106,6 +106,7 @@ function fulfillTableCompouseUserFeedShort(dataObj){
 			'<td>' + '<a href="${pageContext.request.contextPath}/showFeed?feedId='+dataObj[i].feedId+'">' + dataObj[i].name + '</a>' + '</td>' +
 	    	'<td>' + '<a href="${pageContext.request.contextPath}/deleteFeed?redirectTo=/CompositeFeedsListShort.jsp&feedId='+dataObj[i].feedId+'">Delete' + '</a>'+'</td>' +
 	    	'<td>' + '<a href="${pageContext.request.contextPath}/mergeRSS.jsp?feedTitle='+fixedEncodeURIComponent(dataObj[i].name)+'&feedId='+dataObj[i].feedId+'"">Edit' + '</a>'+'</td>' +
+	    	'<td>' + '<a href="${pageContext.request.contextPath}/moveFeedsFromOneCompositeToAnother.jsp?compositeFeedTitle='+fixedEncodeURIComponent(dataObj[i].name)+'&compositeFeedId='+dataObj[i].feedId+'"">Move' + '</a>'+'</td>' +		
 	    	'<td>' + dataObj[i].feedIds.length + '</td>';
 	    	table.appendChild(tr);
 	 }
@@ -154,7 +155,8 @@ function fulfillTableCompouseUserFeedShort(dataObj){
                 <th onclick="sortTable(1)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspName</th>
                 <th onclick="sortTable(2)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspDelete</th>
                 <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspEdit</th>
-                <th onclick="sortTable(4, true)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspCount of Feeds</th>
+                <th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspMove</th>
+                <th onclick="sortTable(5, true)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspCount of Feeds</th>
     </tr>
 </table>
 </body>

@@ -106,6 +106,21 @@ public class Channel {
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return false;
 	}
+	
+	public boolean removeItem(Item item) {
+		long t1 = new Date().getTime();
+		if(item==null) {
+			return false;
+		}
+		for (Item _i : getItem()) {
+			if (item.getGuid().getValue().equals(_i.getGuid().getValue())) {
+				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+				return true;
+			}
+		}
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		return false;
+	}
 
 	public void setItemsFromRawHtmlBodyItems(LinkedList<ru.kvaga.rss.feedaggr.Item> itemsFromHtmlBody, String url, String itemTitleTemplate, String itemLinkTemplate, String itemContentTemplate) throws Exception {
 		long t1 = new Date().getTime();
