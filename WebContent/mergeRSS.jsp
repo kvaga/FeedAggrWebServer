@@ -37,23 +37,25 @@
 <script>
 // Get a list of Composite User Feed
 var feedIdsFromCompositeUserFeed;
-try{
-    var getCompositeUserFeedListRequest = new XMLHttpRequest();
-    getCompositeUserFeedListRequest.onreadystatechange = function() {
-        if (getCompositeUserFeedListRequest.readyState == 4) {
-        	feedIdsFromCompositeUserFeed = JSON.parse(getCompositeUserFeedListRequest.responseText);
-        	//document.getElementById("tt").innerHTML=
-        											//dataObj;
-        		//getCompositeUserFeedListRequest.responseText;
-        }
-    }
-
-    getCompositeUserFeedListRequest.open('GET', '${pageContext.request.contextPath}/GetFeedIdsFromCompositeUserFeed?userName=<%= request.getSession().getAttribute("login")%>&compositeFeedId=<%= request.getParameter("feedId")%>', true);
-    getCompositeUserFeedListRequest.send(null);
-}catch(err){
-	//document.getElementById("tt").innerHTML=err.message;
+var feedIdParameter=<%= request.getParameter("feedId")%>;
+if(feedIdParameter){
+	try{
+	    var getCompositeUserFeedListRequest = new XMLHttpRequest();
+	    getCompositeUserFeedListRequest.onreadystatechange = function() {
+	        if (getCompositeUserFeedListRequest.readyState == 4) {
+	        	feedIdsFromCompositeUserFeed = JSON.parse(getCompositeUserFeedListRequest.responseText);
+	        	//document.getElementById("tt").innerHTML=
+	        											//dataObj;
+	        		//getCompositeUserFeedListRequest.responseText;
+	        }
+	    }
+	
+	    getCompositeUserFeedListRequest.open('GET', '${pageContext.request.contextPath}/GetFeedIdsFromCompositeUserFeed?userName=<%= request.getSession().getAttribute("login")%>&compositeFeedId=<%= request.getParameter("feedId")%>', true);
+	    getCompositeUserFeedListRequest.send(null);
+	}catch(err){
+		//document.getElementById("tt").innerHTML=err.message;
+	}
 }
-
 // Get a list of User Feeds
 try{
     var xhr1 = new XMLHttpRequest();
@@ -95,7 +97,7 @@ function fulfillHeaderTable(dataObj, feedIdsFromCompositeUserFeed){
 	 for(let i=0; i<dataObj.length;i++){ 
 		//console.log('res: ' + feedIdsFromCompositeUserFeed);
 	 	let tr = document.createElement('tr');
-			if (compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, dataObj[i].id) /*compositeUserFeedsList.feedIds.includes(dataObj[i].id)*/) {
+			if (feedIdParameter && compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, dataObj[i].id) /*compositeUserFeedsList.feedIds.includes(dataObj[i].id)*/) {
 				tr.innerHTML += '<td><input type="checkbox" id="vehicle1" disabled="disabled" value="'+dataObj[i].id+'" checked></td>'; 
 				tr.innerHTML +=
 				//'<td>' + '<input type="checkbox" id="vehicle1" name="feedId" value="'+dataObj[i].id+'">' + '</td>' + 
@@ -115,11 +117,13 @@ function fulfillTableUserFeeds(dataObj,feedIdsFromCompositeUserFeed){
 	 for(let i=0; i<dataObj.length;i++){ 
 		 //console.log('res: ' + feedIdsFromCompositeUserFeed);
 	 	let tr = document.createElement('tr');
-			if (compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, dataObj[i].id) /*compositeUserFeedsList.feedIds.includes(dataObj[i].id)*/) {
+	 	
+	 		if (feedIdParameter && compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, dataObj[i].id) /*compositeUserFeedsList.feedIds.includes(dataObj[i].id)*/) {
 				tr.innerHTML += '<td><input type="checkbox" id="vehicle1" name="feedId" value="'+dataObj[i].id+'" checked></td>'; 
 			}else{
 				tr.innerHTML += '<td><input type="checkbox" id="vehicle1" name="feedId" value="'+dataObj[i].id+'"></td>'; 
 			}
+	 		
 			tr.innerHTML +=
 			//'<td>' + '<input type="checkbox" id="vehicle1" name="feedId" value="'+dataObj[i].id+'">' + '</td>' + 
 			'<td>' + '<a href="${pageContext.request.contextPath}/showFeed?feedId='+dataObj[i].id + '">' + dataObj[i].userFeedTitle +'</a>' + '</td>' +
@@ -142,6 +146,8 @@ function compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, feedId){
 
 </script>
 <meta charset="utf-8">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <title>Merge RSS</title>
 </head>
 <body>
@@ -151,7 +157,7 @@ function compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, feedId){
 <h2>Feeds List Short Info for '<%= request.getParameter("feedTitle")%>'</h3>
 <form action="mergeRSS">
 
-Title of composite RSS: <input type="text" name="compositeRSSTitle" value="<%= request.getParameter("feedTitle")%>"></input>
+Title of composite RSS: <input type="text" name="compositeRSSTitle" value="<%= request.getParameter("feedTitle")==null?"":request.getParameter("feedTitle") %>"></input>
 
 <!-- 
 <textarea rows="20" cols="50" id="tt"></textarea>
@@ -175,7 +181,10 @@ Title of composite RSS: <input type="text" name="compositeRSSTitle" value="<%= r
 	    </tr>
 	</table>
 	<input type="submit" name="Merge">
-	<input type="hidden" name="compositeFeedId" value="<%= request.getParameter("feedId")%>">
+	
+	<c:if test="${not empty param.compositeFeedId}">
+		<input type="hidden" name="compositeFeedId" value="<%= request.getParameter("feedId")%>">
+    </c:if>
 	
 </form>
 <p id="tt"></p>
