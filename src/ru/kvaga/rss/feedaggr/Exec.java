@@ -553,6 +553,8 @@ private static Pattern getDomainFromURLPattern = Pattern.compile("http(s)?:\\/\\
 		+ "|\\.ca"
 		+ "|\\.dev"
 		+ "|\\.me"
+		+ "|\\.eu"
+		+ "|\\.info"
 		+ "))(\\/)?");
 public synchronized static String getDomainFromURL(String url){
 	long t1 = new Date().getTime();

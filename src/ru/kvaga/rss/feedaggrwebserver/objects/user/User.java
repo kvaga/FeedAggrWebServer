@@ -101,7 +101,9 @@ public class User {
 
 	public synchronized void updateRepeatableSearchPatterns(UserRepeatableSearchPattern userRepeatableSearchPattern) {
 		long t1 = new Date().getTime();
+		
 		for (UserRepeatableSearchPattern iterItem : getRepeatableSearchPatterns()) {
+			System.err.println("iterItem: " + iterItem + ", userRepeatableSearchPattern: " + userRepeatableSearchPattern);
 			if (iterItem.equals(userRepeatableSearchPattern)) {
 				log.debug("For user [" + getName() + "] for domain [" + iterItem.getDomain()
 						+ "] updated repeatableSearchPattern [" + iterItem.getPattern() + "] to the ["

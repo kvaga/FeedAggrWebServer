@@ -243,13 +243,16 @@
 								String domain = Exec.getDomainFromURL((String) request.getSession().getAttribute("url"));
 								// save repeatable search patterns
 								try{
-								user.updateRepeatableSearchPatterns(
+									if(domain==null){
+										throw new Exception("Unknown domain for the url ["+(String) request.getSession().getAttribute("url")+"]");
+									}
+									user.updateRepeatableSearchPatterns(
 										new UserRepeatableSearchPattern(
 												domain,
 												//"<entry>{*}<title>{%}</title>{*}<link rel=\"alternate\" href=\"{%}\"/>{*}<author>{*}<media:description>{%}</media:description>{*}</entry>"
 												(String) request.getSession().getAttribute("repeatableSearchPattern")));
 								}catch(Exception e){
-									log.error("Exception", e);
+									log.error("Exception on domain ["+domain+"], repeatableSearchPattern ["+(String) request.getSession().getAttribute("repeatableSearchPattern")+"]", e);
 									
 									e.printStackTrace();
 									
