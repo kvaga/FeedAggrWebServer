@@ -76,14 +76,25 @@ try{
 //this function appends the json data to the table 'gable'
 function fulfillTableCompouseUserFeedShort(dataObj){
 	var table = document.getElementById('table');
-	 for(var i=0; i<dataObj.length;i++){            
-	 	console.log(dataObj[i].feedId);
+	 for(var i=0; i<dataObj.length;i++){   
+		//if(dataObj[i].compositeFeedsMap!=null){
+		//	 if(dataObj[i].id=='1615050365858'){
+	 	//		console.log(Object.keys(dataObj[i].compositeFeedsMap).length);
+		//	 }
+		// }
+		let listOfCompositeFeedsTitles='';
+		for (let _i = 0, keys = Object.keys(dataObj[i].compositeFeedsMap), _ii = keys.length; _i < _ii; _i++) {
+ 			 //console.log('key : ' + keys[_i] + ' val : ' + dataObj[i].compositeFeedsMap[keys[_i]]);
+			listOfCompositeFeedsTitles+=dataObj[i].compositeFeedsMap[keys[_i]] + '<br>';
+		}
 	 	var tr = document.createElement('tr');
 		tr.innerHTML = 
+			'<td>' + Object.keys(dataObj[i].compositeFeedsMap).length + '</td>' + 
 			'<td>' + '<a href="${pageContext.request.contextPath}/showFeed?feedId='+dataObj[i].id + '">' + dataObj[i].userFeedTitle +'</a>' + '</td>' +
 	    	'<td>' + '<a href="${pageContext.request.contextPath}/deleteFeed?feedId='+dataObj[i].id+'">Delete' + '</a>'+'</td>' +
 	    	'<td>' + '<a href="${pageContext.request.contextPath}/Feed.jsp?action=edit&feedId='+dataObj[i].id+'">Edit' + '</a>'+'</td>' +
-	    	'<td>' + '<a href="'+dataObj[i].userFeedUrl+'">' + dataObj[i].userFeedUrl + '</a>'+'</td>';
+	    	'<td>' + '<a href="'+dataObj[i].userFeedUrl+'">' + dataObj[i].userFeedUrl + '</a>'+'</td>'+
+	    	'<td>' + listOfCompositeFeedsTitles + '</td>';
 	    	table.appendChild(tr);
 	 }
     /*
@@ -129,10 +140,13 @@ function fulfillTableCompouseUserFeedShort(dataObj){
  
 <table id="table">
 	<tr>
-                <th onclick="sortTable(1)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspName</th>
-                <th onclick="sortTable(2)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspDelete</th>
-                <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspEdit</th>
-                <th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspURL</th>
+				<th onclick="sortTable(1, true)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspCUF</th>
+                <th onclick="sortTable(2)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspName</th>
+                <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspDelete</th>
+                <th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspEdit</th>
+                <th onclick="sortTable(5)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspURL</th>
+                <th onclick="sortTable(6)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspComposite User Feeds Titles</th>
+                
     </tr>
 </table>
 </body>

@@ -680,28 +680,14 @@ public class User {
 		return al;
 	}
 
-	public HashSet<String> getCompositeUserFeedIdsListWhichContainUserFeedId(String feedId,Set<CompositeUserFeed> allCompositeUserFeedCache) {
-		HashSet<String> al = new HashSet<String>();
-		if (allCompositeUserFeedCache == null) {
-			// NO cache
-			for (CompositeUserFeed cuf : getCompositeUserFeeds()) {
-				if (cuf.getFeedIds().contains(feedId)) {
-					al.add(cuf.getId());
-				}
+	public HashMap<String, String> getCompositeUserFeedsListWhichContainUserFeedId(String feedId) {
+		HashMap<String, String> al = new HashMap<String, String>();
+		for(CompositeUserFeed cuf: getCompositeUserFeeds()) {
+			if(cuf.doesHaveCompositeFeedId(feedId)) {
+				al.put(cuf.getId(), cuf.getCompositeUserFeedTitle());
 			}
-			return al;
-		} else {
-			// witch cache
-			for (CompositeUserFeed cuf : allCompositeUserFeedCache) {
-				if (cuf.getFeedIds().contains(feedId)) {
-					al.add(cuf.getId());
-				}
-			}
-			return al;
 		}
-	}
-	public HashSet<String> getCompositeUserFeedIdsListWhichContainUserFeedId(String feedId) {
-		return getCompositeUserFeedIdsListWhichContainUserFeedId(feedId, null);
+		return al;
 	}
 	
 	public HashMap<String, ArrayList<String>> getZombieFeedIdsList(Set<CompositeUserFeed> compositeUserFeedsCache) throws Exception{

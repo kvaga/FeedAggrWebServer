@@ -3,6 +3,7 @@ package ru.kvaga.rss.feedaggrwebserver.servlets;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -80,16 +81,18 @@ public class FeedsListServlet extends HttpServlet {
 
 	}
 
-	public ArrayList<UserFeed> getFeedListShortInfo(String userName) throws GetFeedsListByUser, JAXBException, IOException {
-		ArrayList<UserFeed> feedsShortInfoList = new ArrayList<UserFeed>();
+	public ArrayList<ExtendedUserFeed> getFeedListShortInfo(String userName) throws GetFeedsListByUser, JAXBException, IOException {
+		ArrayList<ExtendedUserFeed> feedsShortInfoList = new ArrayList<ExtendedUserFeed>();
 		User user = User.getXMLObjectFromXMLFileByUserName(userName);
 		// title compositefeedid countOfFeeds 
 		for(UserFeed userFeed : user.getUserFeeds()) {
-			feedsShortInfoList.add(userFeed);
+			feedsShortInfoList.add(
+					new ExtendedUserFeed(userFeed, user.getCompositeUserFeedsListWhichContainUserFeedId(userFeed.getId()))
+			);
 		}
 		return feedsShortInfoList;
 	}
-	
+
 	public ArrayList<CompositeFeedTotalInfo> getFeedList(String userName) throws Exception {
 		if(true) {
 			throw new Exception("Unimplemented method getFeedList");
@@ -110,4 +113,27 @@ public class FeedsListServlet extends HttpServlet {
 		return compositeFeedTotalInfoList;
 	}
 
+}
+
+class ExtendedUserFeed extends UserFeed {
+	private HashMap<String, String> compositeFeeds;
+	public ExtendedUserFeed(UserFeed userFeed, HashMap<String, String> compositeFeeds) {
+		super(userFeed.getId(),
+				userFeed.getItemTitleTemplate(),
+				userFeed.getItemLinkTemplate(),
+				userFeed.getItemContentTemplate(),
+				userFeed.getRepeatableSearchPattern(),
+				userFeed.getFilterWords(),
+				userFeed.getDurationInMillisForUpdate(),
+				userFeed.getUserFeedTitle(),
+				userFeed.getUserFeedUrl()
+		);			
+		this.compositeFeeds=compositeFeeds;
+	}
+	public HashMap<String, String> getCompositeFeedsMap() {
+		return compositeFeeds;
+	}
+	public void setCompositeFeedsMap(HashMap<String, String> compositeFeeds) {
+		this.compositeFeeds = compositeFeeds;
+	}
 }
