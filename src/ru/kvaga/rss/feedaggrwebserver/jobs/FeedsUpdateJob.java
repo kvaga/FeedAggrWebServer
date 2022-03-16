@@ -27,6 +27,8 @@ import ru.kvaga.rss.feedaggr.objects.GUID;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
+import ru.kvaga.rss.feedaggrwebserver.cache.CacheElement;
+import ru.kvaga.rss.feedaggrwebserver.cache.CacheUserFeed;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed;
@@ -57,6 +59,8 @@ public class FeedsUpdateJob implements Runnable {
 		
 		
 		long t1 = new Date().getTime();
+		CacheUserFeed cache = CacheUserFeed.getInstance();
+
 //		URL urlLog = org.apache.logging.log4j.LogManager.class.getResource("/log4j.properties");
 //		log.info("==========----------------------------------------------------------------------------------------------------------------------------->>>" + urlLog);
 
@@ -103,16 +107,19 @@ public class FeedsUpdateJob implements Runnable {
 				}
 
 				for (UserFeed userFeed : user.getUserFeeds()) {
+					CacheElement cacheElement = null;
 					allFeedsCount++;
 					int countOfNewlyAddedItemsToTheCurrentFeedId=0;
 					try {
 						String feedId = userFeed.getId();
+						cacheElement = cache.getItem(feedId);
 						String rssXmlFile = ConfigMap.feedsPath.getAbsolutePath() + "/" + userFeed.getId() + ".xml";
 						
 						log.debug("Found rssXmlFile [" + rssXmlFile + "] for users file [" + userFile + "]");
 						// �������� feed ������ �� �����
 //						RSS rssFromFile = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(rssXmlFile, new RSS());
 						RSS rssFromFile = RSS.getRSSObjectFromXMLFile(rssXmlFile);
+						
 						// check userFeed title and url for null value
 						if(user.getUserFeedByFeedId(feedId).getUserFeedTitle()==null) {
 							user.getUserFeedByFeedId(feedId).setUserFeedTitle(rssFromFile.getChannel().getTitle());
@@ -122,7 +129,7 @@ public class FeedsUpdateJob implements Runnable {
 							user.getUserFeedByFeedId(feedId).setUserFeedUrl(rssFromFile.getChannel().getLink());
 							log.debug("User's ["+user.getName()+"] userFeed [feedId: "+feedId+"] url was null hence the url became ["+rssFromFile.getChannel().getLink()+"] from the RSS file. These changes will take effect after saving of a user's file");
 						}
-						
+						 
 						
 						if(userFeed.getDurationInMillisForUpdate()==null) {
 							log.debug("DurationInMillisForUpdate parameter in the ["+userFeed.getId()+"] is null. We set default value ["+ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE+"]");
@@ -198,14 +205,36 @@ public class FeedsUpdateJob implements Runnable {
 //						ObjectsUtils.saveXMLObjectToFile(rssFromFile, rssFromFile.getClass(), new File(rssXmlFile));
 						rssFromFile.saveXMLObjectToFile(new File(rssXmlFile));
 						log.debug("������ rssFromFile �������� � ���� [" + rssXmlFile + "]");
-						successFeedsCount++;
-						
-						
+
+						// Cache
+						Date[] oldestNewest = rssFromFile.getOldestNewestPubDate();
+						cacheElement.setCountOfItems(rssFromFile.getChannel().getItem().size())
+						.setLastUpdated(rssFromFile.getChannel().getLastBuildDate())
+						.setNewestPubDate(oldestNewest[1])
+						.setOldestPubDate(oldestNewest[0])
+						.setSizeMb(new File(rssXmlFile).length()/1024/1024);
 						//
 						MonitoringUtils.sendCommonMetric("FeedsUpdateJob.CountOfNewlyAddedItemsToTheCurrentFeedId", countOfNewlyAddedItemsToTheCurrentFeedId, new Tag("feedId", feedId));
+						successFeedsCount++;
 
 					} catch (Exception e) {
 						log.error("Exception on feedId [" + userFeed.getId() + "]", e);
+						if(cacheElement!=null) {
+							StringBuilder sb = new StringBuilder();
+							sb.append("[Exception] ");
+							if(e!=null) {
+								if(e.getMessage()!=null) {
+									sb.append("Message: ");
+									sb.append(e.getMessage());
+									sb.append(". ");
+								}else if(e.getCause()!=null) {
+									sb.append("Cause: ");
+									sb.append(e.getCause());
+									sb.append(". ");
+								}
+							}
+							cacheElement.setLastUpdateStatus(sb.toString());
+						}
 						MonitoringUtils.sendCommonMetric("FeedsUpdateJob.ExceptionOnFeed", 1, new Tag("feedId",userFeed.getId()));
 					}
 				}
@@ -238,7 +267,6 @@ public class FeedsUpdateJob implements Runnable {
 	}
 
 	public void run() {
-		
 		isWorkingNow=true;
 		log.info("Job started");
 		int[] result;

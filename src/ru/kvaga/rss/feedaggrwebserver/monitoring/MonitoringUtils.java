@@ -34,7 +34,9 @@ public class MonitoringUtils {
 							  .tag("method", className + "." + obj.getClass().getEnclosingMethod().getName())
 							  .addField("v", responseTime)
 							  .build();
-		InfluxDB.getInstance().send(point);
+		if(InfluxDB.getInstance()!=null) {
+			InfluxDB.getInstance().send(point);
+		}
 	}
 	
 	public static void sendCommonMetric(String metricName, int metricValue) {
@@ -57,6 +59,8 @@ public class MonitoringUtils {
 			b.tag(tag.getName(), tag.getValue());
 		}
 		 Point point = b.build();
-		InfluxDB.getInstance().send(point);
+		 if(InfluxDB.getInstance()!=null) {
+			 InfluxDB.getInstance().send(point);
+		 }
 	} 
 }

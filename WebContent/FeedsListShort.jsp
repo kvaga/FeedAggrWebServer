@@ -77,6 +77,7 @@ try{
 function fulfillTableCompouseUserFeedShort(dataObj){
 	var table = document.getElementById('table');
 	 for(var i=0; i<dataObj.length;i++){   
+		 //console.log(dataObj[i]);
 		//if(dataObj[i].compositeFeedsMap!=null){
 		//	 if(dataObj[i].id=='1615050365858'){
 	 	//		console.log(Object.keys(dataObj[i].compositeFeedsMap).length);
@@ -94,6 +95,14 @@ function fulfillTableCompouseUserFeedShort(dataObj){
 			'<td>' + '<a href="${pageContext.request.contextPath}/showFeed?feedId='+dataObj[i].id + '">' + dataObj[i].userFeedTitle +'</a>' + '</td>' +
 	    	'<td>' + '<a href="${pageContext.request.contextPath}/deleteFeed?feedId='+dataObj[i].id+'">Delete' + '</a>'+'</td>' +
 	    	'<td>' + '<a href="${pageContext.request.contextPath}/Feed.jsp?action=edit&feedId='+dataObj[i].id+'">Edit' + '</a>'+'</td>' +
+	    	'<td>' + dataObj[i].countOfItems + '</td>' + 
+	    	'<td>' + dataObj[i].sizeMb + '</td>' +
+	    	'<td>' + dataObj[i].newestPubDate + '</td>' +
+	    	'<td>' + dataObj[i].oldestPubDate + '</td>' +
+	    	
+	    	'<td>' + dataObj[i].lastUpdated + '</td>' +
+	    	'<td>' + dataObj[i].lastUpdateStatus + '</td>' +
+	    	
 	    	'<td>' + '<a href="'+dataObj[i].userFeedUrl+'">' + dataObj[i].userFeedUrl + '</a>'+'</td>'+
 	    	'<td>' + listOfCompositeFeedsTitles + '</td>';
 	    	table.appendChild(tr);
@@ -145,6 +154,14 @@ function fulfillTableCompouseUserFeedShort(dataObj){
                 <th onclick="sortTable(2)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspName</th>
                 <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspDelete</th>
                 <th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspEdit</th>
+                <th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspCountOfItems</th>
+	    	<th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspSizeMb</th>
+	    	<th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspNewestPubDate</th>
+	    	<th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspOldestPubDate</th>
+	    	
+	    	<th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLastUpdated</th>
+	    	<th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLastUpdateStatus</th>
+	    	
                 <th onclick="sortTable(5)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspURL</th>
                 <th onclick="sortTable(6)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspComposite User Feeds Titles</th>
                 
