@@ -43,14 +43,14 @@ public class CacheElement {
 		return this;
 	}
 	public Date getOldestPubDate() {
-		return lastUpdated;
+		return oldestPubDate;
 	}
 	public CacheElement setOldestPubDate(Date oldestPubDate) {
 		this.oldestPubDate = oldestPubDate;
 		return this;
 	}
 	public Date getNewestPubDate() {
-		return lastUpdated;
+		return newestPubDate;
 	}
 	public CacheElement setNewestPubDate(Date newestPubDate) {
 		this.newestPubDate = newestPubDate;

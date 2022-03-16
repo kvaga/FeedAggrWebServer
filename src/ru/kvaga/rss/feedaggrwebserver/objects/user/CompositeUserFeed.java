@@ -21,6 +21,9 @@ import ru.kvaga.rss.feedaggr.objects.Item;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
+import ru.kvaga.rss.feedaggrwebserver.cache.CacheCompositeUserFeed;
+import ru.kvaga.rss.feedaggrwebserver.cache.CacheElement;
+import ru.kvaga.rss.feedaggrwebserver.cache.CacheUserFeed;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
 @XmlRootElement
 public class CompositeUserFeed {
@@ -264,6 +267,8 @@ public class CompositeUserFeed {
 	 */
 	public static synchronized int[] updateItemsInCompositeRSSFilesOfUser(String userName) throws Exception {
 		long t1 = new Date().getTime();
+		CacheCompositeUserFeed cache = CacheCompositeUserFeed.getInstance();
+
 		int allFeedsCount=0, successFeedsCount=0;
 		int countOfDeletedOldItemsTotal=0;
 		Date deleteItemsWhichOlderThanThisDate = ServerUtils.getDateSinceToday(-ConfigMap.UPDATE_COMPOSITE_RSS_FILES_DAYS_COUNT_FOR_DELETION);
@@ -274,19 +279,25 @@ public class CompositeUserFeed {
 		Set<CompositeUserFeed> compositeUserFeedSet = user.getCompositeUserFeeds();
 		// Iterate over all user's composite feeds 
 		for (CompositeUserFeed compositeUserFeed : compositeUserFeedSet) {
+			CacheElement cacheElement = cache.getItem(compositeUserFeed.getId());
+
 			int countOfDeletedOldItems=0;
 			allFeedsCount++;
-			File compositeRSSFile = ServerUtils.getRssFeedFileByFeedId(compositeUserFeed.getId());
-			RSS compositeRSS = RSS.getRSSObjectFromXMLFile(compositeRSSFile);
-			ArrayList<Item> oldCompositeFeedItemsForDeletionFromCurrentCompositeFeed = new ArrayList<Item>();
-			// check compositeUserFeed title for null value
-			if(compositeUserFeed.getCompositeUserFeedTitle()==null) {
-				compositeUserFeed.setCompositeUserFeedTitle(compositeRSS.getChannel().getTitle());
-				log.debug("User's ["+user.getName()+"] compositeUserFeed [feedId: "+compositeUserFeed.getId()+"] title was null hence the title became ["+compositeRSS.getChannel().getTitle()+"] from the RSS file. These changes will take effect after saving of a user's file");
-			}
+			File compositeRSSFile = null;
+			RSS compositeRSS = null;
 			try {
+				compositeRSSFile = ServerUtils.getRssFeedFileByFeedId(compositeUserFeed.getId());
+				compositeRSS = RSS.getRSSObjectFromXMLFile(compositeRSSFile);
+				ArrayList<Item> oldCompositeFeedItemsForDeletionFromCurrentCompositeFeed = new ArrayList<Item>();
+				// check compositeUserFeed title for null value
+				if(compositeUserFeed.getCompositeUserFeedTitle()==null) {
+					compositeUserFeed.setCompositeUserFeedTitle(compositeRSS.getChannel().getTitle());
+					log.debug("User's ["+user.getName()+"] compositeUserFeed [feedId: "+compositeUserFeed.getId()+"] title was null hence the title became ["+compositeRSS.getChannel().getTitle()+"] from the RSS file. These changes will take effect after saving of a user's file");
+				}
+			
 				// iterate over all feeds of specific compositeUserFeed
 				for (String feedId : compositeUserFeed.getFeedIds()) {
+
 					RSS rss = RSS.getRSSObjectByFeedId(feedId);
 					log.debug("Got rss [" + rss + "] for feedId ["+feedId+"] with ["+ rss.getChannel().getItem().size() + "] items");
 					
@@ -324,12 +335,36 @@ public class CompositeUserFeed {
 				
 			} catch (Exception e) {
 				log.error("updateCompositeRSSFilesOfUser Exception in the composite feed id ["+compositeUserFeed.getId()+"]", e);
+				if(cacheElement!=null) {
+					StringBuilder sb = new StringBuilder();
+					sb.append("[Exception] ");
+					if(e!=null) {
+						if(e.getMessage()!=null) {
+							sb.append("Message: ");
+							sb.append(e.getMessage());
+							sb.append(". ");
+						}else if(e.getCause()!=null) {
+							sb.append("Cause: ");
+							sb.append(e.getCause());
+							sb.append(". ");
+						}
+					}
+					cacheElement.setLastUpdateStatus(sb.toString());
+				}
 				//InfluxDB.getInstance().send("response_time,method=ServerUtils.updateCompositeRSSFilesOfUserException", new Date().getTime() - t1);
 				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 				continue;
 			}
 			
+			// Cache
+			Date[] oldestNewest = compositeRSS.getOldestNewestPubDate();
+			cacheElement.setCountOfItems(compositeRSS.getChannel().getItem()!=null?compositeRSS.getChannel().getItem().size():0)
+			.setLastUpdated(compositeRSS.getChannel().getLastBuildDate())
+			.setNewestPubDate(oldestNewest[1])
+			.setOldestPubDate(oldestNewest[0])
+			.setSizeMb(compositeRSSFile.length()/1024/1024);
 			
+			//
 			removeOldItems(compositeRSS, deleteItemsWhichOlderThanThisDate);
 			compositeRSS.saveXMLObjectToFile(compositeRSSFile);
 			successFeedsCount++;

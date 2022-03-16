@@ -100,14 +100,26 @@ try{
 function fulfillTableCompouseUserFeedShort(dataObj){
 	var table = document.getElementById('table');
 	 for(var i=0; i<dataObj.length;i++){            
-	 	console.log(dataObj[i].feedId);
+	 	console.log(dataObj[i]);
 	 	var tr = document.createElement('tr');
 		tr.innerHTML = 
 			'<td>' + '<a href="${pageContext.request.contextPath}/showFeed?feedId='+dataObj[i].feedId+'">' + dataObj[i].name + '</a>' + '</td>' +
 	    	'<td>' + '<a href="${pageContext.request.contextPath}/deleteFeed?redirectTo=/CompositeFeedsListShort.jsp&feedId='+dataObj[i].feedId+'">Delete' + '</a>'+'</td>' +
 	    	'<td>' + '<a href="${pageContext.request.contextPath}/mergeRSS.jsp?feedTitle='+fixedEncodeURIComponent(dataObj[i].name)+'&feedId='+dataObj[i].feedId+'"">Edit' + '</a>'+'</td>' +
 	    	'<td>' + '<a href="${pageContext.request.contextPath}/moveFeedsFromOneCompositeToAnother.jsp?compositeFeedTitle='+fixedEncodeURIComponent(dataObj[i].name)+'&compositeFeedId='+dataObj[i].feedId+'"">Move' + '</a>'+'</td>' +		
-	    	'<td>' + dataObj[i].feedIds.length + '</td>';
+	    	'<td>' + dataObj[i].feedIds.length + '</td>'+
+	    	
+	    	
+	    	'<td>' + dataObj[i].countOfItems + '</td>' + 
+	    	'<td>' + dataObj[i].sizeMb + '</td>' +
+	    	'<td>' + dataObj[i].newestPubDate + '</td>' +
+	    	'<td>' + dataObj[i].oldestPubDate + '</td>' +
+	    	
+	    	'<td>' + dataObj[i].lastUpdated + '</td>' +
+	    	'<td>' + dataObj[i].lastUpdateStatus + '</td>' 
+	    	
+	    	
+	    	;
 	    	table.appendChild(tr);
 	 }
     /*
@@ -157,6 +169,14 @@ function fulfillTableCompouseUserFeedShort(dataObj){
                 <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspEdit</th>
                 <th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspMove</th>
                 <th onclick="sortTable(5, true)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspCount of Feeds</th>
+                <th onclick="sortTable(6)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspCountOfItems</th>
+	    	<th onclick="sortTable(7)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspSizeMb</th>
+	    	<th onclick="sortTable(8)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspNewestPubDate</th>
+	    	<th onclick="sortTable(9)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspOldestPubDate</th>
+	    	
+	    	<th onclick="sortTable(10)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLastUpdated</th>
+	    	<th onclick="sortTable(11)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLastUpdateStatus</th>
+	    	
     </tr>
 </table>
 </body>

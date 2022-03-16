@@ -121,7 +121,6 @@ public class FeedsListServlet extends HttpServlet {
 
 class ExtendedUserFeed extends UserFeed {
 	private HashMap<String, String> compositeFeeds;
-	
 	private int countOfItems;
 	private String lastUpdated;
 	private float sizeMb;
