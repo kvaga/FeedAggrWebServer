@@ -162,8 +162,8 @@ function compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, feedId){
 <jsp:include page="Header.jsp"></jsp:include>
 
 
-<h2>Feeds List Short Info for '<%= request.getParameter("feedTitle")%>'</h3>
-<form action="mergeRSS">
+<h2>Feeds List Short Info for '<%= request.getParameter("feedTitle")%>'</h2>
+<form action="mergeRSS" method="POST">
 
 Title of composite RSS: <input type="text" name="compositeRSSTitle" value="<%= request.getParameter("feedTitle")==null?"":request.getParameter("feedTitle") %>"></input>
 
@@ -190,11 +190,11 @@ Title of composite RSS: <input type="text" name="compositeRSSTitle" value="<%= r
 	                <th onclick="sortTable(5)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspComposite User Feeds Titles</th>
 	    </tr>
 	</table>
-	<input type="submit" name="Merge">
 	
-	<c:if test="${not empty param.compositeFeedId}">
-		<input type="hidden" name="compositeFeedId" value="<%= request.getParameter("feedId")%>">
+	<c:if test="${not empty param.feedId}">
+		<input type="hidden" name="compositeFeedID" value="<%= request.getParameter("feedId")%>">
     </c:if>
+		<input type="submit" name="Merge">
 	
 </form>
 <p id="tt"></p>

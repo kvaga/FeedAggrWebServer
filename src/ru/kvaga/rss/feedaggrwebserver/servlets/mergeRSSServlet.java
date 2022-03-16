@@ -54,7 +54,7 @@ public class mergeRSSServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String redirectTo = request.getParameter("redirectTo");
 		String userName = (String) request.getSession().getAttribute("login");
-		String compositeFeedID=request.getParameter("compositeFeedId");
+		String compositeFeedID=request.getParameter("compositeFeedID");
 		String compositeRSSTitle = request.getParameter("compositeRSSTitle");
 		
 		ArrayList<String> feedIdList = request.getParameterValues("feedId")==null ? new ArrayList<String>() : new ArrayList<String>(Arrays.asList(request.getParameterValues("feedId")));

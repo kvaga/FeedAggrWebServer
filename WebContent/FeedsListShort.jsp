@@ -85,7 +85,8 @@ function fulfillTableCompouseUserFeedShort(dataObj){
 		let listOfCompositeFeedsTitles='';
 		for (let _i = 0, keys = Object.keys(dataObj[i].compositeFeedsMap), _ii = keys.length; _i < _ii; _i++) {
  			 //console.log('key : ' + keys[_i] + ' val : ' + dataObj[i].compositeFeedsMap[keys[_i]]);
-			listOfCompositeFeedsTitles+=dataObj[i].compositeFeedsMap[keys[_i]] + '<br>';
+			//listOfCompositeFeedsTitles+=dataObj[i].compositeFeedsMap[keys[_i]] + '<br>';
+			listOfCompositeFeedsTitles+=dataObj[i].compositeFeedsMap[keys[_i]] + ':<a href="${pageContext.request.contextPath}/showFeed?feedId='+keys[_i]+'">'+keys[_i]+'</a><br>';
 		}
 	 	var tr = document.createElement('tr');
 		tr.innerHTML = 
