@@ -25,6 +25,7 @@ import ru.kvaga.rss.feedaggr.objects.Feed;
 import ru.kvaga.rss.feedaggr.objects.Item;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
+import ru.kvaga.rss.feedaggrwebserver.cache.CacheCompositeUserFeed;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed;
@@ -120,6 +121,10 @@ public class MoveFeedsFromCompositeOne2AnotherServlet extends HttpServlet {
 		rssFrom.saveXMLObjectToFileByFeedId(compositeFeedIdFrom);
 		rssTo.saveXMLObjectToFileByFeedId(compositeFeedIdTo);
 		user.saveXMLObjectToFileByLogin();
+		
+		// Cache
+		CacheCompositeUserFeed.getInstance().updateItem(compositeFeedIdFrom, rssFrom);
+		CacheCompositeUserFeed.getInstance().updateItem(compositeFeedIdTo, rssTo);
 
 		return result;
 	}

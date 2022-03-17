@@ -3,6 +3,9 @@ package ru.kvaga.rss.feedaggrwebserver.cache;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import ru.kvaga.rss.feedaggr.objects.RSS;
+import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
+
 public class CacheElement {
 	private int countOfItems=-1;
 	private Date lastUpdated;

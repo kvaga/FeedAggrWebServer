@@ -15,6 +15,8 @@ ru.kvaga.rss.feedaggrwebserver.objects.user.User,
 ru.kvaga.rss.feedaggr.objects.RSS,
 ru.kvaga.rss.feedaggr.objects.Channel,
 ru.kvaga.rss.feedaggr.objects.Feed,
+ru.kvaga.rss.feedaggrwebserver.cache.CacheUserFeed,
+ru.kvaga.rss.feedaggrwebserver.cache.CacheCompositeUserFeed,
 ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed
 "%>
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -195,7 +197,7 @@ function fulfillTableUserFeedShort(dataObj){
 boolean foundDuplicates=false;
 	for (User user : User.getAllUsersList()) {
 		try{
-			Set<CompositeUserFeed> allCompositeUserFeedCache = user.getCompositeUserFeeds();
+			//Set<CompositeUserFeed> allCompositeUserFeedCache = user.getCompositeUserFeeds();
 			HashMap<String, HashSet<String>> feedIdsWithDuplicateUrls = user.getFeedIdsWithDuplicateUrls();
 			if(feedIdsWithDuplicateUrls.size()>0){
 				out.append("<table border='1'><tr><td align=\"center\" colspan=\"2\">User: "+user.getName()+"</td></tr><tr align=\"center\"><td>Url</td><td>FeedId</td></tr>");
@@ -205,8 +207,7 @@ boolean foundDuplicates=false;
 					//log.debug("Fulfilling html table with duplicated url ["+url+"]");
 					for (String feedId : feedIdsWithDuplicateUrls.get(url)) {
 						RSS rss = RSS.getRSSObjectByFeedId(feedId);
-						
-						out.append("<a href=\"showFeed?feedId="+feedId+"\">["+user.getCompositeUserFeedIdsListWhichContainUserFeedId(feedId, allCompositeUserFeedCache).size()+"] "+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+feedId+"&redirectTo=/HealthCheck.jsp\">Delete</a>]");
+						out.append("<a href=\"showFeed?feedId="+feedId+"\">["+user.getCompositeUserFeedsListWhichContainUserFeedId(feedId).size()+"] "+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+feedId+"&redirectTo=/HealthCheck.jsp\">Delete</a>]");
 						out.append("<br>");
 					}
 					out.append("</td></tr>");
@@ -289,5 +290,26 @@ if(commonZombieFeedIds.size()>0){
                 <th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspEdit</th>
     </tr>
 </table>
+
+<h3>Cache usersFeeds incorrect items</h3>
+<%
+CacheUserFeed cacheUserFeed = CacheUserFeed.getInstance();
+for(String feedId : cacheUserFeed.getCompositeFeedIdsList()){
+	if(feedId.toLowerCase().startsWith("composite_")){
+		out.append(feedId);
+		out.append("<br>");
+	}
+}
+%>
+<h3>Cache compositeUsersFeeds incorrect items</h3>
+<%
+CacheCompositeUserFeed cacheCompositeUserFeed = CacheCompositeUserFeed.getInstance();
+for(String compositeFeedId : cacheCompositeUserFeed.getCompositeFeedIdsList()){
+	if(!compositeFeedId.toLowerCase().startsWith("composite_")){
+		out.append(compositeFeedId);
+		out.append("<br>");
+	}
+}
+%>
 </body>
 </html>

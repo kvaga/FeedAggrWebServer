@@ -22,6 +22,7 @@
     ru.kvaga.rss.feedaggrwebserver.objects.user.User,
     ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed,
     ru.kvaga.rss.feedaggrwebserver.objects.user.UserRepeatableSearchPattern,
+    ru.kvaga.rss.feedaggrwebserver.cache.CacheUserFeed,
     org.apache.logging.log4j.*
         
     "%>
@@ -203,6 +204,11 @@
 								File xmlFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/"
 										+ (String) request.getSession().getAttribute("feedId") + ".xml");
 								rss.saveXMLObjectToFile(xmlFile);
+								
+								// Cache
+								CacheUserFeed.getInstance().updateItem((String) request.getSession().getAttribute("feedId"), rss);
+
+								//
 								/*ObjectsUtils.saveXMLObjectToFile(rss, rss.getClass(), xmlFile);*/
 								//File userFile=new File(getServletContext().getRealPath("data/users")+"/"+"kvaga"+".xml");
 								//File userFile=new File(ConfigMap.usersPath.getAbsoluteFile()+"/"+"kvaga"+".xml");

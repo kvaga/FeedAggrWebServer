@@ -140,6 +140,11 @@ public class CompositeUserFeed {
 		log.debug("Composite RSS was successfully saved to the file [" + compositeRSSFile.getAbsolutePath() + "]");
 		user.saveXMLObjectToFile(userFile);
 		log.debug("User's ["+userName+"] configuration was successfully saved to the file [" + userFile.getAbsolutePath() + "]");
+		
+		// Cache
+		CacheCompositeUserFeed.getInstance().updateItem(compositeFeedId, compositeRSS);
+		
+		// Monitoring
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return compositeUserFeed;
 	}
@@ -255,6 +260,10 @@ public class CompositeUserFeed {
 		user.saveXMLObjectToFile(userFile);
 
 		log.debug("Composite RSS was successfully saved to the file [" + RSS.getRSSFileByFeedId(compositeFeedId).getAbsolutePath() + "]");
+		// Cache
+		CacheCompositeUserFeed.getInstance().updateItem(compositeFeedId, compositeRSS);
+		
+		//
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return compositeRSS;
 	}
@@ -357,13 +366,13 @@ public class CompositeUserFeed {
 			}
 			
 			// Cache
-			Date[] oldestNewest = compositeRSS.getOldestNewestPubDate();
-			cacheElement.setCountOfItems(compositeRSS.getChannel().getItem()!=null?compositeRSS.getChannel().getItem().size():0)
-			.setLastUpdated(compositeRSS.getChannel().getLastBuildDate())
-			.setNewestPubDate(oldestNewest[1])
-			.setOldestPubDate(oldestNewest[0])
-			.setSizeMb(compositeRSSFile.length()/1024/1024);
-			
+//			Date[] oldestNewest = compositeRSS.getOldestNewestPubDate();
+//			cacheElement.setCountOfItems(compositeRSS.getChannel().getItem()!=null?compositeRSS.getChannel().getItem().size():0)
+//			.setLastUpdated(compositeRSS.getChannel().getLastBuildDate())
+//			.setNewestPubDate(oldestNewest[1])
+//			.setOldestPubDate(oldestNewest[0])
+//			.setSizeMb(compositeRSSFile.length()/1024/1024);
+			cache.updateItem(compositeUserFeed.getId(), compositeRSS);
 			//
 			removeOldItems(compositeRSS, deleteItemsWhichOlderThanThisDate);
 			compositeRSS.saveXMLObjectToFile(compositeRSSFile);
@@ -420,6 +429,8 @@ public class CompositeUserFeed {
 			}
 		}
 		user.saveXMLObjectToFileByLogin();
+		
+		
 		return deletedFeedsIdsList;
 	}
 	
@@ -474,6 +485,11 @@ public class CompositeUserFeed {
 			}
 		}
 		rssCompositeUserFeed.saveXMLObjectToFileByFeedId(compositeFeedID);
+		
+		// Cache
+			CacheCompositeUserFeed.getInstance().updateItem(compositeFeedID, rssCompositeUserFeed);	
+		
+		//
 		int newCountOfItemsInCompositeFeedFile = rssCompositeUserFeed.getChannel().getItem().size();
 		user.saveXMLObjectToFileByLogin();
 		int newCountOfFeedsInCompositeUserFeed = cuf.getFeedIds().size();

@@ -40,6 +40,8 @@ import ru.kvaga.rss.feedaggr.objects.Channel;
 import ru.kvaga.rss.feedaggr.objects.Feed;
 import ru.kvaga.rss.feedaggr.objects.Item;
 import ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils;
+import ru.kvaga.rss.feedaggrwebserver.cache.CacheCompositeUserFeed;
+import ru.kvaga.rss.feedaggrwebserver.cache.CacheUserFeed;
 import ru.kvaga.rss.feedaggrwebserver.jobs.CompositeFeedsUpdateJob;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.MonitoringUtils;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.Tag;
@@ -666,7 +668,7 @@ public class ServerUtils {
 	
 	public synchronized static ResponseForAddRSSFeedByURLAutomaticlyMethod addRSSFeedByURLAutomaticly(String url, String login, String titlePrefixForYoutubePlaylist, HashMap<String, String> cache, Long durationMillisecondsForUpdatingFeeds) throws Exception {
 		long t1 = new Date().getTime();
-		log.debug("addRSSFeedByURLAutomaticly: url ["+url+"], login ["+login+"], titlePrefixForYoutubePlaylist ["+titlePrefixForYoutubePlaylist+"], cache size ["+cache!=null?cache.size():null+"], durationMillisecondsForUpdatingFeeds ["+durationMillisecondsForUpdatingFeeds+"]");
+		log.debug("addRSSFeedByURLAutomaticly: url ["+url+"], login ["+login+"], titlePrefixForYoutubePlaylist ["+titlePrefixForYoutubePlaylist+"], cache size ["+cache!=null?cache.size():null+"],  durationMillisecondsForUpdatingFeeds ["+durationMillisecondsForUpdatingFeeds+"]");
 		// javax.servlet.http.HttpServletRequest request
 		url = (url.contains("youtube.com") && !url.contains("youtube.com/feeds/videos.xml")) ? Exec.getYoutubeFeedURL(url): url;
 		if (url==null){
@@ -731,6 +733,10 @@ public class ServerUtils {
 
 		rss.saveXMLObjectToFile(xmlFile);
 
+		// Cache
+		CacheUserFeed.getInstance().updateItem(feedId, rss);
+		
+		//
 		if(user.containsFeedId(feedId)){
 			UserFeed uf = user.getUserFeedByFeedId(feedId);
 			uf.setItemTitleTemplate(itemTitleTemplate);
@@ -756,8 +762,9 @@ public class ServerUtils {
 		//----------------------
 		user.saveXMLObjectToFile(userFile);
 		
-		if(cache!=null)
-			cache.put(url, feedId);
+		
+//		if(cache!=null)
+//			cache.put(url, feedId);
 		// ---
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 //		return items.size();
@@ -819,6 +826,15 @@ public class ServerUtils {
 			File rssFile = new File(ConfigMap.feedsPath+File.separator+feedId+".xml");
 			rss.saveXMLObjectToFile(rssFile);
 			log.info("Deleted ["+(currentSizeOfFeedItems - listAfterDeletion.size())+"] feed ["+feedId+"] items. Initial size was ["+currentSizeOfFeedItems+"]. ["+listAfterDeletion.size()+"] items stored to the file ["+rssFile.getAbsolutePath()+"]");
+			
+			// Cache
+			if(feedId.toLowerCase().startsWith("composite_")) {
+				CacheCompositeUserFeed.getInstance().updateItem(feedId, rss);
+			}else {
+				CacheUserFeed.getInstance().updateItem(feedId, rss);
+			}
+			
+			//
 			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 			return currentSizeOfFeedItems - listAfterDeletion.size();
 		} catch (JAXBException e) {
