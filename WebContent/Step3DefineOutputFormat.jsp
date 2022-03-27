@@ -199,6 +199,28 @@ User user = User.getXMLObjectFromXMLFile(userFile);
 						  </optgroup>
 						</select>
 					</p>
+					
+					<p>
+						Suspending Status<span class="bullet">*</span>: <a
+							class="small help" title="Help on this option"
+							href="javascript:help('suspendingStatus')">?</a><br>
+						<label for="cars">Choose status:</label>
+						<select required name="suspendingStatus" id="suspendingStatus">
+						  <optgroup label="Suspending Status Update">
+						  <% 
+	
+						  	if(request.getSession().getAttribute("suspendingStatus")!=null){
+						  		out.write("<option value=\"true\"" + ((""+request.getSession().getAttribute("suspendingStatus")).equals("true")?"selected":"") + ">PAUSED</option>");
+						  		out.write("<option value=\"false\"" + ((""+request.getSession().getAttribute("suspendingStatus")).equals("false")?"selected":"") + ">ACTIVE</option>");
+						  	}else{
+						  		out.write("<option value=\"true\">PAUSED</option>");
+							    out.write("<option value=\"false\" selected>ACTIVE</option>");
+							}
+						  %>
+						   
+						  </optgroup>
+						</select>
+					</p>
 						
 					<p>
 						<a href="javascript:toggle('optional_parameters')"><span

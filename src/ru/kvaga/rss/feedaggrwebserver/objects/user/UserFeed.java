@@ -12,12 +12,16 @@ public class UserFeed {
 	private String repeatableSearchPattern;
 	private String filterWords;
 	private Long durationInMillisForUpdate;
+	// by deafult all userFeeds are active. Therefore they have suspendStatus is false
+	private Boolean suspendStatus;
 
 	public UserFeed() {
+		suspendStatus=false;
 	}
 
 	public UserFeed(String id, String itemTitleTemplate, String itemLinkTemplate, String itemContentTemplate,
 			String repeatableSearchPattern, String filterWords, long durationInMillisForUpdate, String userFeedTitle, String userFeedUrl) {
+		this();
 		this.id = id;
 		this.userFeedTitle=userFeedTitle;
 		this.userFeedUrl=userFeedUrl;
@@ -117,6 +121,26 @@ public class UserFeed {
 
 	public boolean equals(UserFeed object) {
 		return object.id.equals(this.getId());
+	}
+
+	/**
+	 * Get the status of userFeed - active or not
+	 * @return true  - means userFeed is not active. It is suspended
+	 * @return false - means userFeed is active. Isn't suspended
+	 */
+	public Boolean getSuspendStatus() {
+		return suspendStatus;
+	}
+	
+	/**
+	 * Set the status of userFeed - active or not
+	 * @param status = true   - means userFeed set to 'not active'. It will be suspended
+	 * @param status = false  - means userFeed set to 'active'. It will be activated
+	 * @return this object
+	 */
+	public UserFeed setSuspendStatus(Boolean status) {
+		this.suspendStatus=status;
+		return this;
 	}
 
 }

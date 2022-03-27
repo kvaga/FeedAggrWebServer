@@ -1,3 +1,4 @@
+<%@page import="ru.kvaga.rss.feedaggr.FeedAggrException.GetSubstringForHtmlBodySplitException"%>
 <%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtilsConcurrent"%>
 <%@page import="java.util.Enumeration"%>
 <%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtils,
@@ -43,6 +44,7 @@ if(request.getParameter("action")!=null && request.getParameter("action").equals
 		request.getSession().setAttribute("itemContentTemplate", user.getItemContentTemplateByFeedId((String)request.getSession().getAttribute("feedId")));
 		request.getSession().setAttribute("filterWords", user.getFilterWordsByFeedId((String)request.getSession().getAttribute("feedId")));
 		request.getSession().setAttribute("durationUpdate", user.getDurationInMillisForUpdateByFeedId((String)request.getSession().getAttribute("feedId")));
+		request.getSession().setAttribute("suspendingStatus", user.getSuspendStatusByFeedId((String)request.getSession().getAttribute("feedId")));
 		request.getSession().setAttribute("feedDescription", rss.getChannel().getDescription());
 
 	}
@@ -101,6 +103,10 @@ if(request.getParameter("filterWords") != null){
 
 if(request.getParameter("durationUpdate") != null){
 	request.getSession().setAttribute("durationUpdate", request.getParameter("durationUpdate"));
+}
+
+if(request.getParameter("suspendingStatus") != null){
+	request.getSession().setAttribute("suspendingStatus", request.getParameter("suspendingStatus"));
 }
 
 if(request.getParameter("repeatableSearchPattern")!=null){

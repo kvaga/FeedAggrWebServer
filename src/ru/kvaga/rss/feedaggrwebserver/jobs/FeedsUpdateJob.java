@@ -113,12 +113,28 @@ public class FeedsUpdateJob implements Runnable {
 					try {
 						String feedId = userFeed.getId();
 						cacheElement = cache.getItem(feedId);
-						String rssXmlFile = ConfigMap.feedsPath.getAbsolutePath() + "/" + userFeed.getId() + ".xml";
 						
+						
+						String rssXmlFile = ConfigMap.feedsPath.getAbsolutePath() + "/" + userFeed.getId() + ".xml";
 						log.debug("Found rssXmlFile [" + rssXmlFile + "] for users file [" + userFile + "]");
+						
+						// check userFeed has suspend status. By default all userFeeds have suspendStatus = false 
+						// that means all userFeeds are active by default
+						if(user.getUserFeedByFeedId(feedId).getSuspendStatus()==null) {
+							user.getUserFeedByFeedId(feedId).setSuspendStatus(false);
+						}
+						
+						if(user.getUserFeedByFeedId(feedId).getSuspendStatus()) {
+							log.debug(user.getUserFeedByFeedId(feedId) + " is not active. Suspend status is true. Continue to the next userFeed");
+							continue;
+						}
+						
+						//
 						// �������� feed ������ �� �����
 //						RSS rssFromFile = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(rssXmlFile, new RSS());
 						RSS rssFromFile = RSS.getRSSObjectFromXMLFile(rssXmlFile);
+						
+						
 						
 						// check userFeed title and url for null value
 						if(user.getUserFeedByFeedId(feedId).getUserFeedTitle()==null) {

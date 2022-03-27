@@ -231,6 +231,7 @@
 									uf.setDurationInMillisForUpdate(Long.parseLong((String) request.getSession().getAttribute("durationUpdate")));
 									uf.setUserFeedTitle((String) request.getSession().getAttribute("feedTitle"));
 									uf.setUserFeedUrl((String) request.getSession().getAttribute("url"));
+									uf.setSuspendStatus(Boolean.parseBoolean((String) request.getSession().getAttribute("suspendingStatus")));
 								} else {
 									user.getUserFeeds()
 											.add(new UserFeed(
@@ -243,7 +244,8 @@
 													Long.parseLong((String) request.getSession().getAttribute("durationUpdate")),
 													(String) request.getSession().getAttribute("feedTitle"),
 													(String) request.getSession().getAttribute("url")
-													));
+													).setSuspendStatus(Boolean.parseBoolean((String) request.getSession().getAttribute("suspendingStatus")))
+													);
 								}
 								// Getting domain from url
 								String domain = Exec.getDomainFromURL((String) request.getSession().getAttribute("url"));

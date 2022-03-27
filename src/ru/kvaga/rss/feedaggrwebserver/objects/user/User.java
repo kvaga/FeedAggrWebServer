@@ -512,6 +512,19 @@ public class User {
 		return null;
 	}
 	
+	public Boolean getSuspendStatusByFeedId(String feedId) {
+		long t1 = new Date().getTime();
+		for (UserFeed uf : getUserFeeds()) {
+			if (uf.getId().equals(feedId)) {
+				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
+						new Date().getTime() - t1);
+				return uf.getSuspendStatus();
+			}
+		}
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		return null;
+	}
+	
 	public String getFilterWordsByFeedId(String feedId) {
 		long t1 = new Date().getTime();
 		for (UserFeed uf : getUserFeeds()) {

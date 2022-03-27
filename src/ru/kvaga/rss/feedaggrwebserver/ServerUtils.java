@@ -81,7 +81,8 @@ public class ServerUtils {
 			"itemLinkTemplate",
 			"itemContentTemplate",
 			"filterWords",
-			"durationUpdate"
+			"durationUpdate",
+			"suspendingStatus"
 		};
 		boolean firstIteration=true;
 		for(String item : removeAttributes) {
