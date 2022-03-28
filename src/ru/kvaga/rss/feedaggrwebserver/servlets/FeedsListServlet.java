@@ -127,6 +127,7 @@ class ExtendedUserFeed extends UserFeed {
 	private String oldestPubDate;
 	private String newestPubDate;
 	private String lastUpdateStatus;
+	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 
 	public String getLastUpdateStatus() {
@@ -181,8 +182,9 @@ class ExtendedUserFeed extends UserFeed {
 				userFeed.getFilterWords(),
 				userFeed.getDurationInMillisForUpdate(),
 				userFeed.getUserFeedTitle(),
-				userFeed.getUserFeedUrl()
-		);			
+				userFeed.getUserFeedUrl()		
+				);	
+		this.setSuspendStatus(userFeed.getSuspendStatus());
 		this.compositeFeeds=compositeFeeds;
 		this.countOfItems = countOfItems;
 		this.lastUpdated = lastUpdated!=null?sdf.format(lastUpdated):null;

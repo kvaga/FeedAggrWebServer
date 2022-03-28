@@ -97,6 +97,9 @@ function fulfillTableCompouseUserFeedShort(dataObj){
 	    	'<td>' + '<a href="${pageContext.request.contextPath}/Feed.jsp?action=edit&feedId='+dataObj[i].id+'">Edit' + '</a>'+'</td>' +
 	    	'<td>' + dataObj[i].countOfItems + '</td>' + 
 	    	'<td>' + dataObj[i].sizeMb + '</td>' +
+	    	'<td>' + (dataObj[i].suspendStatus?'PAUSED':'ACTIVE') + '</td>' +
+
+	    	
 	    	'<td>' + dataObj[i].newestPubDate + '</td>' +
 	    	'<td>' + dataObj[i].oldestPubDate + '</td>' +
 	    	
@@ -156,14 +159,16 @@ function fulfillTableCompouseUserFeedShort(dataObj){
                 <th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspEdit</th>
                 <th onclick="sortTable(5)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspCountOfItems</th>
 	    	<th onclick="sortTable(6)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspSizeMb</th>
-	    	<th onclick="sortTable(7)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspNewestPubDate</th>
-	    	<th onclick="sortTable(8)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspOldestPubDate</th>
+	    	<th onclick="sortTable(7)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspPAUSED?</th>
 	    	
-	    	<th onclick="sortTable(9)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLastUpdated</th>
-	    	<th onclick="sortTable(10)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLastUpdateStatus</th>
+	    	<th onclick="sortTable(8)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspNewestPubDate</th>
+	    	<th onclick="sortTable(9)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspOldestPubDate</th>
 	    	
-                <th onclick="sortTable(11)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspURL</th>
-                <th onclick="sortTable(12)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspComposite User Feeds Titles</th>
+	    	<th onclick="sortTable(10)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLastUpdated</th>
+	    	<th onclick="sortTable(11)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLastUpdateStatus</th>
+	    	
+                <th onclick="sortTable(12)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspURL</th>
+                <th onclick="sortTable(13)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspComposite User Feeds Titles</th>
                 
     </tr>
 </table>

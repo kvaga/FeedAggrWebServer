@@ -74,7 +74,11 @@ try{
 		<td><a href="Test">Test page</a><br/><a href="HealthCheck.jsp">Health Check page</a></td>
 		<td><a href="addFeedId2CompositeFeed.jsp">addFeedId2CompositeFeed</a><br/><a href="DeleteOldFeedItems.jsp">DeleteOldFeedItems.jsp</a></td>
 		<td><a href="deleteFeedsFeedsByList.jsp">deleteFeedsFeedsByList</a></td>
-		<td><a href="CompositeFeedsExport.jsp">Composite Feeds Export</a><br/><a href="CompositeFeedsImport.jsp">Composite Feeds Import</a></td>
+		<td>
+			<a href="CompositeFeedsExport.jsp">Composite Feeds Export</a><br/>
+			<a href="CompositeFeedsImport.jsp">Composite Feeds Import</a><br>
+			<a href="UserFileExport.jsp">User File Export</a>
+		</td>
 		<td>
 			<div id="FeedsUpdateJobStatus"></div>&nbsp;FeedsUpdateJob Status<br/>
 			<div id="CompositeFeedsUpdateJobStatus"></div>&nbsp;CompositeFeedsUpdateJob Status<br/>
