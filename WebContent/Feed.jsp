@@ -237,7 +237,7 @@ String url= (String)request.getSession().getAttribute("url");
 			responseHtmlBody = ServerUtilsConcurrent.getInstance().getURLContent(url);
 		}catch(Exception e){
 			log.error("Exception", e);
-			out.print("<font color=red>Couldn't get content from the URL</font>");
+			out.print("<font color=red>Couldn't get content from the URL. Message: "+ e.getMessage()+", Cause: "+e.getCause()+"</font>");
 			//response.sendRedirect("Feed.jsp");
 		}
 		try{

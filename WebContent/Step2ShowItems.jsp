@@ -39,6 +39,7 @@ out.print("----------------------------<br>");
 
 
 				<%
+				try{
 				// String repeatableSearchPattern=request.getParameter("repeatableSearchPattern");
 				String substringForHtmlBodySplit=Exec.getSubstringForHtmlBodySplit((String) request.getSession().getAttribute("repeatableSearchPattern"));
 				// String responseHtmlBody = (String)request.getSession().getAttribute("responseHtmlBody");
@@ -52,12 +53,14 @@ out.print("----------------------------<br>");
 				
 
 				if ((String) request.getSession().getAttribute("repeatableSearchPattern")==null  ) {
-					throw new FeedAggrException.CommonException(
-							String.format("The repeatable search pattern can't be null"));
+					request.getSession().setAttribute("repeatableSearchPattern", "The repeatable search pattern can't be null");
+					//throw new FeedAggrException.CommonException(
+					//		String.format("The repeatable search pattern can't be null"));
 				}
 				if ((String)request.getSession().getAttribute("responseHtmlBody")==null) {
-					throw new FeedAggrException.CommonException(
-							String.format("The response html body can't be null"));
+					//throw new FeedAggrException.CommonException(
+					//		String.format("The response html body can't be null"));
+					request.getSession().setAttribute("responseHtmlBody", "The response html body can't be null");
 				}
 				if (countOfPercentItemsInSearchPattern < 1) {
 					RequestDispatcher rd = getServletContext().getRequestDispatcher("/Login.html");
@@ -190,6 +193,14 @@ out.print("----------------------------<br>");
 					</tbody>
 				</table>
 
-
+<%
+}catch(Exception ee){
+	if(ee!=null)
+		out.write("<font color=red>The Exception: " + ServerUtils.escapeHTML(ee.getMessage()) + 
+			"<br>"+
+			"Cause: " + ee.getCause() +
+			"</font>");
+}
+%>
 </body>
 </html>
