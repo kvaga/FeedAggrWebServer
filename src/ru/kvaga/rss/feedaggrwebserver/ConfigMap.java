@@ -26,8 +26,8 @@ public class ConfigMap {
 	public static long WAIT_TIME_AFTER_GET_CONTENT_URL_EXCEPTION_IN_MILLIS=1000;
 	public static int SERVLET_SHOW_FEED_BUFFER_READ_BYTES=512;
 	public static int UPDATE_COMPOSITE_RSS_FILES_DAYS_COUNT_FOR_DELETION=31;
-	
-
+	public static String trustStore;
+	public static String trustStorePassword;
 			
 
 	
@@ -54,7 +54,7 @@ public class ConfigMap {
 
 	Tinkoff Invest
 	URL:
-	Regex: "item":{"id":{%},"broker_id"{*},"price_start":{%},"price":{%},"yield":{%},"target_yield":{%},"title":"{%}","description":{*}"ticker":"{%}","name":"{%}",{*}brand_name":"Роснефть",{*}"broker":{*}"name":"{%}","accuracy":{%}}}},
+	Regex: "item":{"id":{%},"broker_id"{*},"price_start":{%},"price":{%},"yield":{%},"target_yield":{%},"title":"{%}","description":{*}"ticker":"{%}","name":"{%}",{*}brand_name":"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",{*}"broker":{*}"name":"{%}","accuracy":{%}}}},
 
 	Tinkoff Feed Line
 	URL: https://www.tinkoff.ru/api/invest/smartfeed-public/v1/feed/api/main

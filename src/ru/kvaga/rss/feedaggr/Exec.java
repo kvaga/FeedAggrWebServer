@@ -14,6 +14,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +26,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import ru.kvaga.monitoring.influxdb2.InfluxDB;
 import ru.kvaga.rss.feedaggr.FeedAggrException.CommonException;
@@ -229,13 +239,33 @@ public class Exec {
 */
 	private static HashMap<String, Long> getURLContentDomainLocks = new HashMap<String, Long>();
 	@Deprecated
-	public static synchronized String getURLContent(String urlText) throws FeedAggrException.GetURLContentException {
+	public static synchronized String getURLContent(String urlText) throws FeedAggrException.GetURLContentException, NoSuchAlgorithmException, KeyManagementException {
 		long t1 = new Date().getTime();
 		String domain = Exec.getDomainFromURL(urlText);
 
 		String body = null;
 		String charset; // You should determine it based on response header.
-		HttpURLConnection con=null;
+		 /* Start of Fix */
+        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() { return null; }
+            public void checkClientTrusted(X509Certificate[] certs, String authType) { }
+            public void checkServerTrusted(X509Certificate[] certs, String authType) { }
+
+        } };
+
+        SSLContext sc = SSLContext.getInstance("SSL");
+        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+        // Create all-trusting host name verifier
+        HostnameVerifier allHostsValid = new HostnameVerifier() {
+            public boolean verify(String hostname, SSLSession session) { return true; }
+        };
+        // Install the all-trusting host verifier
+        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+        /* End of the fix*/
+        
+		HttpsURLConnection con=null;
 
 		try {
 			
@@ -253,7 +283,7 @@ public class Exec {
 			}
 			
 			URL url = new URL(urlText);
-			con = (HttpURLConnection) url.openConnection();
+			con = (HttpsURLConnection) url.openConnection();
 //			con.connect();
 			
 
@@ -526,7 +556,7 @@ public static synchronized String getYoutubeMainPlaylistURL(String channelId) th
 }
 
 private static Pattern getYoutubeListOfPlaylistsURLsPattern = Pattern.compile("\\/playlist[?]list=(.*?)\",\"webPageTyp");
-public static synchronized HashSet<String> getYoutubeListOfPlaylistsURLs(String mainPlaylistURL) throws GetURLContentException{
+public static synchronized HashSet<String> getYoutubeListOfPlaylistsURLs(String mainPlaylistURL) throws GetURLContentException, KeyManagementException, NoSuchAlgorithmException{
 	long t1=new Date().getTime();
 	String urlPlaylistFeedPattern="https://www.youtube.com/feeds/videos.xml?playlist_id=%s";
 //	ArrayList<String> l = new ArrayList<String>();

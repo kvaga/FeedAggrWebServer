@@ -46,6 +46,17 @@ public class StartStopListener implements ServletContextListener{
 			ConfigMap.adminPassword=props.getProperty("admin.password");
 			log.info("Loaded parameter admin.password="+ConfigMap.adminPassword);
 			
+			ConfigMap.trustStore=props.getProperty("ssl.trustStore");
+			log.info("Loaded parameter ssl.trustStore="+ConfigMap.trustStore);
+			ConfigMap.trustStorePassword=props.getProperty("ssl.trustStorePassword");
+			log.info("Loaded parameter ssl.trustStorePassword="+ConfigMap.trustStorePassword);
+			try {
+				System.setProperty("javax.net.ssl.trustStore", ConfigMap.trustStore);
+				System.setProperty("javax.net.ssl.trustStorePassword", ConfigMap.trustStorePassword);			
+			}catch(Exception e) {
+				log.error("SSL parameters Exception", e);
+			}
+			
 			try {
 				ConfigMap.INFLUXDB_ENABLED=Boolean.parseBoolean(props.getProperty("influxdb.enabled"));
 				

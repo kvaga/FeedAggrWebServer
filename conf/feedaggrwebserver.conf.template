@@ -22,3 +22,8 @@ timeout.waittime_after_get_content_url_exception_in_millis=3600000
 
 servlet.show_feed.buffer_read_bytes=512
 update_composite_rss_files.days_count_for_deletion=32
+
+#SSL
+# <JAVA_HOME>\bin\keytool -import -v -trustcacerts -alias server-alias -file server.cer -keystore cacerts.jks -keypass changeit -storepass changeit 
+ssl.trustStore=trustStore
+ssl.trustStorePassword=trustStorePassword
