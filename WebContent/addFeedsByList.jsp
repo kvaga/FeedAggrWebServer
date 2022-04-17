@@ -80,7 +80,7 @@ if (request.getParameter("listOfURLs") == null) {
 									ResponseForAddRSSFeedByURLAutomaticlyMethod responseForAddRSSFeedByURLAutomaticlyMethod = ServerUtils
 											.addRSSFeedByURLAutomaticly(playlistUrl,
 													(String) request.getSession().getAttribute("login"),
-													titleOfMainUrl, localUrlsCache,
+													titleOfMainUrl, 
 													DurationMillisecondsForUpdatingFeeds.EACH_2_WEEKS);
 									int size = responseForAddRSSFeedByURLAutomaticlyMethod.getSize();
 									String createdFeedId = responseForAddRSSFeedByURLAutomaticlyMethod.getFeedId();
@@ -112,7 +112,7 @@ if (request.getParameter("listOfURLs") == null) {
 
 					ResponseForAddRSSFeedByURLAutomaticlyMethod responseForAddRSSFeedByURLAutomaticlyMethod = ServerUtils
 							.addRSSFeedByURLAutomaticly(url, (String) request.getSession().getAttribute("login"),
-									localUrlsCache, durationMillisecondsForUpdatingFeeds);
+									 durationMillisecondsForUpdatingFeeds);
 					int size = responseForAddRSSFeedByURLAutomaticlyMethod.getSize();
 					
 					String createdFeedId = responseForAddRSSFeedByURLAutomaticlyMethod.getFeedId();

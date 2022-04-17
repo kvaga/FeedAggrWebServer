@@ -226,7 +226,13 @@ public class User {
 	 * @throws JAXBException
 	 */
 	public String containsFeedIdByUrl(String url) throws JAXBException {
-		return containsFeedIdByUrl(url, null);
+		for(UserFeed uf : getUserFeeds()) {
+			if(uf.getUserFeedUrl().toLowerCase().equals(url.toLowerCase())) {
+				return uf.getId();
+			}
+		}
+		return null;
+		//return containsFeedIdByUrl(url, null);
 		/*
 		 * long t1 = new Date().getTime(); for(UserFeed userFeed : getUserFeeds()) { RSS
 		 * rss = RSS.getRSSObjectFromXMLFile(ConfigMap.feedsPath.getAbsoluteFile() + "/"
@@ -238,28 +244,30 @@ public class User {
 		 */
 	}
 
+	/*
 	public String containsFeedIdByUrl(String url, HashMap<String, String> localUrlsCache) throws JAXBException {
 		long t1 = new Date().getTime();
-		if (localUrlsCache != null) {
-			if (localUrlsCache.containsKey(url)) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
-				return localUrlsCache.get(url);
-			}
-		} else {
-			for (UserFeed userFeed : getUserFeeds()) {
-				RSS rss = RSS.getRSSObjectFromXMLFile(
-						ConfigMap.feedsPath.getAbsoluteFile() + "/" + userFeed.getId() + ".xml");
-				if (rss.getChannel().getLink().equals(url)) {
-					MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-							new Date().getTime() - t1);
-					return userFeed.getId();
-				}
-			}
-		}
+//		
+//		if (localUrlsCache != null) {
+//			if (localUrlsCache.containsKey(url)) {
+//				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+//				return localUrlsCache.get(url);
+//			}
+//		} else {
+//			for (UserFeed userFeed : getUserFeeds()) {
+//				RSS rss = RSS.getRSSObjectFromXMLFile(
+//						ConfigMap.feedsPath.getAbsoluteFile() + "/" + userFeed.getId() + ".xml");
+//				if (rss.getChannel().getLink().equals(url)) {
+//					MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
+//							new Date().getTime() - t1);
+//					return userFeed.getId();
+//				}
+//			}
+//		}
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return null;
 	}
-
+*/
 	public boolean containsCompositeFeedId(String compositeFeedId) {
 		long t1 = new Date().getTime();
 		for (CompositeUserFeed userFeed : getCompositeUserFeeds()) {

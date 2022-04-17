@@ -667,9 +667,9 @@ public class ServerUtils {
 	 * @throws Exception
 	 */
 	
-	public synchronized static ResponseForAddRSSFeedByURLAutomaticlyMethod addRSSFeedByURLAutomaticly(String url, String login, String titlePrefixForYoutubePlaylist, HashMap<String, String> cache, Long durationMillisecondsForUpdatingFeeds) throws Exception {
+	public synchronized static ResponseForAddRSSFeedByURLAutomaticlyMethod addRSSFeedByURLAutomaticly(String url, String login, String titlePrefixForYoutubePlaylist, /*HashMap<String, String> cache,*/ Long durationMillisecondsForUpdatingFeeds) throws Exception {
 		long t1 = new Date().getTime();
-		log.debug("addRSSFeedByURLAutomaticly: url ["+url+"], login ["+login+"], titlePrefixForYoutubePlaylist ["+titlePrefixForYoutubePlaylist+"], cache size ["+cache!=null?cache.size():null+"],  durationMillisecondsForUpdatingFeeds ["+durationMillisecondsForUpdatingFeeds+"]");
+		log.debug("addRSSFeedByURLAutomaticly: url ["+url+"], login ["+login+"], titlePrefixForYoutubePlaylist ["+titlePrefixForYoutubePlaylist+"], durationMillisecondsForUpdatingFeeds ["+durationMillisecondsForUpdatingFeeds+"]");
 		// javax.servlet.http.HttpServletRequest request
 		url = (url.contains("youtube.com") && !url.contains("youtube.com/feeds/videos.xml")) ? Exec.getYoutubeFeedURL(url): url;
 		if (url==null){
@@ -687,9 +687,9 @@ public class ServerUtils {
 		User user = User.getXMLObjectFromXMLFile(userFile);
 		String existingFeedIdWithCurrentURL = null;
 
-		if ((existingFeedIdWithCurrentURL = user.containsFeedIdByUrl(url, cache)) != null) {
+		if ((existingFeedIdWithCurrentURL = user.containsFeedIdByUrl(url/*, cache*/)) != null) {
 			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},	new Date().getTime() - t1);
-			throw new Exception("User already has feed id [" + existingFeedIdWithCurrentURL + "] with such URL [" + url + "]");
+			throw new Exception("User already has feed title ["+feedTitle+"] id [" + existingFeedIdWithCurrentURL + "] with such URL [" + url + "]");
 		}
 
 		String repeatableSearchPattern = user.getRepeatableSearchPatternByDomain(Exec.getDomainFromURL(url));
@@ -773,15 +773,15 @@ public class ServerUtils {
 	}
 	
 	public synchronized static ResponseForAddRSSFeedByURLAutomaticlyMethod addRSSFeedByURLAutomaticly(String url, String login, String titlePrefixForYoutubePlaylist) throws Exception {
-		return addRSSFeedByURLAutomaticly(url, login, titlePrefixForYoutubePlaylist, null, null);
+		return addRSSFeedByURLAutomaticly(url, login, titlePrefixForYoutubePlaylist, null);
 	}
 
 	public synchronized static ResponseForAddRSSFeedByURLAutomaticlyMethod addRSSFeedByURLAutomaticly(String url, String login) throws Exception {
-		return addRSSFeedByURLAutomaticly(url, login, null, null, null);
+		return addRSSFeedByURLAutomaticly(url, login, null, null);
 	}
 	
-	public synchronized static ResponseForAddRSSFeedByURLAutomaticlyMethod addRSSFeedByURLAutomaticly(String url, String login, HashMap<String, String> cache, Long durationMillisecondsForUpdatingFeeds) throws Exception {
-		return addRSSFeedByURLAutomaticly(url, login, null, cache, durationMillisecondsForUpdatingFeeds);
+	public synchronized static ResponseForAddRSSFeedByURLAutomaticlyMethod addRSSFeedByURLAutomaticly(String url, String login, Long durationMillisecondsForUpdatingFeeds) throws Exception {
+		return addRSSFeedByURLAutomaticly(url, login, null, durationMillisecondsForUpdatingFeeds);
 	}
 	
 	public synchronized static File getUserFileByLogin(String login) {

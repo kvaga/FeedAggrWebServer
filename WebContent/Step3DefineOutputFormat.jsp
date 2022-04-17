@@ -160,7 +160,7 @@ User user = User.getXMLObjectFromXMLFile(userFile);
 							</tr>
 						</tbody>
 					</table>
-
+					Example of Item Content Template: {%3}<br><h1 style="color:blue;font-size:40px;"><a href="{%1}">LINK</a></h1><br>
 					<p>
 						Filter words (divided by '|')<span class="bullet">*</span>: <a
 							class="small help" title="Help on this option"
