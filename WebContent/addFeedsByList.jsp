@@ -1,140 +1,126 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<%@page import="ru.kvaga.rss.feedaggrwebserver.DurationMillisecondsForUpdatingFeeds"%>
-<%@page
-	import="ru.kvaga.rss.feedaggrwebserver.ServerUtils,
-	ru.kvaga.rss.feedaggrwebserver.ResponseForAddRSSFeedByURLAutomaticlyMethod,
-org.apache.logging.log4j.*,
-ru.kvaga.rss.feedaggrwebserver.ConfigMap,
-ru.kvaga.rss.feedaggr.Exec,
-ru.kvaga.rss.feedaggrwebserver.objects.user.User,
-ru.kvaga.rss.feedaggrwebserver.ServerUtilsConcurrent,
-java.util.ArrayList,
-java.io.File,
-java.util.HashMap,
-java.util.HashSet
-"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%
-	final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP + this.getClass().getSimpleName());
-%>
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Add Feeds by List</title>
-<script src="lib.js"></script>
+<title>Insert title here</title>
+<style type="text/css">
+	table, th, td {
+	    border: 1px solid black;
+	}
+	th {
+	    cursor: pointer;
+	}
+</style>
+<script type="text/javascript" src="js/lib.js"></script>
 
+<script>
+	function addFeedsByList(){
+		try{
+			let listOfURLs = document.getElementById('listOfURLs').value;
+			sendR(listOfURLs);
+		}catch(err){
+			exception('exception', err.message);
+		}
+	}
+	
+	function sendR(listUrls){
+		try{
+		    var xhr1 = new XMLHttpRequest();
+		    xhr1.onreadystatechange = function() {
+		        if (xhr1.readyState == 4) {
+		            const dataObj = JSON.parse(xhr1.responseText);
+		            fulfillTableCompouseUserFeedShort(dataObj);
+		        	/*
+		        		document.getElementById("tt").innerHTML=
+		        											//dataObj;
+		        											xhr1.responseText;
+		        	*/
+		        }
+		    }
+
+		    xhr1.open('GET', '${pageContext.request.contextPath}/AddFeedsByUrlsList?listUrls='+listUrls+'&userName=<%= request.getSession().getAttribute("login")%>', true);
+		    xhr1.send(null);
+		}catch(err){
+			exception('exception', err.message);
+		}
+	
+	}
+	
+	//this function appends the json data to the table 'gable'
+	function fulfillTableCompouseUserFeedShort(dataObj){
+		try{
+			let table = document.getElementById('tableOfNewlyAddedFeeds');
+			deleteTBody(table);
+			
+			for(var i=0; i<dataObj.length;i++){            
+		 	console.log(dataObj[i]);
+		 	var tr = document.createElement('tr');
+		 	//tr.innerHTML = '';
+		 	if (dataObj[i].size > 0) {
+		 		tr.innerHTML += 
+					'<td><input type="checkbox" id="feed_id" name="feedId" value="'+dataObj[i].feedId+'" ></td>'+
+					'<td>' + dataObj[i].feedTitle + '</td>'+
+					'<td>' + dataObj[i].url + '</td>'+
+					'<td>' + dataObj[i].size + '</td>'+
+					'<td><a href="__addFeedId2CompositeFeed.jsp?feedId=' + dataObj[i].feedId + '">Add to composite</a>'+'</td>';
+			} else {
+				tr.innerHTML += 
+					'<td><input type="checkbox" id="feed_id" name="feedId" value="null" disabled></td>'+
+					'<td>' + error_text(dataObj[i].feedTitle) + '</td>'+
+					'<td>' + dataObj[i].url + '</td>'+
+					'<td>' + dataObj[i].size + '</td>'+
+					'<td>---</td>';
+			}
+		 	table.appendChild(tr);
+		 }
+		}catch(err){
+			exception('exception', err.message);
+		}
+	}
+
+</script>
+<style type="text/css">
+	table, th, td {
+	    border: 1px solid black;
+	}
+	th {
+	    cursor: pointer;
+	}
+</style>
 </head>
 <body>
 	<jsp:include page="Header.jsp"></jsp:include>
-
-<%
-if (request.getParameter("listOfURLs") == null) {
-	request.getSession().removeAttribute("listOfURLs");
-	log.debug("Session's attribute [listOfURLs] was removed");
-}else{
-	request.getSession().setAttribute("listOfURLs", request.getParameter("listOfURLs"));
-	log.debug("Session's attribute [listOfURLs] set to ["+request.getParameter("listOfURLs")+"]");
-}
-%>
-	<form>
-		Specify the list of URLs (each URL on next line)
-		<textarea rows="12" cols="120" name="listOfURLs"><%=request.getSession().getAttribute("listOfURLs") == null ? ""
-					: (String) request.getSession().getAttribute("listOfURLs")%></textarea>
-		<br /> <input type="submit" value="Add" />
-	</form>
-	<form action="addFeedId2CompositeFeed.jsp">
 	<%
-		if (request.getParameter("listOfURLs") != null) {
-		log.debug("Starting a process to adding list of urls ["+request.getParameter("listOfURLs") +"]");
-		User user = User.getXMLObjectFromXMLFile(ServerUtils.getUserFileByLogin((String) request.getSession().getAttribute("login")));
-		HashMap<String, String> localUrlsCache = user.getAllUserUrlsAndFeedIdsMap();
-		log.debug("localUrlsCache size ["+localUrlsCache.size()+"]");
-		out.write("<table border=\"1\"><tr><td><input type=\"checkbox\" onClick=\"toggle(this)\"></td><td>Title</td><td>URL</td><td>Status</td><td>Add to composite</td></tr>");
-		
-		for (String url : ((String) request.getParameter("listOfURLs")).split("\r\n")) {
-			try {
-					if (url.startsWith("https://youtube") || url.startsWith("https://www.youtube") || url.startsWith("http://youtube") || url.startsWith("http://www.youtube")) {
-						// Checking for existence of playlists and adding playlists feeds
-						//log.debug("Checking URL [" + url + "] for existence in playlists");
-						String channelId = Exec.getYoutubeChannelId(url);
-						//log.debug("Found channel id ["+channelId+"] in the url ["+url+"]");
-						if (channelId == null) {
-							log.warn("ChannelId can't be null for url [" + url + "]");
-						} else {
-							log.debug("Found channelId [" + channelId + "] for URL [" + url + "]");
-							String mainPlaylistUrl = Exec.getYoutubeMainPlaylistURL(channelId);
-							log.debug("Found main playlist url [" + mainPlaylistUrl
-									+ "] and getting list of playlists urls");
-							HashSet<String> l = Exec.getYoutubeListOfPlaylistsURLs(mainPlaylistUrl);
-							log.debug("Found [" + l.size() + "] playlists for the url [" + url + "]");
-							String titleOfMainUrl = Exec
-									.getTitleFromHtmlBody(ServerUtilsConcurrent.getInstance().getURLContent(url));
-
-							for (String playlistUrl : l) {
-								try {
-									log.debug("Processing of [" + playlistUrl + "] playlist url of main url [" + url
-											+ "]");
-									//int size = ServerUtils.addRSSFeedByURLAutomaticly(playlistUrl,	(String) request.getSession().getAttribute("login"), titleOfMainUrl, localUrlsCache, DurationMillisecondsForUpdatingFeeds.EACH_2_WEEKS);
-									ResponseForAddRSSFeedByURLAutomaticlyMethod responseForAddRSSFeedByURLAutomaticlyMethod = ServerUtils
-											.addRSSFeedByURLAutomaticly(playlistUrl,
-													(String) request.getSession().getAttribute("login"),
-													titleOfMainUrl, 
-													DurationMillisecondsForUpdatingFeeds.EACH_2_WEEKS);
-									int size = responseForAddRSSFeedByURLAutomaticlyMethod.getSize();
-									String createdFeedId = responseForAddRSSFeedByURLAutomaticlyMethod.getFeedId();
-
-									/*
-										!!! THIS SNIPPET IS DUPLICTED BELOW !!!
-										Don't forget to correct code below
-									*/
-									if (size > 0) {
-										out.write("<tr><td><input type=\"checkbox\" id=\"feed_id\" name=\"feedId\" value=\""+createdFeedId+"\" ></td><td>"+responseForAddRSSFeedByURLAutomaticlyMethod.getFeedTitle()+"</td><td>" + responseForAddRSSFeedByURLAutomaticlyMethod.getUrl() + "</td><td>" + size + "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId	+ "\">Add to composite</a></td></tr>");
-
-									} else {
-										out.write("<tr><td><input type=\"checkbox\"disabled></td><td>"+responseForAddRSSFeedByURLAutomaticlyMethod.getFeedTitle()+"</td><td>" + Exec.getHTMLFailText(responseForAddRSSFeedByURLAutomaticlyMethod.getUrl()) + "</td><td>" + size	+ "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId	+ "\">Add to composite</a></td></tr>");
-									}
-								} catch (Exception e) {
-									out.write("<tr><td><input type=\"checkbox\" disabled></td></td><td>" + Exec.getHTMLFailText(url) + "</font></td><td>" + Exec.getHTMLFailText(e.getMessage())+ "</td><td></td></tr>");
-									log.error("ShowResultTableException", e);
-								}
-							}
-						}
-					}
-
-					if(url.startsWith("https://habr")){
-						url=Exec.getHabrFeedURL(url);
-					}
-					log.debug("Adding main feed");
-					// Adding feeds from main videos URLs
-					long durationMillisecondsForUpdatingFeeds = ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE;
-
-					ResponseForAddRSSFeedByURLAutomaticlyMethod responseForAddRSSFeedByURLAutomaticlyMethod = ServerUtils
-							.addRSSFeedByURLAutomaticly(url, (String) request.getSession().getAttribute("login"),
-									 durationMillisecondsForUpdatingFeeds);
-					int size = responseForAddRSSFeedByURLAutomaticlyMethod.getSize();
-					
-					String createdFeedId = responseForAddRSSFeedByURLAutomaticlyMethod.getFeedId();
-					if (size > 0) {
-						out.write("<tr><td><input type=\"checkbox\"  id=\"feed_id\" name=\"feedId\" value=\""+createdFeedId+"\"  ></td><td>"+responseForAddRSSFeedByURLAutomaticlyMethod.getFeedTitle()+"</td><td>" + responseForAddRSSFeedByURLAutomaticlyMethod.getUrl() + "</td><td>" + size + "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId
-								+ "\">Add to composite</a></td></tr>");					
-					} else {
-						out.write("<tr><td><input type=\"checkbox\"disabled></td><td>"+responseForAddRSSFeedByURLAutomaticlyMethod.getFeedTitle()+"</td><td>" + Exec.getHTMLFailText(responseForAddRSSFeedByURLAutomaticlyMethod.getUrl()) + "</td><td>" + size
-								+ "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId
-								+ "\">Add to composite</a></td></tr>");
-					}
-				} catch (Exception e) {
-					out.write("<tr><td><input type=\"checkbox\" disabled></td></td><td>"+Exec.getHTMLFailText(url) + "</font></td><td>" + Exec.getHTMLFailText(e.getMessage())+ "</td><td></td></tr>");
-					log.error("ShowResultTableException", e);
-				}
-			}
-			out.write("</table>");
-			out.write("<input type=\"submit\" name=\"Добавить выбранные\" value=\"Добавить выбранные\">");
-
-			//ServerUtils.clearSessionFromFeedAttributes(request);
+		if (request.getParameter("listOfURLs") == null) {
+			request.getSession().removeAttribute("listOfURLs");
+			//log.debug("Session's attribute [listOfURLs] was removed");
+		}else{
+			request.getSession().setAttribute("listOfURLs", request.getParameter("listOfURLs"));
+			//log.debug("Session's attribute [listOfURLs] set to ["+request.getParameter("listOfURLs")+"]");
 		}
 	%>
+	<form>
+		Specify the list of URLs (each URL on next line)
+		<textarea id="listOfURLs" rows="12" cols="120" name="listOfURLs"><%=request.getSession().getAttribute("listOfURLs") == null ? ""
+					: (String) request.getSession().getAttribute("listOfURLs")%></textarea>
+		<br /> <input type="button" value="Add" onclick="addFeedsByList()"/>
 	</form>
+	
+	<form action="__addFeedId2CompositeFeed.jsp">
+		<table id="tableOfNewlyAddedFeeds">
+			<tr>
+				        <th	onClick="toggle(this)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbsp#</th>
+		                <th onclick=""><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspName</th>
+		                <th onclick=""><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspURL</th>
+		              	<th onclick=""><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspSize</th>
+		             	<th onclick=""><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspAdd to composite</th>
+		    </tr>
+		</table>
+		<input type="submit" name="Добавить выбранные" value="Добавить выбранные"/>
+	</form>
+	
 </body>
 </html>

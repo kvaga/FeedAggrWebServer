@@ -1,6 +1,11 @@
-
+function UserException(message) {
+	   this.message = message;
+	   this.name = "Исключение, определённое пользователем";
+}
+	
 function exception(id, text){
 	document.getElementById(id).innerHTML='<p><font color="red">Exception: ' + text + '</font></p>';
+	log.error('Exception: ' + text);
 }
 
 function error_text(text){

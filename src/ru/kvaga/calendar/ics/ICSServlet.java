@@ -24,14 +24,14 @@ import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
 public class ICSServlet extends HttpServlet {
 	private static Logger log = org.apache.logging.log4j.LogManager.getLogger(ICSServlet.class);
 	private static final long serialVersionUID = 1L;
-
+  
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public ICSServlet() {
 		super();
 	}
-
+ 
 	/**
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -94,7 +94,7 @@ public class ICSServlet extends HttpServlet {
 				"DTSTART:" + sdfICS.format(dateIncoming) + "\r\n" +
 //				"DTEND:20210303T103000Z\r\n" +
 				"DTEND:" + sdfICS.format(dateIncoming) + "\r\n" + "SUMMARY:" + summary + "\r\n" + "DESCRIPTION:"
-				+ description + "\r\n" + "LOCATION:Онлайн\r\n" + "END:VEVENT\r\n" + "END:VCALENDAR\r\n" + "\r\n" + "";
+				+ description + "\r\n" + "LOCATION:пїЅпїЅпїЅпїЅпїЅпїЅ\r\n" + "END:VEVENT\r\n" + "END:VCALENDAR\r\n" + "\r\n" + "";
 		log.debug(icsTemplate);
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return icsTemplate;

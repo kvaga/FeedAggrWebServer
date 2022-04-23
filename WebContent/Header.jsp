@@ -25,6 +25,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Header</title>
+</head>
+<body>
+	<div id="exception"></div>
+<script src="js/lib.js"></script>
 <script>
 try{
     var xhr = new XMLHttpRequest();
@@ -49,15 +55,9 @@ try{
     xhr.open('GET', '${pageContext.request.contextPath}/Monitoring?type=json', true);
     xhr.send(null);
 }catch(err){
-	document.getElementById("FeedsUpdateJobStatus").innerHTML=err.message;
-    document.getElementById("CompositeFeedsUpdateJobStatus").innerHTML=err.message;
-
+	exception('exception', err.message);
 }
 </script>
-<title>Header</title>
-</head>
-<body>
-
 
 <a href="LoginSuccess.jsp">Main page</a>. If you have other feeds, <a href="Feed.jsp?action=new">add</a> them to your account. Or <a href="mergeRSS.jsp">create Composite</a> rss feed
 <br/>
@@ -73,7 +73,7 @@ try{
 			-->
 		</td>
 		<td><a href="addFeedsByList.jsp">Add feeds by URL list</a><br/><a href="CheckoutPage.jsp">Checkout Page</a></td>
-		<td><a href="Test">Test page</a><br/><a href="HealthCheck.jsp">Health Check page</a></td>
+		<td><a href="test2.jsp">Test page</a><br/><a href="HealthCheck.jsp">Health Check page</a></td>
 		<td><a href="addFeedId2CompositeFeed.jsp">addFeedId2CompositeFeed</a><br/><a href="DeleteOldFeedItems.jsp">DeleteOldFeedItems.jsp</a></td>
 		<td><a href="deleteFeedsFeedsByList.jsp">deleteFeedsFeedsByList</a></td>
 		<td>
