@@ -29,7 +29,7 @@ public class ICSServlet extends HttpServlet {
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public ICSServlet() {
-		super();
+		super(); 
 	}
  
 	/**

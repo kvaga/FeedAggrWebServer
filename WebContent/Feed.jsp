@@ -19,6 +19,8 @@ final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClas
     pageEncoding="UTF-8"%>
     
 <!DOCTYPE html>
+<jsp:include page="Header.jsp"></jsp:include>
+
 <%
 if(request.getParameter("action")!=null && request.getParameter("action").equals("edit")){
 	ServerUtils.clearSessionFromFeedAttributes(request);
@@ -57,7 +59,6 @@ if(request.getParameter("action")!=null && request.getParameter("action").equals
 
 </head>
 <body>
-<jsp:include page="Header.jsp"></jsp:include>
 
 
 <%

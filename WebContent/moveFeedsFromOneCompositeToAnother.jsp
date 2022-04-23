@@ -6,6 +6,8 @@
     pageEncoding="UTF-8"%>
     
 <!DOCTYPE html>
+<jsp:include page="Header.jsp"></jsp:include>
+
 <html>
 <head>
 <script src="sort_table.js"></script>
@@ -21,9 +23,11 @@
 //Get a list of Composite User Feed
 var feedIdsFromCompositeUserFeed;
 try{
+	loadingStart();
     let getCompositeUserFeedListRequest = new XMLHttpRequest();
     getCompositeUserFeedListRequest.onreadystatechange = function() {
         if (getCompositeUserFeedListRequest.readyState == 4) {
+        	loadingStop();
         	feedIdsFromCompositeUserFeed = JSON.parse(getCompositeUserFeedListRequest.responseText);
         }
     }
@@ -31,14 +35,16 @@ try{
     getCompositeUserFeedListRequest.open('GET', '${pageContext.request.contextPath}/GetFeedIdsFromCompositeUserFeed?userName=<%= request.getSession().getAttribute("login")%>&compositeFeedId=<%= request.getParameter("compositeFeedId")%>', true);
     getCompositeUserFeedListRequest.send(null);
 }catch(err){
-	//document.getElementById("tt").innerHTML=err.message;
+	exception(err.message);
 }
 
 // Get a list of User Feeds
 try{
+	loadingStart();
     let xhr1 = new XMLHttpRequest();
     xhr1.onreadystatechange = function() {
         if (xhr1.readyState == 4) {
+        	loadingStop();
             var dataObj = JSON.parse(xhr1.responseText);
             fulfillHeaderTable(dataObj, feedIdsFromCompositeUserFeed);
        }
@@ -47,7 +53,7 @@ try{
     xhr1.open('GET', '${pageContext.request.contextPath}/FeedsList?type=json&short=true&userName=<%= request.getSession().getAttribute("login")%>', true);
     xhr1.send(null);
 }catch(err){
-	document.getElementById("tt").innerHTML=err.message;
+	exception(err.message);
 }
 
 // fulfill header table
@@ -79,9 +85,11 @@ function compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, feedId){
 <script>
 // Fulfill a table of Composites
 try{
+	loadingStart();
     var xhr1 = new XMLHttpRequest();
     xhr1.onreadystatechange = function() {
         if (xhr1.readyState == 4) {
+        	loadingStop();
             const dataObj = JSON.parse(xhr1.responseText);
             fulfillTableCompouseUserFeedShort(dataObj);
         }
@@ -90,7 +98,7 @@ try{
     xhr1.open('GET', '${pageContext.request.contextPath}/CompositeFeedsList?type=json&short=true&userName=<%= request.getSession().getAttribute("login")%>', true);
     xhr1.send(null);
 }catch(err){
-	document.getElementById("tt").innerHTML=err.message;
+	exception(err.message);
 }
 
 //this function appends the json data to the table 'gable'
@@ -119,7 +127,6 @@ function fixedEncodeURIComponent(str) {
 <title>Move Feeds From One Composite To Another</title>
 </head>
 <body>
-<jsp:include page="Header.jsp"></jsp:include>
 
 
 <h2>Move Feeds From '<%= request.getParameter("compositeFeedTitle")%>' Composite To Another</h3>

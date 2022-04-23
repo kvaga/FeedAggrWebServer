@@ -23,6 +23,8 @@
 	%>
     
 <!DOCTYPE html>
+<jsp:include page="Header.jsp"></jsp:include>
+
 <html>
 <head>
 <script src="sort_table.js"></script>
@@ -59,9 +61,11 @@ function htmlEntities(str) {
 </style>
 <script>
 try{
+	loadingStart();
     var xhr1 = new XMLHttpRequest();
     xhr1.onreadystatechange = function() {
         if (xhr1.readyState == 4) {
+        	loadingStop();
             //var data = JSON and JSON.parse(xhr.responseText);
             const dataObj = JSON.parse(xhr1.responseText);
            //alert(data);
@@ -93,7 +97,7 @@ try{
     xhr1.open('GET', '${pageContext.request.contextPath}/CompositeFeedsList?type=json&short=true&userName=<%= request.getSession().getAttribute("login")%>', true);
     xhr1.send(null);
 }catch(err){
-	document.getElementById("tt").innerHTML=err.message;
+	exception(err.message);
 }
 
 //this function appends the json data to the table 'gable'
@@ -155,7 +159,6 @@ function fulfillTableCompouseUserFeedShort(dataObj){
 <title>Composite Feeds Short List</title>
 </head>
 <body>
-<jsp:include page="Header.jsp"></jsp:include>
 
 
 <h3>Composite feeds Short Info</h3>

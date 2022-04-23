@@ -23,6 +23,8 @@ ru.kvaga.rss.feedaggrwebserver.objects.user.UserFeed
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<jsp:include page="Header.jsp"></jsp:include>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -50,9 +52,11 @@ function toggle(source) {
 <script>
 // Check composite user feed for null titles
 try{
+	loadingStart();
     var xhr1 = new XMLHttpRequest();
     xhr1.onreadystatechange = function() {
         if (xhr1.readyState == 4) {
+        	loadingStop();
             const dataObj = JSON.parse(xhr1.responseText);
             fulfillTableCompouseUserFeedShort(dataObj);
         	document.getElementById("tt").innerHTML=
@@ -64,7 +68,7 @@ try{
     xhr1.open('GET', '${pageContext.request.contextPath}/CompositeFeedsList?type=json&short=true&userName=<%= request.getSession().getAttribute("login")%>', true);
     xhr1.send(null);
 }catch(err){
-	document.getElementById("tt").innerHTML=err.message;
+	exception(err.message);
 }
 
 //this function appends the json data to the table 'gable'
@@ -87,9 +91,11 @@ function fulfillTableCompouseUserFeedShort(dataObj){
 <script>
 // Check user feed for null title or url
 try{
+	loadingStart();
     var xhr2 = new XMLHttpRequest();
     xhr2.onreadystatechange = function() {
         if (xhr2.readyState == 4) {
+        	loadingStop();
             const dataObj = JSON.parse(xhr2.responseText);
             fulfillTableUserFeedShort(dataObj);
         	document.getElementById("tt").innerHTML=
@@ -125,7 +131,6 @@ function fulfillTableUserFeedShort(dataObj){
 </script>
 </head>
 <body>
-<jsp:include page="Header.jsp"></jsp:include>
 <%
 	final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClass().getSimpleName());
 %>

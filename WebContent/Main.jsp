@@ -12,6 +12,8 @@ final Logger log = LogManager.getLogger(ConfigMap.prefixForlog4jJSP+this.getClas
 
 %>
 <!DOCTYPE html>
+<jsp:include page="Header.jsp"></jsp:include>
+
 <html>
 <head>
 <!--[en-GB,en;q=0.9,ru-RU;q=0.8,ru;q=0.7,en-US;q=0.6]--[en]--[]-->

@@ -23,9 +23,11 @@
 	%>
     
 <!DOCTYPE html>
+<jsp:include page="Header.jsp"></jsp:include>
+
 <html>
 <head>
-<script src="sort_table.js"></script>
+<script src="./sort_table.js"></script>
 <style type="text/css">
 	table, th, td {
 	    border: 1px solid black;
@@ -38,7 +40,6 @@
 <title>Composite Feeds List</title>
 </head>
 <body>
-<jsp:include page="Header.jsp"></jsp:include>
 <h3>Composite feeds</h3>
 
 <%

@@ -23,6 +23,8 @@
 	%>
     
 <!DOCTYPE html>
+<jsp:include page="Header.jsp"></jsp:include>
+
 <html>
 <head>
 <script src="sort_table.js"></script>
@@ -40,9 +42,11 @@ var feedIdsFromCompositeUserFeed;
 var feedIdParameter=<%= request.getParameter("feedId")==null?null:"'"+request.getParameter("feedId")+"'"%>;
 if(feedIdParameter){
 	try{
+		loadingStart();
 	    var getCompositeUserFeedListRequest = new XMLHttpRequest();
 	    getCompositeUserFeedListRequest.onreadystatechange = function() {
 	        if (getCompositeUserFeedListRequest.readyState == 4) {
+	        	loadingStop();
 	        	feedIdsFromCompositeUserFeed = JSON.parse(getCompositeUserFeedListRequest.responseText);
 	        	//document.getElementById("tt").innerHTML=
 	        											//dataObj;
@@ -53,14 +57,16 @@ if(feedIdParameter){
 	    getCompositeUserFeedListRequest.open('GET', '${pageContext.request.contextPath}/GetFeedIdsFromCompositeUserFeed?userName=<%= request.getSession().getAttribute("login")%>&compositeFeedId=<%= request.getParameter("feedId")%>', true);
 	    getCompositeUserFeedListRequest.send(null);
 	}catch(err){
-		//document.getElementById("tt").innerHTML=err.message;
+		exception(err.message);
 	}
 }
 // Get a list of User Feeds
 try{
+	loadingStart();
     var xhr1 = new XMLHttpRequest();
     xhr1.onreadystatechange = function() {
         if (xhr1.readyState == 4) {
+        	loadingStop();
             var dataObj = JSON.parse(xhr1.responseText);
             fulfillHeaderTable(dataObj, feedIdsFromCompositeUserFeed);
             fulfillTableUserFeeds(dataObj, feedIdsFromCompositeUserFeed);
@@ -88,7 +94,7 @@ try{
     xhr1.open('GET', '${pageContext.request.contextPath}/FeedsList?type=json&short=true&userName=<%= request.getSession().getAttribute("login")%>', true);
     xhr1.send(null);
 }catch(err){
-	//document.getElementById("tt").innerHTML=err.message;
+	exception(err.message);
 }
 
 // fulfill header table
@@ -159,7 +165,6 @@ function compositeUserFeedContainsFeedId(feedIdsFromCompositeUserFeed, feedId){
 <title>Merge RSS</title>
 </head>
 <body>
-<jsp:include page="Header.jsp"></jsp:include>
 
 
 <h2>Feeds List Short Info for '<%= request.getParameter("feedTitle")%>'</h2>

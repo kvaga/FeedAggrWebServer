@@ -4,6 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
     
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<jsp:include page="Header.jsp"></jsp:include>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -81,7 +83,7 @@ try{
     xhr.open('GET', '${pageContext.request.contextPath}/CompositeFeedsList?type=json&userName=<%= request.getSession().getAttribute("login")%>', true);
     xhr.send(null);
 }catch(err){
-	document.getElementById("compositeFeedList1").innerHTML=err.message;
+	exception(err.message);
 
 }
 
@@ -91,7 +93,6 @@ try{
 <title>User File Export</title>
 </head>
 <body>
-<jsp:include page="Header.jsp"></jsp:include>
 
 <%
 String userName=(String)request.getSession().getAttribute("login");

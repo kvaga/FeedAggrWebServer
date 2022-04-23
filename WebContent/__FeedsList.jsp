@@ -23,6 +23,8 @@
 	%>
     
 <!DOCTYPE html>
+<jsp:include page="Header.jsp"></jsp:include>
+
 <html>
 <head>
 <meta charset="utf-8">
@@ -40,7 +42,6 @@
 </style>
 </head>
 <body>
-<jsp:include page="Header.jsp"></jsp:include>
 <h3>Common feeds</h3>
 <%
 

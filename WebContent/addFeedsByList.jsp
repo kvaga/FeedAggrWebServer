@@ -2,6 +2,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<jsp:include page="Header.jsp"></jsp:include>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -19,10 +21,11 @@
 <script>
 	function addFeedsByList(){
 		try{
+			loadingStart();
 			let listOfURLs = document.getElementById('listOfURLs').value;
 			sendR(listOfURLs);
 		}catch(err){
-			exception('exception', err.message);
+			exception(err.message);
 		}
 	}
 	
@@ -31,6 +34,7 @@
 		    var xhr1 = new XMLHttpRequest();
 		    xhr1.onreadystatechange = function() {
 		        if (xhr1.readyState == 4) {
+		        	loadingStop();
 		            const dataObj = JSON.parse(xhr1.responseText);
 		            fulfillTableCompouseUserFeedShort(dataObj);
 		        	/*
@@ -44,7 +48,7 @@
 		    xhr1.open('GET', '${pageContext.request.contextPath}/AddFeedsByUrlsList?listUrls='+listUrls+'&userName=<%= request.getSession().getAttribute("login")%>', true);
 		    xhr1.send(null);
 		}catch(err){
-			exception('exception', err.message);
+			exception(err.message);
 		}
 	
 	}
@@ -77,7 +81,7 @@
 		 	table.appendChild(tr);
 		 }
 		}catch(err){
-			exception('exception', err.message);
+			exception(err.message);
 		}
 	}
 
@@ -92,7 +96,6 @@
 </style>
 </head>
 <body>
-	<jsp:include page="Header.jsp"></jsp:include>
 	<%
 		if (request.getParameter("listOfURLs") == null) {
 			request.getSession().removeAttribute("listOfURLs");
@@ -109,7 +112,7 @@
 		<br /> <input type="button" value="Add" onclick="addFeedsByList()"/>
 	</form>
 	
-	<form action="__addFeedId2CompositeFeed.jsp">
+	<form action="addFeedId2CompositeFeed.jsp">
 		<table id="tableOfNewlyAddedFeeds">
 			<tr>
 				        <th	onClick="toggle(this)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbsp#</th>

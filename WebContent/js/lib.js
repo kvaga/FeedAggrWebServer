@@ -1,11 +1,23 @@
+function loadingStart(){
+	document.getElementById('loading').innerHTML='<p>Loading...</p>';
+	console.info('Loading started...'+document.getElementById('loading'));
+}
+
+function loadingStop(){
+	document.getElementById('loading').innerHTML='';
+	console.info('Loading finished');
+}
+
 function UserException(message) {
 	   this.message = message;
 	   this.name = "Исключение, определённое пользователем";
 }
-	
-function exception(id, text){
-	document.getElementById(id).innerHTML='<p><font color="red">Exception: ' + text + '</font></p>';
-	log.error('Exception: ' + text);
+
+
+function exception(text){
+	document.getElementById('exception').innerHTML='<p><font color="red">Exception: ' + text + '</font></p>';
+	loadingStop();
+	console.error('Exception: ' + text);
 }
 
 function error_text(text){
