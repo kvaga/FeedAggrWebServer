@@ -27,7 +27,11 @@
 
 <html>
 <head>
-<script src="sort_table.js"></script>
+<script src="js/sort_table.js"></script>
+<script src="js/lib.js"></script>
+<script src="js/feeds.js"></script>
+
+
 <style type="text/css">
 	table, th, td {
 	    border: 1px solid black;
@@ -40,6 +44,23 @@
 try{
 	loadingStart();
     var xhr1 = new XMLHttpRequest();
+    //
+    //var progressBar = document.getElementById("p");
+	//
+    //xhr1.onprogress = function(pe) {
+    //	console.log('pre: ' + pe + ', pe.lengthComputable: ' + pe.lengthComputable + ', pe.total: ' + pe.total);
+	//    if(pe.lengthComputable) {
+	//    	console.log('in');
+	//      progressBar.max = pe.total;
+	//      progressBar.value = pe.loaded;
+	//    }
+  	//}
+    //xhr1.onloadend = function(pe) {
+    //	console.log('second: ' + pe.loaded);
+    //	progressBar.value = pe.loaded;
+  	//}
+    //
+    //
     xhr1.onreadystatechange = function() {
         if (xhr1.readyState == 4) {
             loadingStop();
@@ -73,7 +94,10 @@ try{
     }
 
     xhr1.open('GET', '${pageContext.request.contextPath}/FeedsList?type=json&short=true&userName=<%= request.getSession().getAttribute("login")%>', true);
+   
     xhr1.send(null);
+    
+   
 }catch(err){
 	exception(err.message);
 }
@@ -109,12 +133,19 @@ function fulfillTableCompouseUserFeedShort(dataObj){
 	    	'<td>' + dataObj[i].oldestPubDate + '</td>' +
 	    	
 	    	'<td>' + dataObj[i].lastUpdated + '</td>' +
-	    	'<td>' + dataObj[i].lastUpdateStatus + '</td>' +
+	    	'<td>' + escapeHtml(dataObj[i].lastUpdateStatus) + '</td>' +
 	    	
 	    	'<td>' + '<a href="'+dataObj[i].userFeedUrl+'">' + dataObj[i].userFeedUrl + '</a>'+'</td>'+
 	    	'<td>' + listOfCompositeFeedsTitles + '</td>';
+	    	if(dataObj[i].suspendStatus){
+	    		tr.style.backgroundColor='grey';
+	    	}
+	    	if(isErrorOnLastUpdateStatus(dataObj[i].lastUpdateStatus)){
+	    		tr.style.backgroundColor='red';
+	    	}
 	    	table.appendChild(tr);
 	 }
+	 sortTable(2);
     /*
     for(var i=0; i<dataObj.length;i++){
         var tr = document.createElement('tr');
@@ -148,8 +179,9 @@ function fulfillTableCompouseUserFeedShort(dataObj){
 <title>Feeds List Short Info</title>
 </head>
 <body>
-
-
+<!-- 
+	<progress id="p"></progress>
+ -->
 <h3>Feeds List Short Info</h3>
 <!-- 
 <textarea rows="20" cols="50" id="tt"></textarea>
@@ -162,18 +194,14 @@ function fulfillTableCompouseUserFeedShort(dataObj){
                 <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspDelete</th>
                 <th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspEdit</th>
                 <th onclick="sortTable(5)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspCountOfItems</th>
-	    	<th onclick="sortTable(6)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspSizeMb</th>
-	    	<th onclick="sortTable(7)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspPAUSED?</th>
-	    	
-	    	<th onclick="sortTable(8)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspNewestPubDate</th>
-	    	<th onclick="sortTable(9)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspOldestPubDate</th>
-	    	
-	    	<th onclick="sortTable(10)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLastUpdated</th>
-	    	<th onclick="sortTable(11)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLastUpdateStatus</th>
-	    	
+	    		<th onclick="sortTable(6)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspSizeMb</th>
+	    		<th onclick="sortTable(7)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspPAUSED?</th>
+		    	<th onclick="sortTable(8)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspNewestPubDate</th>
+	    		<th onclick="sortTable(9)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspOldestPubDate</th>
+		    	<th onclick="sortTable(10)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLastUpdated</th>
+	    		<th onclick="sortTable(11)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLastUpdateStatus</th>
                 <th onclick="sortTable(12)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspURL</th>
                 <th onclick="sortTable(13)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspComposite User Feeds Titles</th>
-                
     </tr>
 </table>
 </body>

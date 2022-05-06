@@ -82,7 +82,7 @@ public class CompositeFeedsListServlet extends HttpServlet {
 		}catch (Exception e) {
 			log.error("Exception on CompositeFeedsListServlet", e);
 			request.setAttribute("Exception", e);
-		}	
+		}	 
 
 	}
 

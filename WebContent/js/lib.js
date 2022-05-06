@@ -1,3 +1,14 @@
+function escapeHtml(unsafe)
+{
+	if(unsafe===null) return unsafe;
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+ }
+ 
 function loadingStart(){
 	document.getElementById('loading').innerHTML='<p>Loading...</p>';
 	console.info('Loading started...'+document.getElementById('loading'));
@@ -42,6 +53,8 @@ function toggle(source) {
 	  }
 }
 
+
+ 
 //function show_hide_column(col_no, do_show) {
 //	console.log("show_hide_column: col_no ["+col_no+"], do_show ["+do_show+"]");
 //	   var tbl = document.getElementById('table1');

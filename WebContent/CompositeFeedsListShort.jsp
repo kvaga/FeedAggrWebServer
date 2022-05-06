@@ -27,7 +27,7 @@
 
 <html>
 <head>
-<script src="sort_table.js"></script>
+<script src="js/sort_table.js"></script>
 <script>
 function fixedEncodeURIComponent(str) {
 	  return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
@@ -104,7 +104,7 @@ try{
 function fulfillTableCompouseUserFeedShort(dataObj){
 	var table = document.getElementById('table');
 	 for(var i=0; i<dataObj.length;i++){            
-	 	console.log(dataObj[i]);
+	 	//console.log(dataObj[i]);
 	 	var tr = document.createElement('tr');
 		tr.innerHTML = 
 			'<td>' + '<a href="${pageContext.request.contextPath}/showFeed?feedId='+dataObj[i].feedId+'">' + dataObj[i].name + '</a>' + '</td>' +
@@ -126,6 +126,7 @@ function fulfillTableCompouseUserFeedShort(dataObj){
 	    	;
 	    	table.appendChild(tr);
 	 }
+	 sortTable(1);
     /*
     for(var i=0; i<dataObj.length;i++){
         var tr = document.createElement('tr');

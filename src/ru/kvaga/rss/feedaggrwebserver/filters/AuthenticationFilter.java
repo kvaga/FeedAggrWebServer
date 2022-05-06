@@ -48,7 +48,14 @@ public class AuthenticationFilter implements Filter {
 		context.log("Requested Resource:" + uri);
 		log.debug("Requested Resource:" + uri);
 		HttpSession session = req.getSession(false);
-		if(session==null && !(uri.endsWith("ProxySite") || uri.endsWith("html") || uri.endsWith("LoginServlet")|| uri.endsWith("showFeed"))) {
+		if(session==null && !(
+				uri.endsWith("ProxySite") 
+				|| uri.endsWith("html") 
+				|| uri.endsWith("LoginServlet")
+				|| uri.endsWith("showFeed")
+				|| uri.endsWith("Metrics.jsp")
+				|| uri.endsWith("Test")
+				)) {
 			context.log("Unauthorized access request");
 			res.sendRedirect("Login.html");
 		}else {
