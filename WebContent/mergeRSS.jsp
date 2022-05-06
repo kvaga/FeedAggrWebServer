@@ -27,7 +27,7 @@
 
 <html>
 <head>
-<script src="sort_table.js"></script>
+<script src="js/sort_table.js"></script>
 <style type="text/css">
 	table, th, td {
 	    border: 1px solid black;
@@ -112,6 +112,7 @@ function fulfillHeaderTable(dataObj, feedIdsFromCompositeUserFeed){
 	    		table.appendChild(tr);
 			}
 	 }
+	 sortTableByColumnForTableObject(table,2);
 	 
 }
 
@@ -144,6 +145,7 @@ function fulfillTableUserFeeds(dataObj,feedIdsFromCompositeUserFeed){
 
 	    	table.appendChild(tr);
 	 }
+	 sortTable(3);
 	 
 }
 

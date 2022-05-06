@@ -55,6 +55,38 @@ function sortTable(colnum, descending='false') {
 //	  th.addEventListener(`click`, evt => sortTable(position));
 //});
 
+function sortTableByColumnForTableObject(table, colnum, descending='false') {
+	console.log("sortTableByColumnForTableObject...");
+  // get all the rows in this table:
+  let rows = Array.from(table.querySelectorAll(`tr`));
+
+  // but ignore the heading row:
+  rows = rows.slice(1);
+
+  // set up the queryselector for getting the indicated
+  // column from a row, so we can compare using its value:
+  let qs = `td:nth-child(${colnum})`;
+
+  // and then just... sort the rows:
+  rows.sort( (r1,r2) => {
+    // get each row's relevant column
+    let t1 = r1.querySelector(qs);
+    let t2 = r2.querySelector(qs);
+
+	//return isNaN(t1.textContent) ? compareValues(t1.textContent,t2.textContent) : compareValuesNumAsc(t1.textContent,t2.textContent);
+
+    if(descending=='false'){
+    	// and then effect sorting by comparing their content:
+    	return isNaN(t1.textContent) ? compareValues(t1.textContent,t2.textContent) : compareValuesNumDesc(t1.textContent,t2.textContent);
+    }else{
+    	return isNaN(t1.textContent) ? compareValues(t1.textContent,t2.textContent) : compareValuesNumAsc(t1.textContent,t2.textContent);
+    }
+  });
+
+  // and then the magic part that makes the sorting appear on-page:
+  rows.forEach(row => table.appendChild(row));
+}
+
 function sortTableByColumnForId(id, colnum, descending='false') {
 	console.log("sortTableByColumnForId...");
 	let tabl = document.getElementById(id);
@@ -85,5 +117,5 @@ function sortTableByColumnForId(id, colnum, descending='false') {
   });
 
   // and then the magic part that makes the sorting appear on-page:
-  rows.forEach(row => table.appendChild(row));
+  rows.forEach(row => tabl.appendChild(row));
 }
