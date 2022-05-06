@@ -27,7 +27,7 @@
 
 <html>
 <head>
-<script src="sort_table.js"></script>
+<script src="js/sort_table.js"></script>
 <style type="text/css">
 	table, th, td {
 	    border: 1px solid black;
@@ -69,6 +69,7 @@ function fulfillTableCompouseUserFeedShort(dataObj){
 	    	'<td>' + '<a href="'+dataObj[i].userFeedUrl+'">' + dataObj[i].userFeedUrl + '</a>'+'</td>';
 	    	table.appendChild(tr);
 	 }
+	 sortTable(2);
 }
 
 </script>

@@ -7,6 +7,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
+<script src="js/sort_table.js"></script>
 <style type="text/css">
 	table, th, td {
 	    border: 1px solid black;
@@ -47,7 +48,7 @@ try{
 function fulfillTableCompouseUserFeedShort(dataObj){
 	var table = document.getElementById('tableCompositeFeeds');
 	 for(var i=0; i<dataObj.length;i++){            
-	 	console.log(dataObj[i]);
+	 	//console.log(dataObj[i]);
 	 	var tr = document.createElement('tr');
 		tr.innerHTML = ''+
 		''+
@@ -58,6 +59,7 @@ function fulfillTableCompouseUserFeedShort(dataObj){
 			;
 		table.appendChild(tr);
 	 } 
+	 sortTableByColumnForTableObject(table, 1);
 }
 
 

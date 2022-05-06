@@ -27,8 +27,8 @@
 
 <html>
 <head>
-<script src="sort_table.js"></script>
-<script src="lib.js"></script>
+<script src="js/sort_table.js"></script>
+<script src="js/lib.js"></script>
 
 <style type="text/css">
 	table, th, td {
@@ -68,6 +68,7 @@ function fulfillTableCompositeFeedsList(dataObj){
 	    	'<td>' + dataObj[i].feedIds.length + '</td>';
 	    	table.appendChild(tr);
 	 }
+	 sortTableByColumnForTableObject(table, 2);
 }
 
 </script>
