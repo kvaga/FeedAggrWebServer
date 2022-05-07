@@ -10,11 +10,12 @@ function isFeedPaused(status){
 }
 
 function isErrorOnLastUpdateStatus(status){
-	if(!status){
-		return false;
-	}
-	if(status.toLowerCase()==='null'){
+	console.log(status);
+	if(status){
 		return true;
 	}
+	//if(status.toLowerCase()==='null'){
+	//	return true;
+	//}
 	return false;
 }
