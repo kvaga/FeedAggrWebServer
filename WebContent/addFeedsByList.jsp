@@ -69,7 +69,7 @@
 					'<td>' + dataObj[i].feedTitle + '</td>'+
 					'<td>' + dataObj[i].url + '</td>'+
 					'<td>' + dataObj[i].size + '</td>'+
-					'<td><a href="__addFeedId2CompositeFeed.jsp?feedId=' + dataObj[i].feedId + '">Add to composite</a>'+'</td>';
+					'<td><a href="addFeedId2CompositeFeed.jsp?feedId=' + dataObj[i].feedId + '">Add to composite</a>'+'</td>';
 			} else {
 				tr.innerHTML += 
 					'<td><input type="checkbox" id="feed_id" name="feedId" value="null" disabled></td>'+

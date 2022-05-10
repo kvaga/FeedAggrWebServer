@@ -10,7 +10,7 @@ function isFeedPaused(status){
 }
 
 function isErrorOnLastUpdateStatus(status){
-	console.log(status);
+	//console.log(status);
 	if(status){
 		return true;
 	}

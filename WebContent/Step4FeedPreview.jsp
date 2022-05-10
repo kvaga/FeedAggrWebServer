@@ -287,6 +287,7 @@
 
 		<h2>Your feed is ready!</h2>
 
+		<p><a href="addFeedId2CompositeFeed.jsp?feedId=<%=(String) request.getSession().getAttribute("feedId")%>">Add This Feed To Composite feed</a></p>
 		<p style="margin-top: 30px">
 			<span class="big">Feed URL: <a
 				title="Click to open this URL in new window" id="feed-link"
