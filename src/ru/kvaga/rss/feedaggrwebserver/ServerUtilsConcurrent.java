@@ -9,6 +9,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.Callable;
@@ -19,6 +20,13 @@ import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.hc.client5.http.ConnectTimeoutException;
 import org.apache.logging.log4j.LogManager;
@@ -100,6 +108,26 @@ class GetURLContentTask implements Callable<String>{
 		HttpURLConnection con=null;
 
 		try {
+			/* Start of Fix SSL Checks */
+	        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+	            public java.security.cert.X509Certificate[] getAcceptedIssuers() { return null; }
+	            public void checkClientTrusted(X509Certificate[] certs, String authType) { }
+	            public void checkServerTrusted(X509Certificate[] certs, String authType) { }
+
+	        } };
+
+	        SSLContext sc = SSLContext.getInstance("SSL");
+	        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+	        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+	        // Create all-trusting host name verifier
+	        HostnameVerifier allHostsValid = new HostnameVerifier() {
+	            public boolean verify(String hostname, SSLSession session) { return true; }
+	        };
+	        // Install the all-trusting host verifier
+	        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+	        /* End of the fix*/
+	        
 			URL url = new URL(urlText);
 			con = (HttpURLConnection) url.openConnection();
 			con.setConnectTimeout(httpConnectionConnectTimeoutInMillis); 
@@ -128,18 +156,21 @@ class GetURLContentTask implements Callable<String>{
 
 
 			
-			if (con.getContentType().toLowerCase().contains("charset=utf-8")) {
-				charset = "UTF-8";
-			} else if(con.getContentType().toLowerCase().contains("application/json")) {
-				charset = "UTF-8";
-			} else if(con.getContentType().toLowerCase().contains("application/rss+xml")) {
-				charset = "UTF-8";
-			}else if(con.getContentType().toLowerCase().contains("text/html")) {
-				charset = "UTF-8";
-			} else {
-				throw new FeedAggrException.GetURLContentException(urlText,
-						String.format("Received unsupported contentType: %s. ", con.getContentType()));
-			}
+//			if (con.getContentType().toLowerCase().contains("charset=utf-8")) {
+//				charset = "UTF-8";
+//			} else if(con.getContentType().toLowerCase().contains("application/json")) {
+//				charset = "UTF-8";
+//			} else if(con.getContentType().toLowerCase().contains("application/rss+xml")) {
+//				charset = "UTF-8";
+//			} else if(con.getContentType().toLowerCase().contains("application/xml")) {
+//				charset = "UTF-8";
+//			}else if(con.getContentType().toLowerCase().contains("text/html")) {
+//				charset = "UTF-8";
+//			} else {
+//				throw new FeedAggrException.GetURLContentException(urlText,
+//						String.format("Received unsupported contentType: %s. ", con.getContentType()));
+//			}
+			charset = "UTF-8";
 			String encoding=con.getContentEncoding();
 			if (encoding!=null && encoding.equals("gzip")) {
 				try (InputStream gzippedResponse = con.getInputStream();
