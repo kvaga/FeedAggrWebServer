@@ -115,7 +115,7 @@
 	<form action="addFeedId2CompositeFeed.jsp">
 		<table id="tableOfNewlyAddedFeeds">
 			<tr>
-				        <th	onClick="toggle(this)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbsp#</th>
+				        <th	onClick="toggle(this,'feed_id')"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbsp#</th>
 		                <th onclick=""><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspName</th>
 		                <th onclick=""><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspURL</th>
 		              	<th onclick=""><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspSize</th>

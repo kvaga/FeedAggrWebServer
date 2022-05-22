@@ -152,7 +152,7 @@ public class Channel {
 				}finally {
 					log.debug("itemTitle=" + itemTitle + ", itemTitleTemplate=" + itemTitleTemplate + ", [item.get(" + i + ")=" + itemFromHtmlBody.get(i) + "]");
 					log.debug("itemLink=" + itemLink + ", itemLinkTemplate=" + itemLinkTemplate	+ ", [item.get(" + i + ")=" + itemFromHtmlBody.get(i) + "]");
-					log.debug("itemContent=" + itemContent + ", itemContentTemplate=" + itemContentTemplate + ", [item.get(" + i + ")=" + itemFromHtmlBody.get(i) + "]");
+					//log.debug("itemContent=" + itemContent + ", itemContentTemplate=" + itemContentTemplate + ", [item.get(" + i + ")=" + itemFromHtmlBody.get(i) + "]");
 				}
 			}
 			_item.setTitle(itemTitle);

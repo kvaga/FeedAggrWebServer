@@ -33,6 +33,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ru.kvaga.monitoring.influxdb2.InfluxDB;
+import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggr.FeedAggrException;
 import ru.kvaga.rss.feedaggr.Item;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.MonitoringUtils;
@@ -127,7 +128,7 @@ class GetURLContentTask implements Callable<String>{
 	        // Install the all-trusting host verifier
 	        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
 	        /* End of the fix*/
-	        
+	        urlText = Exec.encodeURLString(urlText);
 			URL url = new URL(urlText);
 			con = (HttpURLConnection) url.openConnection();
 			con.setConnectTimeout(httpConnectionConnectTimeoutInMillis); 

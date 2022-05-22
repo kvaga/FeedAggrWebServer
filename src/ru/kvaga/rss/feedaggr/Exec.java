@@ -7,10 +7,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -237,10 +243,17 @@ public class Exec {
 		return splittedItems;
 	}
 */
+	public static String encodeURLString(String urlString) throws MalformedURLException, URISyntaxException {
+		URL url= new URL(urlString);
+		URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+		return uri.toASCIIString();
+	}
 	private static HashMap<String, Long> getURLContentDomainLocks = new HashMap<String, Long>();
 	@Deprecated
-	public static synchronized String getURLContent(String urlText) throws FeedAggrException.GetURLContentException, NoSuchAlgorithmException, KeyManagementException {
+	public static synchronized String getURLContent(String urlText) throws FeedAggrException.GetURLContentException, NoSuchAlgorithmException, KeyManagementException, UnsupportedEncodingException, MalformedURLException, URISyntaxException {
 		long t1 = new Date().getTime();
+		urlText=encodeURLString(urlText);
+				//URLEncoder.encode(urlText, StandardCharsets.UTF_8.toString());
 		String domain = Exec.getDomainFromURL(urlText);
 
 		String body = null;
@@ -266,8 +279,9 @@ public class Exec {
         HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
         /* End of the fix*/
         
-		HttpsURLConnection con=null;
-
+//		HttpsURLConnection con=null;
+        HttpURLConnection con=null;
+        
 		try {
 			
 			// Check if lock was expired
@@ -284,7 +298,8 @@ public class Exec {
 			}
 			
 			URL url = new URL(urlText);
-			con = (HttpsURLConnection) url.openConnection();
+//			con = (HttpsURLConnection) url.openConnection();
+			con = (HttpURLConnection) url.openConnection();
 //			con.connect();
 			
 
@@ -310,7 +325,9 @@ public class Exec {
 
 			log.debug("url ["+urlText+"], connection response code [" + con.getResponseCode()+"], contentType  ["+ con.getContentType()+"]");
 
+			charset = "UTF-8";
 			
+			/*
 			if (con.getContentType().toLowerCase().contains("charset=utf-8")) {
 				charset = "UTF-8";
 			} else if(con.getContentType().toLowerCase().contains("application/json")) {
@@ -324,6 +341,7 @@ public class Exec {
 				throw new FeedAggrException.GetURLContentException(urlText,
 						String.format("Received unsupported contentType: %s. ", con.getContentType()));
 			}
+			*/
 			String encoding=con.getContentEncoding();
 			if (encoding!=null && encoding.equals("gzip")) {
 				try (InputStream gzippedResponse = con.getInputStream();
@@ -504,20 +522,25 @@ public static synchronized String checkItemURLForFullness(String feedURL, String
 
 private static Pattern getChannelIdFromXMLURLPattern = Pattern.compile("https://www.youtube.com/feeds/videos.xml[?]channel_id=(?<channelId>.*)");
 public synchronized static String getChannelIdFromXMLURL(String url) throws Exception {
+	log.debug("getChannelIdFromXMLURL: processing url {}", url);
 	Matcher m = getChannelIdFromXMLURLPattern.matcher(url);
 	if(m.find()) {
+		log.debug("getChannelIdFromXMLURL: found channel id {} for the url {}", m.group("channelId"), url);
 		return m.group("channelId");
 	}
-	throw new Exception("Didnt' find any channel id for url ["+url+"]");
+	log.error("getChannelIdFromXMLURL: couldn't find channel id for the url {}", url);
+	throw new Exception("Didn't find any channel id for url ["+url+"]");
 }
 
 private static Pattern youtubeUrlChannelVideosPattern=Pattern.compile("https://www.youtube.com/channel/(?<channleId>.*)/videos");
 private static Pattern yutubeUrlContentExternalId = Pattern.compile("\"externalId\":\"(.*?)\",");
 public static synchronized String getYoutubeChannelId(String youtubeVideosUrl) throws Exception {
 	long t1 = new Date().getTime();
+	log.debug("getYoutubeChannelId: processing url {}", youtubeVideosUrl);
 	Matcher m1 = youtubeUrlChannelVideosPattern.matcher(youtubeVideosUrl);
 	if(m1.find()) {
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		log.debug("getYoutubeChannelId: found channel {}", m1.group("channleId"));
 		return m1.group("channleId");
 	}
 	if(youtubeVideosUrl.contains("feeds/videos.xml")) {
@@ -527,24 +550,30 @@ public static synchronized String getYoutubeChannelId(String youtubeVideosUrl) t
 //	String regex="\"externalId\":\"(([A-Z]*[0-9]*[a-z]*)*)\",";
 //	String regex = "https://www.youtube.com/channel/(.*)/videos";
 //	String urlContent=Exec.getURLContent(youtubeVideosUrl);
+	log.debug("getYoutubeChannelId: try to get yutubeUrlContentExternalId for the url {}", youtubeVideosUrl);
 	Matcher m = yutubeUrlContentExternalId.matcher(Exec.getURLContent(youtubeVideosUrl));
 	if(m.find()) {
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		log.debug("getYoutubeChannelId: found yutubeUrlContentExternalId {}", m.group(1));
 		return m.group(1);
 	}
+	log.error("getYoutubeChannelId: coundn't find youtubeChannelId and yutubeUrlContentExternalId for the url {}", youtubeVideosUrl);
 	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 	return null;
 }
 
 public static synchronized String getYoutubeFeedURL(String url) throws Exception {
 	long t1 = new Date().getTime();
+	log.debug("getYoutubeFeedURL: Got url {}", url);	
 	String youtubeChannelPattern="https://www.youtube.com/feeds/videos.xml?channel_id=%s";
 	String channelId = getYoutubeChannelId(url);
 	if(channelId!=null) {
+		log.debug("getYoutubeFeedURL: Determined youtube's url {} for the url {}", String.format(youtubeChannelPattern, channelId), url);	
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return String.format(youtubeChannelPattern, channelId);
 	}
 	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+	log.error("getYoutubeFeedURL: Couldn't find youtube's feed url for the url {}", url);	
 	return null;
 }
 
@@ -557,7 +586,7 @@ public static synchronized String getYoutubeMainPlaylistURL(String channelId) th
 }
 
 private static Pattern getYoutubeListOfPlaylistsURLsPattern = Pattern.compile("\\/playlist[?]list=(.*?)\",\"webPageTyp");
-public static synchronized HashSet<String> getYoutubeListOfPlaylistsURLs(String mainPlaylistURL) throws GetURLContentException, KeyManagementException, NoSuchAlgorithmException{
+public static synchronized HashSet<String> getYoutubeListOfPlaylistsURLs(String mainPlaylistURL) throws GetURLContentException, KeyManagementException, NoSuchAlgorithmException, UnsupportedEncodingException, MalformedURLException, URISyntaxException{
 	long t1=new Date().getTime();
 	String urlPlaylistFeedPattern="https://www.youtube.com/feeds/videos.xml?playlist_id=%s";
 //	ArrayList<String> l = new ArrayList<String>();

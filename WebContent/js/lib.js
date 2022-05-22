@@ -45,9 +45,9 @@ function deleteTBody(ttable){
 /**
  * 
  */
-function toggle(source) {
+function toggle(source, id='feed_id') {
 	console.log('onClick clicked');
-	checkboxes = document.querySelectorAll('[id^=feed_id]');
+	checkboxes = document.querySelectorAll('[id^='+id+']');
 	  for(var i=0, n=checkboxes.length;i<n;i++) {
 	    checkboxes[i].checked = source.checked;
 	  }

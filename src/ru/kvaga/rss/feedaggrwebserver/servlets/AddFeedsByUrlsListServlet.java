@@ -71,7 +71,9 @@ public class AddFeedsByUrlsListServlet extends HttpServlet {
     public ArrayList<ResponseForAddRSSFeedByURLAutomaticlyMethod> addFeedsByUrlsList(String userName, String[] urlList) {
     	ArrayList<ResponseForAddRSSFeedByURLAutomaticlyMethod> result = new ArrayList<ResponseForAddRSSFeedByURLAutomaticlyMethod>();
     	for (String url : urlList) {
+    		log.debug("Processing url {}", url);
 			try {
+				
 					if (url.startsWith("https://youtube") || url.startsWith("https://www.youtube") || url.startsWith("http://youtube") || url.startsWith("http://www.youtube")) {
 						// Checking for existence of playlists and adding playlists feeds
 						//log.debug("Checking URL [" + url + "] for existence in playlists");
@@ -105,10 +107,10 @@ public class AddFeedsByUrlsListServlet extends HttpServlet {
 //									int size = responseForAddRSSFeedByURLAutomaticlyMethod.getSize();
 //									String createdFeedId = responseForAddRSSFeedByURLAutomaticlyMethod.getFeedId();
 //
-//									/*
-//										!!! THIS SNIPPET IS DUPLICTED BELOW !!!
-//										Don't forget to correct code below
-//									*/
+//									
+//									//	!!! THIS SNIPPET IS DUPLICTED BELOW !!!
+//									//	Don't forget to correct code below
+//									
 //									if (size > 0) {
 //										out.write("<tr><td><input type=\"checkbox\" id=\"feed_id\" name=\"feedId\" value=\""+createdFeedId+"\" ></td><td>"+responseForAddRSSFeedByURLAutomaticlyMethod.getFeedTitle()+"</td><td>" + responseForAddRSSFeedByURLAutomaticlyMethod.getUrl() + "</td><td>" + size + "</td><td><a href=\"addFeedId2CompositeFeed.jsp?feedId=" + createdFeedId	+ "\">Add to composite</a></td></tr>");
 //
@@ -127,7 +129,11 @@ public class AddFeedsByUrlsListServlet extends HttpServlet {
 					if(url.startsWith("https://habr")){
 						url=Exec.getHabrFeedURL(url);
 					}
-					log.debug("Adding main feed");
+					 
+				//url = (url.contains("youtube.com") && !url.contains("youtube.com/feeds/videos.xml")) ? Exec.getYoutubeFeedURL(url): url;
+				//url = (url.startsWith("https://habr.com/ru/rss") || url.startsWith("https://habr.com/rss") || url.startsWith("https://habrahabr.com/rss")|| url.startsWith("https://habrahabr.ru/rss")) ? Exec.getHabrFeedURL(url) : url;
+				
+					log.debug("Adding main feed for the url {}", url);
 					// Adding feeds from main videos URLs
 					long durationMillisecondsForUpdatingFeeds = ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE;
 
