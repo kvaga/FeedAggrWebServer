@@ -120,7 +120,7 @@ function fulfillTableUserFeedShort(dataObj){
 			onErr,
 			function onSuccess(obj){
 				createTableForCheckZombiFeedsInCompositeFeeds(obj, 'divCheckZombiFeedsInCompositeFeeds');
-			}
+			} 
 	);
 	
 </script>
