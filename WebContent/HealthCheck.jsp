@@ -70,7 +70,7 @@ try{
 }catch(err){
 	exception(err.message);
 }
-
+ 
 //this function appends the json data to the table 'gable'
 function fulfillTableCompouseUserFeedShort(dataObj){
 	var table = document.getElementById('tableCompositeUserFeed');
