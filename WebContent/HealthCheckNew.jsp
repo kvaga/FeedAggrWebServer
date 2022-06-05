@@ -111,57 +111,46 @@ function fulfillTableUserFeedShort(dataObj){
 </script>
 </head>
 <body>
-<h3>Zombie feeds in composite feeds by user (composite feed has feeds that don't exist)</h3>
-<div id='divCheckZombiFeedsInCompositeFeeds'></div>
 
-<script type="text/javascript">
-	getGetJSONContentFromURL(
-			'${pageContext.request.contextPath}/HealthCheck?kindOfCheck=checkZombiFeedsInCompositeFeeds&userName=<%= request.getSession().getAttribute("login")%>',
-			onErr,
-			function onSuccess(obj){
-				createTableForCheckZombiFeedsInCompositeFeeds(obj, 'divCheckZombiFeedsInCompositeFeeds');
-			} 
-	);
+<h3>Duplicate feeds of user <%= request.getSession().getAttribute("login")%> (duplicate feeds for user that have the same url)</h3>
+	<div id='divDuplicateFeeds'></div>
+	<script type="text/javascript">
+		getGetJSONContentFromURL(
+				'${pageContext.request.contextPath}/HealthCheck?kindOfCheck=checkDuplicateFeedsOfUser&userName=<%= request.getSession().getAttribute("login")%>',
+				onErr,
+				function onSuccess(obj){
+					createTableForCheckDuplicateFeeds(obj, 'divDuplicateFeeds');
+				} 
+		);	
+	</script>
 	
-</script>
+<h3>Zombie feeds in composite feeds of user <%= request.getSession().getAttribute("login")%> (composite feed has feeds that don't exist)</h3>
+	<div id='divCheckZombiFeedsInCompositeFeeds'></div>
+	<script type="text/javascript">
+		getGetJSONContentFromURL(
+				'${pageContext.request.contextPath}/HealthCheck?kindOfCheck=checkZombiFeedsInCompositeFeeds&userName=<%= request.getSession().getAttribute("login")%>',
+				onErr,
+				function onSuccess(obj){
+					createTableForCheckZombiFeedsInCompositeFeeds(obj, 'divCheckZombiFeedsInCompositeFeeds');
+				} 
+		);	
+	</script>
 
-<h3>Abandoned feeds by users (no user who has these feeds)</h3>
-...
-<h3>Duplicate feeds by users (duplicate feeds for user that have the same url)</h3>
+<h3>Abandoned feed files (no user who has these feeds)</h3>
+	<div id='divCheckAbandonedFeeds'></div>
+	<script type="text/javascript">
+		getGetJSONContentFromURL(
+				'${pageContext.request.contextPath}/HealthCheck?kindOfCheck=checkAbandonedFeeds&userName=<%= request.getSession().getAttribute("login")%>',
+				onErr,
+				function onSuccess(obj){
+					createTableForCheckAbandonedFeeds(obj, 'divCheckAbandonedFeeds');
+				} 
+		);	
+	</script>
 
-<%
-/*
-boolean foundDuplicates=false;
-	for (User user : User.getAllUsersList()) {
-		try{
-			//Set<CompositeUserFeed> allCompositeUserFeedCache = user.getCompositeUserFeeds();
-			HashMap<String, HashSet<String>> feedIdsWithDuplicateUrls = user.getFeedIdsWithDuplicateUrls();
-			if(feedIdsWithDuplicateUrls.size()>0){
-				out.append("<table border='1'><tr><td align=\"center\" colspan=\"2\">User: "+user.getName()+"</td></tr><tr align=\"center\"><td>Url</td><td>FeedId</td></tr>");
-				foundDuplicates=true;
-				for (String url : feedIdsWithDuplicateUrls.keySet()) {
-					out.append("<tr><td>"+url+"</td><td>");
-					//log.debug("Fulfilling html table with duplicated url ["+url+"]");
-					for (String feedId : feedIdsWithDuplicateUrls.get(url)) {
-						RSS rss = RSS.getRSSObjectByFeedId(feedId);
-						out.append("<a href=\"showFeed?feedId="+feedId+"\">["+user.getCompositeUserFeedsListWhichContainUserFeedId(feedId).size()+"] "+rss.getChannel().getTitle()+"</a>&nbsp&nbsp&nbsp[<a href=\"deleteFeed?feedId="+feedId+"&redirectTo=/HealthCheck.jsp\">Delete</a>]");
-						out.append("<br>");
-					}
-					out.append("</td></tr>");
-				}
-				out.append("</td></tr></table>");	
-			}
-		}catch(Exception e){
-			out.println(Exec.getHTMLFailText(e)+"<br>");
-		}
-	}
-	if(!foundDuplicates){
-		out.append("There are no duplicated feeds");
-	}
-log.debug("Finished searching of duplicate urls in feeds of users");
-*/
-%>
+
 <h3>Zombie feeds by user (user has feeds that don't exist)</h3>
+duplicate?
 <%
 /*
 HashMap<String, String> commonZombieFeedIds = new HashMap<String, String>();
@@ -204,29 +193,5 @@ if(commonZombieFeedIds.size()>0){
     </tr>
 </table>
 
-<h3>Cache usersFeeds incorrect items</h3>
-<%
-/*
-CacheUserFeed cacheUserFeed = CacheUserFeed.getInstance();
-for(String feedId : cacheUserFeed.getCompositeFeedIdsList()){
-	if(feedId.toLowerCase().startsWith("composite_")){
-		out.append(feedId);
-		out.append("<br>");
-	}
-}
-*/
-%>
-<h3>Cache compositeUsersFeeds incorrect items</h3>
-<%
-/*
-CacheCompositeUserFeed cacheCompositeUserFeed = CacheCompositeUserFeed.getInstance();
-for(String compositeFeedId : cacheCompositeUserFeed.getCompositeFeedIdsList()){
-	if(!compositeFeedId.toLowerCase().startsWith("composite_")){
-		out.append(compositeFeedId);
-		out.append("<br>");
-	}
-}
-*/
-%>
 </body>
 </html>

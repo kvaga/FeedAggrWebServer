@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -19,7 +20,9 @@ import org.apache.logging.log4j.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
+import ru.kvaga.rss.feedaggr.FeedAggrException.GetFeedsListByUser;
 import ru.kvaga.rss.feedaggr.objects.Feed;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
@@ -71,6 +74,12 @@ public class HealthCheckServlet extends HttpServlet {
 					//ServletUtils.responseJSON(checkZombiFeedsInCompositeFeeds(userName), response);
 					response.getWriter().print(gson.toJson(checkZombiFeedsInCompositeFeeds(userName)));
 					break;
+				case "checkDuplicateFeedsOfUser":
+					response.getWriter().print(gson.toJson(checkDuplicateFeedsOfUser(userName)));
+					break;
+				case "checkAbandonedFeeds":
+					response.getWriter().print(gson.toJson(checkAbandonedFeeds(userName)));
+					break;
 			}
 		}catch (Exception e) { 
 			log.error("Exception on CompositeFeedsListServlet", e);
@@ -83,16 +92,20 @@ public class HealthCheckServlet extends HttpServlet {
 		}	 
 	}
 	
+	private HashMap<String, HashSet<String>> checkDuplicateFeedsOfUser(String userName) throws JAXBException {
+		User user = User.getXMLObjectFromXMLFileByUserName(userName);
+		return user.getFeedIdsWithDuplicateUrls();
+	}
+
 	/**
 	 * <h3>Check duplicate feeds in composite</h3>
+	 * @return 
 	 * @throws JAXBException 
 	 */
-	public void checkDuplicateFeedIdsInCompositeFeeds(String userName) throws JAXBException {
-		User user = User.getXMLObjectFromXMLFileByUserName(userName);
-//		for(user.getCompositeUserFeeds()) {
-//			
-//		}
-	}
+//	public HashMap<String, HashSet<String>> checkDuplicateFeedIdsInCompositeFeeds(String userName) throws JAXBException {
+//		User user = User.getXMLObjectFromXMLFileByUserName(userName);
+//		return user.getFeedIdsWithDuplicateUrls();
+//	}
 	
 //		<h3>Duplicate feeds by users (duplicate feeds for user that have the same url)</h3>
 //				<h3>Zombie feeds by user (user has feeds that don't exist)</h3>
@@ -145,25 +158,29 @@ public class HealthCheckServlet extends HttpServlet {
 	
 	/**
 	 * <h3>Abandoned feeds by users (no user who has these feeds)</h3>
+	 * @return 
+	 * @throws JAXBException 
+	 * @throws GetFeedsListByUser 
 	 */
-	/*
-	public void getAbandonedFeeds(String userName) {
+	
+	public ArrayList<String> checkAbandonedFeeds(String userName) throws GetFeedsListByUser, JAXBException {
 		HashMap<String,String> allFeedIdsOfAllUsersMap = User.getFeedsIdsOfAllUsersMap();
 		User user = User.getXMLObjectFromXMLFileByUserName(userName);
 		
-		ArrayList<AbandonedFeed> abandonedFeedsList = new ArrayList<AbandonedFeed>();
-		ArrayList<CompositeAbandonedFeed> compositeAbandonedList = new ArrayList<CompositeAbandonedFeed>();
+		ArrayList<String> abandonedFeedsList = new ArrayList<String>();
+		ArrayList<String> compositeAbandonedList = new ArrayList<String>();
 
 		for (Feed feedFromAll :  ServerUtils.getFeedsList(true, true)) {
 			if (!allFeedIdsOfAllUsersMap.containsKey(feedFromAll.getId())) {
 				log.warn("Found abandoned feed [" + feedFromAll.getId() + "]");
 				if(feedFromAll.getId().startsWith("composite")){
-					compositeAbandonedList.add(new CompositeAbandonedFeed(feedFromAll.getId(),"", feedFromAll.getXmlFile()));
+					compositeAbandonedList.add(feedFromAll.getId());
 				}else{
-					abandonedFeedsList.add(new AbandonedFeed(feedFromAll.getId(),"", feedFromAll.getXmlFile()));
+					abandonedFeedsList.add(feedFromAll.getId());
 				}
 			}
 		}
+		/*
 		if(abandonedFeedsList.size()>0){
 			// Abandoned feeds
 			//String table = "<form method=\"POST\" action=\"addAbandonedFeedToUser\">";
@@ -172,7 +189,7 @@ public class HealthCheckServlet extends HttpServlet {
 			for(AbandonedFeed feed : abandonedFeedsList){
 				if(feed.feedId.startsWith("composite")) continue;
 				RSS rss = RSS.getRSSObjectFromXMLFile(feed.xmlFile);
-				feed.
+				
 //				table+=	"<tr>"+
 //							"<td><input type=\"checkbox\" id=\"feed_id_"+feed.getId()+"\" name=\"feed_id_"+feed.getId()+"\" value=\""+feed.getId()+"\"></td>"+
 //							"<td><a href=\"showFeed?feedId="+feed.getId()+"\">"+rss.getChannel().getTitle()+ "</a><br>"+rss.getChannel().getLink()+"</td>"+
@@ -205,9 +222,12 @@ public class HealthCheckServlet extends HttpServlet {
 			out.append("There are no composite abandoned feeds<br>");
 		}
 			log.debug("Finished searching of abandoned files");
-		
+		*/
+		// Merge two lists
+		abandonedFeedsList.addAll(compositeAbandonedList);
+		return abandonedFeedsList;
 	}
-	*/
+	
 	private String arrayToString(String[] array) {
 		StringBuilder sb = new StringBuilder();
 		if(array==null || array.length==0) {

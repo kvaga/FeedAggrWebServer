@@ -194,13 +194,13 @@ public class User {
 	 * @throws JAXBException
 	 */
 	public HashMap<String, HashSet<String>> getFeedIdsWithDuplicateUrls() throws JAXBException {
-		HashMap<String, HashSet<String>> aggregateUrlsAndTheisFeedIds = new HashMap<String, HashSet<String>>();
+		HashMap<String, HashSet<String>> aggregateUrlsAndTheseFeedIds = new HashMap<String, HashSet<String>>();
 		HashMap<String, String> allUserFeedIdsAndUrlsMap = getAllUserFeedIdsAndUrlsMap();
 		for (String feedId : allUserFeedIdsAndUrlsMap.keySet()) {
-			if (aggregateUrlsAndTheisFeedIds.containsKey(allUserFeedIdsAndUrlsMap.get(feedId))) {
-				aggregateUrlsAndTheisFeedIds.get(allUserFeedIdsAndUrlsMap.get(feedId)).add(feedId);
+			if (aggregateUrlsAndTheseFeedIds.containsKey(allUserFeedIdsAndUrlsMap.get(feedId))) {
+				aggregateUrlsAndTheseFeedIds.get(allUserFeedIdsAndUrlsMap.get(feedId)).add(feedId);
 			} else {
-				aggregateUrlsAndTheisFeedIds.put(allUserFeedIdsAndUrlsMap.get(feedId),
+				aggregateUrlsAndTheseFeedIds.put(allUserFeedIdsAndUrlsMap.get(feedId),
 						new HashSet<String>(Arrays.asList(feedId)));
 			}
 		}
@@ -212,9 +212,9 @@ public class User {
 //			System.err.println();
 //		}
 		HashMap<String, HashSet<String>> duplicateUrlsAndTheirFeedIds = new HashMap<String, HashSet<String>>();
-		for (String url : aggregateUrlsAndTheisFeedIds.keySet()) {
-			if (aggregateUrlsAndTheisFeedIds.get(url).size() > 1) {
-				duplicateUrlsAndTheirFeedIds.put(url, aggregateUrlsAndTheisFeedIds.get(url));
+		for (String url : aggregateUrlsAndTheseFeedIds.keySet()) {
+			if (aggregateUrlsAndTheseFeedIds.get(url).size() > 1) {
+				duplicateUrlsAndTheirFeedIds.put(url, aggregateUrlsAndTheseFeedIds.get(url));
 			}
 		}
 		log.debug("Found [" + duplicateUrlsAndTheirFeedIds.size() + "] duplicate urls for user [" + getName() + "]");
