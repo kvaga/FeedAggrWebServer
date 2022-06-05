@@ -39,12 +39,12 @@ public class BackgroudJobManager implements ServletContextListener{
 		scheduler2 = Executors.newSingleThreadScheduledExecutor();
 //		if(true) { 
 		if(jobsEnabled) {
-			scheduler1.scheduleAtFixedRate(new FeedsUpdateJob(event.getServletContext()), 0, 1, TimeUnit.HOURS);
+			scheduler1.scheduleAtFixedRate(new FeedsUpdateJob(event.getServletContext()), 0, 15, TimeUnit.MINUTES);
 			
 //		scheduler1.scheduleAtFixedRate(new FeedsUpdateJob(event.getServletContext()), 0, 20, TimeUnit.SECONDS);
-			log.info("BackgroudJobManager started with jobs [FeedsUpdateJob for each 1 hours]");
-			scheduler2.scheduleAtFixedRate(new CompositeFeedsUpdateJob(), 0, 1, TimeUnit.HOURS);
-			log.info("BackgroudJobManager started with jobs [MergeFeeds for each 1 hours]");
+			log.info("BackgroudJobManager started with jobs [FeedsUpdateJob for each 15 minutes]");
+			scheduler2.scheduleAtFixedRate(new CompositeFeedsUpdateJob(), 0, 10, TimeUnit.MINUTES);
+			log.info("BackgroudJobManager started with jobs [MergeFeeds for each 10 minutes]");
 		}
 		
 //		Scheduler scheduler = new Scheduler();

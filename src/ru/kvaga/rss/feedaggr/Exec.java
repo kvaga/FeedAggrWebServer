@@ -601,7 +601,10 @@ public static synchronized HashSet<String> getYoutubeListOfPlaylistsURLs(String 
 	return l;
 }
 
-private static Pattern getDomainFromURLPattern = Pattern.compile("http(s)?:\\/\\/(?<url>.*("
+private static Pattern getDomainFromURLPattern = 
+//	Pattern.compile("(?<url>[a-zA-Z0-9][a-zA-Z0-9-]{1,161}[a-zA-Z0-9]\\.[a-zA-Z]{2,})");
+
+Pattern.compile("http(s)?:\\/\\/(?<url>.*("
 		+ "\\.com"
 		+ "|\\.ru"
 		+ "|\\.org"
@@ -618,9 +621,11 @@ private static Pattern getDomainFromURLPattern = Pattern.compile("http(s)?:\\/\\
 		+ "|\\.today"
 		+ "|\\.ok"
 		+ "|\\.gov"
+		+ "|\\.app"
 
 
 		+ "))(\\/)?");
+		 
 public synchronized static String getDomainFromURL(String url){
 	long t1 = new Date().getTime();
 	Matcher m = getDomainFromURLPattern.matcher(url);

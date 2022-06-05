@@ -27,6 +27,7 @@ import ru.kvaga.rss.feedaggr.objects.GUID;
 import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggr.objects.utils.ObjectsUtils;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
+import ru.kvaga.rss.feedaggrwebserver.ServerUtilsConcurrent;
 import ru.kvaga.rss.feedaggrwebserver.cache.CacheElement;
 import ru.kvaga.rss.feedaggrwebserver.cache.CacheUserFeed;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
@@ -129,12 +130,23 @@ public class FeedsUpdateJob implements Runnable {
 							continue;
 						}
 						
+						if(userFeed.getDurationInMillisForUpdate()==null) {
+							log.debug("DurationInMillisForUpdate parameter in the ["+userFeed.getId()+"] is null. We set default value ["+ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE+"]");
+							userFeed.setDurationInMillisForUpdate(ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE);
+						}
+						
+						
+						
 						//
 						// �������� feed ������ �� �����
 //						RSS rssFromFile = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(rssXmlFile, new RSS());
 						RSS rssFromFile = RSS.getRSSObjectFromXMLFile(rssXmlFile);
 						
-						
+						long currentTimeInMillis = new Date().getTime();
+						if(!isItTimeToUpdateFeed(currentTimeInMillis, userFeed, rssFromFile)) {
+							postponedCount++;
+							continue;
+						}
 						
 						// check userFeed title and url for null value
 						if(user.getUserFeedByFeedId(feedId).getUserFeedTitle()==null) {
@@ -147,10 +159,6 @@ public class FeedsUpdateJob implements Runnable {
 						}
 						 
 						
-						if(userFeed.getDurationInMillisForUpdate()==null) {
-							log.debug("DurationInMillisForUpdate parameter in the ["+userFeed.getId()+"] is null. We set default value ["+ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE+"]");
-							userFeed.setDurationInMillisForUpdate(ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE);
-						}
 						
 						
 						
@@ -160,11 +168,7 @@ public class FeedsUpdateJob implements Runnable {
 						MonitoringUtils.sendCommonMetric("FeedsUpdateJob.CountOfDeletedOldItems", countOfDeletedOldItems, new Tag("feedId", feedId));
 						*/
 						
-						long currentTimeInMillis = new Date().getTime();
-						if(!isItTimeToUpdateFeed(currentTimeInMillis, userFeed, rssFromFile)) {
-							postponedCount++;
-							continue;
-						}
+						
 						
 						
 //				ObjectsUtils.printXMLObject(rssFromFile); 
@@ -173,7 +177,10 @@ public class FeedsUpdateJob implements Runnable {
 						url = rssFromFile.getChannel().getLink();
 						url = (url.contains("youtube.com") && !url.contains("youtube.com/feeds/videos.xml")) ? Exec.getYoutubeFeedURL(url): url;
 						log.debug("Feed id [" + feedId + "] contains url [" + url + "]. Trying to get URL's content");
-						responseHtmlBody = Exec.getURLContent(url);
+						responseHtmlBody = 
+								//Exec.getURLContent(url)
+								ServerUtilsConcurrent.getInstance().getURLContent(url);
+								;
 //				repeatableSearchPattern="<h2 class=\"title\">{*}<a href=\"{%}\" title=\"{%}\" rel=\"bookmark\">{%}</a>{*}</h2>\r\n";
 						log.debug("The content of the [" + url + "] was downloaded");
 						itemTitleTemplate = userFeed.getItemTitleTemplate();
