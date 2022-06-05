@@ -140,61 +140,8 @@ function fulfillTableUserFeedShort(dataObj){
 	//User user = User.getXMLObjectFromXMLFileByUserName((String) request.getSession().getAttribute("login"));
 %>
 <h3>Abandoned feeds by users (no user who has these feeds)</h3>
-<%
-	ArrayList<Feed> abandonedFeedsList = new ArrayList<Feed>();
-	ArrayList<Feed> compositeAbandonedList = new ArrayList();
-
-	for (Feed feedFromAll : allFeedsListOnTheServer) {
-		if (!allFeedIdsOfAllUsersMap.containsKey(feedFromAll.getId())) {
-			log.warn("Found abandoned feed [" + feedFromAll.getId() + "]");
-			if(feedFromAll.getId().startsWith("composite")){
-				compositeAbandonedList.add(feedFromAll);
-			}else{
-				abandonedFeedsList.add(feedFromAll);
-			}
-		}
-	}
-	if(abandonedFeedsList.size()>0){
-		// Abandoned feeds
-		String table = "<form method=\"POST\" action=\"addAbandonedFeedToUser\">";
-		table+="<table border='1'>"+
-							"<tr align=\"center\"><td><input type=\"checkbox\" onClick=\"toggle(this)\" />#</td><td>Abandoned feed</td><td>Delete</td><td>Add to user</td></tr>";
-		for(Feed feed : abandonedFeedsList){
-			if(feed.getId().startsWith("composite")) continue;
-			RSS rss = RSS.getRSSObjectFromXMLFile(feed.getXmlFile());
-			table+=	"<tr>"+
-						"<td><input type=\"checkbox\" id=\"feed_id_"+feed.getId()+"\" name=\"feed_id_"+feed.getId()+"\" value=\""+feed.getId()+"\"></td>"+
-						"<td><a href=\"showFeed?feedId="+feed.getId()+"\">"+rss.getChannel().getTitle()+ "</a><br>"+rss.getChannel().getLink()+"</td>"+
-						"<td>[<a href=\"deleteFeed?feedId="+feed.getId()+"&redirectTo=/HealthCheck.jsp\">Delete</a>]</td>"+
-						"<td><a href=\"addAbandonedFeedToUser?redirectTo=/HealthCheck.jsp&feedId="+feed.getId()+"\">ADD</a></td>"+
-					"</tr>";
-		}
-		table+="<tr><td colspan=\"3\"></td><td><input type=\"submit\" value=\"Add\"></td></tr></table><input id=\"batch\" name=\"batch\" type=\"hidden\" value=\"yes\"><input type=\"hidden\" name=\"redirectTo\" value=\"HealthCheck.jsp\"></form>";
-		out.append(table);
-	}else{
-		out.append("There are no abandoned feeds<br><br>");
-	}
+...
 	
-	if(compositeAbandonedList.size()>0){
-		// Composite abandoned feeds
-		String tableComposite = "<table border='1'>"+
-				"<tr align=\"center\"><td>Composite abandoned feed</td><td>Delete</td><td>Add to user</td></tr>";
-		for(Feed feed : compositeAbandonedList){
-			if(!feed.getId().startsWith("composite")) continue;
-			RSS rss = RSS.getRSSObjectFromXMLFile(feed.getXmlFile());
-			tableComposite+=	"<tr>"+
-						"<td><a href=\"showFeed?feedId="+feed.getId()+"\">"+rss.getChannel().getTitle()+ "</a><br>"+rss.getChannel().getLink()+"</td>"+
-						"<td>[<a href=\"deleteFeed?feedId="+feed.getId()+"&redirectTo=/HealthCheck.jsp\">Delete</a>]</td>"+
-						"<td><a href=\"addAbandonedFeedToUser?redirectTo=HealthCheck.jsp&feedId="+feed.getId()+"\">ADD</a></td>"+
-					"</tr>";
-		}
-		tableComposite+="</table>";
-		out.append(tableComposite);
-	}else{
-		out.append("There are no composite abandoned feeds<br>");
-	}
-		log.debug("Finished searching of abandoned files");
-	%>
 
 <h3>Duplicate feeds by users (duplicate feeds for user that have the same url)</h3>
 

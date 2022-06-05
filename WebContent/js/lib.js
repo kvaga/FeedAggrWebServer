@@ -1,3 +1,42 @@
+function ReadError(message, cause) {
+  this.message = message;
+  this.cause = cause;
+  this.name = 'ReadError';
+  //this.stack = cause.stack;
+}
+
+function onErr(error){
+	exception(error.error);
+}
+
+function getGetJSONContentFromURL(url, onErr, onSuccess){
+	try{
+	    var xhr1 = new XMLHttpRequest();
+	    xhr1.onreadystatechange = function() {
+	        if (xhr1.readyState == 4) {
+				obj = JSON.parse(xhr1.responseText);
+				//console.log('getGetJSONContentFromURL obj: ' + typeof obj);
+				if(! ('error' in obj)){
+					console.log('getGetJSONContentFromURL: Received object: ', obj); 
+					//console.log('getGetJSONContentFromURL: Received object type: ', typeof obj); 
+					//Object.entries(obj).map(item => {
+					//  console.log(item)
+					//});
+					onSuccess(obj);
+				}else{
+					onErr(obj);
+				}
+	        }
+	    }
+	    xhr1.open('GET', url, true);
+	    xhr1.send(null);
+	}catch(err){
+		exception(err.name);
+	}
+}
+
+
+
 function escapeHtml(unsafe)
 {
 	if(unsafe===null) return unsafe;
@@ -19,16 +58,9 @@ function loadingStop(){
 	console.info('Loading finished');
 }
 
-function UserException(message) {
-	   this.message = message;
-	   this.name = "Исключение, определённое пользователем";
-}
-
-
 function exception(text){
 	document.getElementById('exception').innerHTML='<p><font color="red">Exception: ' + text + '</font></p>';
 	loadingStop();
-	console.error('Exception: ' + text);
 }
 
 function error_text(text){

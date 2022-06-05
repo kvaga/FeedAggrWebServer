@@ -1,12 +1,14 @@
 package ru.kvaga.rss.feedaggrwebserver.servlets;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class CompositeFeedShortInfo {
 	private String feedId;
 	private String name;
 //	private int countOfUserFeeds;
-	private ArrayList<String> feedIds;
+//	private ArrayList<String> feedIds;
+	private HashSet<String> feedIds;
 	
 	/**
 	 * 
@@ -16,7 +18,8 @@ public class CompositeFeedShortInfo {
 	 */
 	public CompositeFeedShortInfo(String feedId, String name, 
 			//int countOfUserFeeds
-			ArrayList<String> feedIds
+			//ArrayList<String> feedIds
+			HashSet<String> feedIds
 			) {
 		this.feedId=feedId;
 		this.name=name;
@@ -44,10 +47,10 @@ public class CompositeFeedShortInfo {
 //	public void setCountOfUserFeeds(int countOfUserFeeds) {
 //		this.countOfUserFeeds = countOfUserFeeds;
 //	}
-	public ArrayList<String> getFeedIds() {
+	public HashSet<String> getFeedIds() {
 		return feedIds;
 	}
-	public void setCountOfUserFeeds(ArrayList<String> feedIds) {
+	public void setCountOfUserFeeds(HashSet<String> feedIds) {
 		this.feedIds = feedIds;
 	}
 	

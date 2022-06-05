@@ -31,8 +31,9 @@ public class CompositeUserFeed {
  
 	private String id;
 	private String compositeUserFeedTitle;
-	private ArrayList<String> feedIds = new ArrayList<String>();
-	
+	//private ArrayList<String> feedIds = new ArrayList<String>();
+	private HashSet<String> feedIds = new HashSet<String>();
+
 	public String toString() {
 		return "CompositeFeedTitle: " + compositeUserFeedTitle + ", id: " + id;
 	}
@@ -55,10 +56,10 @@ public class CompositeUserFeed {
 		this.compositeUserFeedTitle = compositeUserFeedTitle;
 		return this;
 	}
-	public ArrayList<String> getFeedIds() {
+	public HashSet<String> getFeedIds() {
 		return feedIds;
 	}
-	public void setFeedIds(ArrayList<String> ids) {
+	public void setFeedIds(HashSet<String> ids) {
 		this.feedIds = ids;
 	}
 	
@@ -341,7 +342,9 @@ public class CompositeUserFeed {
 				}
 				compositeRSS.getChannel().setLastBuildDate(new Date());
 				
-				
+				if(cacheElement != null) {
+					cacheElement.setLastUpdateStatus(CacheElement.LAST_UPDATE_STATUS_OK);
+				}
 			} catch (Exception e) {
 				log.error("updateCompositeRSSFilesOfUser Exception in the composite feed id ["+compositeUserFeed.getId()+"]", e);
 				if(cacheElement!=null) {

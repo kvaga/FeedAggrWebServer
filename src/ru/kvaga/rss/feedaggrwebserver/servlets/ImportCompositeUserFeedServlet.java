@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -108,7 +109,7 @@ public class ImportCompositeUserFeedServlet extends HttpServlet {
 			//exportCompositeFeedServletResult.getCompositeUserFeed().setTitle(exportCompositeFeedServletResult.getCompositeUserFeed().getTitle());
 
 			// 
-			ArrayList<String> newFeedIds = new ArrayList<String>(); 
+			HashSet<String> newFeedIds = new HashSet<String>(); 
 			for(RSS feedRSS : exportCompositeFeedServletResult.getFeedRSSList()) {
 				String newFeedId = ServerUtils.getNewFeedId();
 				newFeedIds.add(newFeedId);

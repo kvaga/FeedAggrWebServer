@@ -75,7 +75,7 @@ try{
 			-->
 		</td>
 		<td><a href="addFeedsByList.jsp">Add feeds by URL list</a><br/><a href="CheckoutPage.jsp">Checkout Page</a></td>
-		<td><a href="test2.jsp">Test page</a><br/><a href="HealthCheck.jsp">Health Check page</a></td>
+		<td><a href="HealthCheckNew.jsp">HealthCheckNew</a><br/><a href="HealthCheck.jsp">Health Check page</a></td>
 		<td><a href="addFeedId2CompositeFeed.jsp">addFeedId2CompositeFeed</a><br/><a href="DeleteOldFeedItems.jsp">DeleteOldFeedItems.jsp</a></td>
 		<td><a href="deleteFeedsFeedsByList.jsp">deleteFeedsFeedsByList</a></td>
 		<td>

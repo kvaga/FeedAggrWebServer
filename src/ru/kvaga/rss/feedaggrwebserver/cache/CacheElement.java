@@ -7,6 +7,9 @@ import ru.kvaga.rss.feedaggr.objects.RSS;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 
 public class CacheElement {
+	public static String LAST_UPDATE_STATUS_OK="OK";
+	public static String LAST_UPDATE_STATUS_FAIL="FAIL";
+
 	private int countOfItems=-1;
 	private Date lastUpdated;
 	private float sizeMb=-1;

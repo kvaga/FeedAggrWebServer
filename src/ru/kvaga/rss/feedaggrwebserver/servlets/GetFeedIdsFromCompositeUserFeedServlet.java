@@ -3,6 +3,7 @@ package ru.kvaga.rss.feedaggrwebserver.servlets;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -66,7 +67,7 @@ public class GetFeedIdsFromCompositeUserFeedServlet extends HttpServlet {
 		}	
 	}
 
-	public ArrayList<String> getFeedIdsFromCompositeUserFeed(String userName, String compositeFeedId) throws Exception {
+	public HashSet<String> getFeedIdsFromCompositeUserFeed(String userName, String compositeFeedId) throws Exception {
 		User user = User.getXMLObjectFromXMLFileByUserName(userName);
 		// title compositefeedid countOfFeeds 
 		return user.getCompositeUserFeedById(compositeFeedId).getFeedIds();

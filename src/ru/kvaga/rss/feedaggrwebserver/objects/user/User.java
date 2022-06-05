@@ -177,9 +177,11 @@ public class User {
 		long t1 = new Date().getTime();
 		HashMap<String, String> map = new HashMap<String, String>();
 		for (UserFeed userFeed : getUserFeeds()) {
-			RSS rss = RSS
-					.getRSSObjectFromXMLFile(ConfigMap.feedsPath.getAbsoluteFile() + "/" + userFeed.getId() + ".xml");
-			map.put(userFeed.getId(), rss.getChannel().getLink());
+			//RSS rss = RSS.getRSSObjectFromXMLFile(ConfigMap.feedsPath.getAbsoluteFile() + "/" + userFeed.getId() + ".xml");
+			map.put(userFeed.getId(), 
+					//rss.getChannel().getLink()
+					userFeed.getUserFeedUrl()
+					);
 		}
 		log.debug("Found [" + map.size() + "] urls of user [" + name + "]");
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
