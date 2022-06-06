@@ -135,19 +135,28 @@ public class FeedsUpdateJob implements Runnable {
 							userFeed.setDurationInMillisForUpdate(ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE);
 						}
 						
-						
-						
+						RSS rssFromFile = null;
+//						cacheElement
+						Date rssLastUpdateDateTime=cacheElement.getLastUpdated();
+						if(rssLastUpdateDateTime==null) {
+							rssFromFile = RSS.getRSSObjectFromXMLFile(rssXmlFile);
+							rssLastUpdateDateTime = rssFromFile.getChannel().getLastBuildDate();
+						}
 						//
 						// �������� feed ������ �� �����
 //						RSS rssFromFile = (RSS) ObjectsUtils.getXMLObjectFromXMLFile(rssXmlFile, new RSS());
-						RSS rssFromFile = RSS.getRSSObjectFromXMLFile(rssXmlFile);
 						
 						long currentTimeInMillis = new Date().getTime();
-						if(!isItTimeToUpdateFeed(currentTimeInMillis, userFeed, rssFromFile)) {
+						if(!isItTimeToUpdateFeed(currentTimeInMillis, userFeed, rssLastUpdateDateTime /*rssFromFile*/)) {
 							postponedCount++;
 							continue;
 						}
 						
+						if(rssFromFile==null) {
+							rssFromFile = RSS.getRSSObjectFromXMLFile(rssXmlFile);
+						}
+						
+
 						// check userFeed title and url for null value
 						if(user.getUserFeedByFeedId(feedId).getUserFeedTitle()==null) {
 							user.getUserFeedByFeedId(feedId).setUserFeedTitle(rssFromFile.getChannel().getTitle());
@@ -272,19 +281,19 @@ public class FeedsUpdateJob implements Runnable {
 		return new int[] {allFeedsCount, successFeedsCount, allFeedsCount-successFeedsCount-postponedCount, postponedCount};
 	}
 
-	private boolean isItTimeToUpdateFeed(long currentTimeInMillis, UserFeed userFeed, RSS rssFromFile) {
-		if((currentTimeInMillis - rssFromFile.getChannel().getLastBuildDate().getTime())< userFeed.getDurationInMillisForUpdate()) {
+	private boolean isItTimeToUpdateFeed(long currentTimeInMillis, UserFeed userFeed, Date rssLastUpdateDateTime/*RSS rssFromFile*/) {
+		if((currentTimeInMillis - rssLastUpdateDateTime.getTime() /*rssFromFile.getChannel().getLastBuildDate().getTime()*/)< userFeed.getDurationInMillisForUpdate()) {
 			log.warn("It's too early to update feed id ["+userFeed.getId()+"] "
-					+ "because last update date was ["+rssFromFile.getChannel().getLastBuildDate()+"] and "
-					+ "in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] and "
-					+ "parameter getDurationInMillisForUpdate set to ["+userFeed.getDurationInMillisForUpdate()+"]. Current date&time in millis ["+currentTimeInMillis+"] - getLastBuildDate in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] = ["+(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime())+"] < getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "], [" + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime()) + " < " + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(userFeed.getDurationInMillisForUpdate())+"]");
+					+ "because last update date was ["+rssLastUpdateDateTime /*rssFromFile.getChannel().getLastBuildDate()*/+"] and "
+					+ "in millis ["+rssLastUpdateDateTime.getTime() /*rssFromFile.getChannel().getLastBuildDate().getTime()*/+"] and "
+					+ "parameter getDurationInMillisForUpdate set to ["+userFeed.getDurationInMillisForUpdate()+"]. Current date&time in millis ["+currentTimeInMillis+"] - getLastBuildDate in millis ["+rssLastUpdateDateTime.getTime()/*rssFromFile.getChannel().getLastBuildDate().getTime()*/+"] = ["+(currentTimeInMillis-rssLastUpdateDateTime.getTime()/*rssFromFile.getChannel().getLastBuildDate().getTime()*/)+"] < getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "], [" + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(currentTimeInMillis-rssLastUpdateDateTime.getTime()/*rssFromFile.getChannel().getLastBuildDate().getTime()*/) + " < " + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(userFeed.getDurationInMillisForUpdate())+"]");
 			return false; 
 		}else {
 			log.debug("It's good time to update feed id ["+userFeed.getId()+"] "
-					+ "because last update date was ["+rssFromFile.getChannel().getLastBuildDate()+"] and "
-					+ "in millis ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] and " 
+					+ "because last update date was ["+rssLastUpdateDateTime/*rssFromFile.getChannel().getLastBuildDate()*/+"] and "
+					+ "in millis ["+rssLastUpdateDateTime.getTime()/*rssFromFile.getChannel().getLastBuildDate().getTime()*/+"] and " 
 					+ "parameter getDurationInMillisForUpdate set to ["+userFeed.getDurationInMillisForUpdate()+"]. "
-					+ "Current date&time ["+currentTimeInMillis+"] - getLastBuildDate ["+rssFromFile.getChannel().getLastBuildDate().getTime()+"] = ["+(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime())+"] > getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "], [" + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(currentTimeInMillis-rssFromFile.getChannel().getLastBuildDate().getTime()) + " > " + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds( userFeed.getDurationInMillisForUpdate())+"]");
+					+ "Current date&time ["+currentTimeInMillis+"] - getLastBuildDate ["+rssLastUpdateDateTime.getTime()/*rssFromFile.getChannel().getLastBuildDate().getTime()*/+"] = ["+(currentTimeInMillis-rssLastUpdateDateTime.getTime()/*rssFromFile.getChannel().getLastBuildDate().getTime()*/)+"] > getDurationInMillisForUpdate [" + userFeed.getDurationInMillisForUpdate() + "], [" + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(currentTimeInMillis-rssLastUpdateDateTime.getTime()/*rssFromFile.getChannel().getLastBuildDate().getTime()*/) + " > " + Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds( userFeed.getDurationInMillisForUpdate())+"]");
 			return true;
 		}//
 	}
