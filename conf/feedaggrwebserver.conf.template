@@ -18,8 +18,15 @@ influxdb.threads.numder=10
 influxdb.attempts=5
 influxdb.timeout=5000
 
-timeout.waittime_after_get_content_url_exception_in_millis=3600000
+#InfluxDB2 parameters
+influxdb2.enabled=false
+influxdb2.bucket=FeedAggrWebServer
+influxdb2.url=https://europe-west1-1.gcp.cloud2.influxdata.com
+influxdb2.token=WLQzgQ==
+influxdb2.orgId=
 
+#
+timeout.waittime_after_get_content_url_exception_in_millis=3600000
 servlet.show_feed.buffer_read_bytes=512
 update_composite_rss_files.days_count_for_deletion=32
 

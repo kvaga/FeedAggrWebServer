@@ -3,8 +3,13 @@ package ru.kvaga.rss.feedaggrwebserver;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.cert.X509Certificate;
 import java.util.Properties;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
@@ -12,10 +17,21 @@ import javax.servlet.annotation.WebListener;
 
 import org.apache.logging.log4j.Logger;
 
-import ru.kvaga.monitoring.influxdb2.InfluxDB;
+import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.monitoring.influxdb.InfluxDB2;
 import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.MonitoringUtils;
 
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.BasicHttpClientConnectionManager;
+import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
+import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.core5.http.config.Registry;
+import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.core5.ssl.SSLContexts;
 import org.apache.logging.log4j.LogManager;;
 
 
@@ -52,7 +68,9 @@ public class StartStopListener implements ServletContextListener{
 			log.info("Loaded parameter ssl.trustStorePassword="+ConfigMap.trustStorePassword);
 			try {
 				System.setProperty("javax.net.ssl.trustStore", ConfigMap.trustStore);
-				System.setProperty("javax.net.ssl.trustStorePassword", ConfigMap.trustStorePassword);			
+				System.setProperty("javax.net.ssl.trustStorePassword", ConfigMap.trustStorePassword);	
+				//System.setProperty("javax.net.ssl.trustStore", "C:\\Users\\XUser\\.keystore");
+				//System.setProperty("javax.net.ssl.trustStorePassword", "");
 			}catch(Exception e) {
 				log.error("SSL parameters Exception", e);
 			}
@@ -102,18 +120,83 @@ public class StartStopListener implements ServletContextListener{
 				log.error("Incorrect format of influxdb.timeout parameter ["+props.getProperty("influxdb.timeout")+"]. InfluxDB disabled");
 				//InfluxDB.disable();
 			}
+			//---
+			try {
+				
+
+				
+//				TrustStrategy acceptingTrustStrategy = (cert, authType) -> true;
+//			    SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
+//			    SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext, 
+//			      NoopHostnameVerifier.INSTANCE);
+//			    
+//			    Registry<ConnectionSocketFactory> socketFactoryRegistry = 
+//			      RegistryBuilder.<ConnectionSocketFactory> create()
+//			      .register("https", sslsf)
+//			      .register("http", new PlainConnectionSocketFactory())
+//			      .build();
+//
+//			    BasicHttpClientConnectionManager connectionManager = 
+//			      new BasicHttpClientConnectionManager(socketFactoryRegistry);
+//			    CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sslsf)
+//			      .setConnectionManager(connectionManager).build();
 			
+			    
+			    
+		        
+		        
+				ConfigMap.INFLUXDB2_ENABLED=Boolean.parseBoolean(props.getProperty("influxdb2.enabled"));
+				
+				if(ConfigMap.INFLUXDB2_ENABLED) {
+					MonitoringUtils.enable();
+				}else {
+					MonitoringUtils.disable();
+				}
+				log.info("Loaded parameter influxdb2.enabled="+ConfigMap.INFLUXDB2_ENABLED);
+			}catch(Exception e) {
+				log.error("Incorrect format of influxdb2.enabled parameter ["+props.getProperty("influxdb2.enabled")+"]. InfluxDB disabled");
+				//InfluxDB.disable();
+			}
+			try {
+				ConfigMap.INFLUXDB2_ORGID=props.getProperty("influxdb2.orgId");
+				log.info("Loaded parameter influxdb2.orgId="+ConfigMap.INFLUXDB2_ORGID);
+			}catch(Exception e) {
+				log.error("Incorrect format of influxdb2.orgId parameter ["+props.getProperty("influxdb2.orgId")+"]. InfluxDB disabled");
+			}
+			try {
+				ConfigMap.INFLUXDB2_TOKEN=props.getProperty("influxdb2.token");
+				log.info("Loaded parameter influxdb2.token="+ConfigMap.INFLUXDB2_TOKEN);
+			}catch(Exception e) {
+				log.error("Incorrect format of influxdb2.token parameter ["+props.getProperty("influxdb2.token")+"]. InfluxDB disabled");
+			}
+			try {
+				ConfigMap.INFLUXDB2_URL=props.getProperty("influxdb2.url");
+				log.info("Loaded parameter influxdb2.url="+ConfigMap.INFLUXDB2_URL);
+			}catch(Exception e) {
+				log.error("Incorrect format of influxdb2.url parameter ["+props.getProperty("influxdb2.url")+"]. InfluxDB disabled");
+			}
+			try {
+				ConfigMap.INFLUXDB2_BUCKET=props.getProperty("influxdb2.bucket");
+				log.info("Loaded parameter influxdb2.bucket="+ConfigMap.INFLUXDB2_BUCKET);
+			}catch(Exception e) {
+				log.error("Incorrect format of influxdb2.bucket parameter ["+props.getProperty("influxdb2.bucket")+"]. InfluxDB disabled");
+			}
+					
+					
 			try {
 				//InfluxDB.setCountOfAttemptsIfFails(10);
 				//InfluxDB.setTimeoutInMillis(1000);
 				//InfluxDB.getInstance(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME, ConfigMap.INFLUXDB_THREAD_NUMBER);
 				//InfluxDB.getInstance(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME);
-				MonitoringUtils.init(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME);
+//				MonitoringUtils.init(ConfigMap.INFLUXDB_HOST, ConfigMap.INFLUXDB_PORT, ConfigMap.INFLUXDB_DBNAME);
+				MonitoringUtils.init(ConfigMap.INFLUXDB2_URL, ConfigMap.INFLUXDB2_ORGID, ConfigMap.INFLUXDB2_BUCKET, ConfigMap.INFLUXDB2_TOKEN);
+
 				log.debug("InfluXDB successfully started");
 			}catch(Exception e) {
 				log.error("Couldn't start InfluxDB monitoring sending", e);
 			}
 			log.info("InfluxDB: " + InfluxDB.getInstance());
+			log.info("InfluxDB2: " + InfluxDB2.getInstance());
 
 			if(System.getProperty("TEST_MODE")!=null) {
 				ConfigMap.TEST_MODE=true;

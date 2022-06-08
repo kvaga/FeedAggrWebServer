@@ -15,7 +15,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.logging.log4j.*;
 
-import ru.kvaga.monitoring.influxdb2.InfluxDB;
+import ru.kvaga.monitoring.influxdb.InfluxDB2;
 import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggr.FeedAggrException.CommonException;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetSubstringForHtmlBodySplitException;

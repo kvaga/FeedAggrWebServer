@@ -40,7 +40,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import ru.kvaga.monitoring.influxdb2.InfluxDB;
+import ru.kvaga.monitoring.influxdb.InfluxDB2;
 import ru.kvaga.rss.feedaggr.FeedAggrException.CommonException;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetFeedsListByUser;
 import ru.kvaga.rss.feedaggr.FeedAggrException.GetURLContentException;

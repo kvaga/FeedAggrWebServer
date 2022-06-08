@@ -3,7 +3,6 @@ package ru.kvaga.rss.feedaggr.objects;
 import java.util.Comparator;
 import java.util.Date;
 
-import ru.kvaga.monitoring.influxdb2.InfluxDB;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
 public class RSSForPrintingComparatorByTitle implements Comparator<RSS>{
 

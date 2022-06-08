@@ -1,12 +1,16 @@
 package ru.kvaga.rss.feedaggrwebserver.monitoring;
 
+import java.time.Instant;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.influxdb.dto.Point;
 import org.influxdb.dto.Point.Builder;
 
-import ru.kvaga.monitoring.influxdb2.InfluxDB;
+import com.influxdb.client.domain.WritePrecision;
+
+import ru.kvaga.monitoring.influxdb.InfluxDB;
+import ru.kvaga.monitoring.influxdb.InfluxDB2;
 import ru.kvaga.rss.feedaggrwebserver.ConfigMap;
 
 public class MonitoringUtils {
@@ -15,9 +19,18 @@ public class MonitoringUtils {
 		enabled=true;
 	}
 	
-	public static void init(String host, int port, String dbName) {
+	public static void init_(String host, int port, String dbName) {
 		if(!enabled) return;
 		InfluxDB.getInstance(host, port, dbName);
+	}
+	public static void init(String url, String orgId, String bucket, String token) {
+		if(!enabled) return;
+		InfluxDB2.getInstance(
+        		url,
+        		orgId, 
+        		bucket,
+        		token
+        );
 	}
 	public static void disable() {
 		enabled=false;
@@ -29,13 +42,23 @@ public class MonitoringUtils {
 		if((ind = className.indexOf('$'))!=-1) {
 			className=className.substring(0, ind);
 		}
-		Point point = Point.measurement("response_time")
-							  .time(System.currentTimeMillis() - new Random().nextInt()%1000, TimeUnit.MILLISECONDS)
-							  .tag("method", className + "." + obj.getClass().getEnclosingMethod().getName())
-							  .addField("v", responseTime)
-							  .build();
 		if(InfluxDB.getInstance()!=null) {
-			InfluxDB.getInstance().send(point);
+			
+			Point point = Point.measurement("response_time")
+								  .time(System.currentTimeMillis() - new Random().nextInt()%1000, TimeUnit.MILLISECONDS)
+								  .tag("method", className + "." + obj.getClass().getEnclosingMethod().getName())
+								  .addField("v", responseTime)
+								  .build();
+			if(InfluxDB.getInstance()!=null) {
+				InfluxDB.getInstance().send(point);
+			}
+		}
+		if(InfluxDB2.getInstance()!=null) {
+			com.influxdb.client.write.Point point = com.influxdb.client.write.Point.measurement("response_time")
+		                .addTag("method",  className + "." + obj.getClass().getEnclosingMethod().getName())
+		                .addField("value", responseTime)
+		                .time(Instant.now().toEpochMilli(), WritePrecision.MS);
+			InfluxDB2.getInstance().send(point, WritePrecision.MS);
 		}
 	}
 	

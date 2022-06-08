@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ru.kvaga.monitoring.influxdb2.InfluxDB;
 import ru.kvaga.rss.feedaggr.FeedAggrException;
 import ru.kvaga.rss.feedaggr.Item;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.MonitoringUtils;

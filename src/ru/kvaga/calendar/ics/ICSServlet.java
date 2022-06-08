@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.Logger;
 
-import ru.kvaga.monitoring.influxdb2.InfluxDB;
+import ru.kvaga.monitoring.influxdb.InfluxDB2;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
 /**
  * Servlet implementation class ICSServlet

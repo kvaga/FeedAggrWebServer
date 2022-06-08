@@ -2,7 +2,6 @@ package ru.kvaga.rss.feedaggrwebserver;
 
 import java.io.File;
 
-import ru.kvaga.monitoring.influxdb2.InfluxDB;
 
 public class ConfigMap {
 	public static File configFile=null;
@@ -17,8 +16,11 @@ public class ConfigMap {
 	public static String prefixForlog4jJSP="ru.kvaga.feedaggrwebserver.jsps.";
 	public static String INFLUXDB_HOST,	INFLUXDB_DBNAME;
 	public static int INFLUXDB_PORT;
+	
+	public static String INFLUXDB2_URL,	INFLUXDB2_TOKEN, INFLUXDB2_ORGID, INFLUXDB2_BUCKET;
+	
 	public static int INFLUXDB_THREAD_NUMBER;
-	public static boolean INFLUXDB_ENABLED;
+	public static boolean INFLUXDB_ENABLED,INFLUXDB2_ENABLED;
 	public static int INFLUXDB_COUNT_OF_ATTEMPTS_IF_FAILS;
 	public static long INFLUXDB_TIMEOUT;
 	public static long DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE=DurationMillisecondsForUpdatingFeeds.EACH_DAY;
