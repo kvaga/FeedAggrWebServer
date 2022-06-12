@@ -55,9 +55,9 @@ public class FeedsUpdateJob implements Runnable {
 //			log.error("Incorrect URL", e);
 //		}
 	}
-
+	
 	int[] updateFeeds() throws Exception {
-		
+		int counterOfDeletedOldRSSItems=0;
 		
 		long t1 = new Date().getTime();
 		CacheUserFeed cache = CacheUserFeed.getInstance();
@@ -108,6 +108,10 @@ public class FeedsUpdateJob implements Runnable {
 				}
 
 				for (UserFeed userFeed : user.getUserFeeds()) {
+					if(ConfigMap.JOBS_PAUSED) {
+						log.warn("ConfigMap.JOBS_PAUSED set to True. Jobs were paused");
+						continue;
+					}
 					CacheElement cacheElement = null;
 					allFeedsCount++;
 					int countOfNewlyAddedItemsToTheCurrentFeedId=0;
@@ -233,6 +237,13 @@ public class FeedsUpdateJob implements Runnable {
 								countOfNewlyAddedItemsToTheCurrentFeedId++;
 							}
 						}
+						
+						// Check if userFeed contained by some compositeUserFeed
+						if(user.getCompositeUserFeedsListWhichContainUserFeedId(userFeed.getId()).size()>0) {
+							// Remove RSS Item from file if it older than UPDATE_COMPOSITE_RSS_FILES_DAYS_COUNT_FOR_DELETION days and not present in the rssFromWeb
+							counterOfDeletedOldRSSItems+=RSS.removeItemsFromFitstRSSIfTheseItemsDontExistInSecondRSSAndOlderThanXDaysFromNow(rssFromFile, rssFromWeb, ConfigMap.UPDATE_COMPOSITE_RSS_FILES_DAYS_COUNT_FOR_DELETION);
+						}
+						
 						rssFromFile.getChannel().setLastBuildDate(new Date());
 //						ObjectsUtils.saveXMLObjectToFile(rssFromFile, rssFromFile.getClass(), new File(rssXmlFile));
 						rssFromFile.saveXMLObjectToFile(new File(rssXmlFile));
@@ -246,7 +257,7 @@ public class FeedsUpdateJob implements Runnable {
 						.setOldestPubDate(oldestNewest[0])
 						.setSizeMb(new File(rssXmlFile).length()/1024/1024);
 						//
-						MonitoringUtils.sendCommonMetric("FeedsUpdateJob.CountOfNewlyAddedItemsToTheCurrentFeedId", countOfNewlyAddedItemsToTheCurrentFeedId, new Tag("feedId", feedId));
+						MonitoringUtils.sendCommonMetric("FeedsUpdateJobMetric.CountOfNewlyAddedItemsToTheCurrentFeedId", countOfNewlyAddedItemsToTheCurrentFeedId, new Tag("feedId", feedId));
 						successFeedsCount++;
 
 					} catch (Exception e) {
@@ -267,7 +278,7 @@ public class FeedsUpdateJob implements Runnable {
 							}
 							cacheElement.setLastUpdateStatus(sb.toString());
 						}
-						MonitoringUtils.sendCommonMetric("FeedsUpdateJob.ExceptionOnFeed", 1, new Tag("feedId",userFeed.getId()));
+						MonitoringUtils.sendCommonMetric("FeedsUpdateJobMetric.ExceptionOnFeed", 1, new Tag("feedId",userFeed.getId()));
 					}
 				}
 				user.saveXMLObjectToFile(userFile);
@@ -278,6 +289,8 @@ public class FeedsUpdateJob implements Runnable {
 			log.error("Exception occured", e);
 		}
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB("FeedsUpdateJobMetric.CountOfDeletedOldRSSItems", counterOfDeletedOldRSSItems);
+		
 		return new int[] {allFeedsCount, successFeedsCount, allFeedsCount-successFeedsCount-postponedCount, postponedCount};
 	}
 
@@ -304,14 +317,14 @@ public class FeedsUpdateJob implements Runnable {
 		int[] result;
 		long t1 = new Date().getTime();
 		try {
-			MonitoringUtils.sendCommonMetric("JobsWork", 1, new Tag("job", "FeedsUpdateJob"));
+			MonitoringUtils.sendCommonMetric("FeedsUpdateJobMetric.JobsWork", 1, new Tag("job", "FeedsUpdateJob"));
 			result = updateFeeds();
 			log.debug("Processed feeds: all ["+result[0]+"], successful ["+result[1]+"], failed ["+result[2]+"], postponed ["+result[3]+"]");
-			MonitoringUtils.sendCommonMetric("Processed feeds", result[0], new Tag("status","all"));
-			MonitoringUtils.sendCommonMetric("Processed feeds", result[1], new Tag("status","successful"));
-			MonitoringUtils.sendCommonMetric("Processed feeds", result[2], new Tag("status","failed"));
-			MonitoringUtils.sendCommonMetric("Processed feeds", result[3], new Tag("status","postponed"));
-			MonitoringUtils.sendCommonMetric("JobsWork", 0, new Tag("job", "FeedsUpdateJob"));
+			MonitoringUtils.sendCommonMetric("FeedsUpdateJobMetric.Processed feeds", result[0], new Tag("status","all"));
+			MonitoringUtils.sendCommonMetric("FeedsUpdateJobMetric.Processed feeds", result[1], new Tag("status","successful"));
+			MonitoringUtils.sendCommonMetric("FeedsUpdateJobMetric.Processed feeds", result[2], new Tag("status","failed"));
+			MonitoringUtils.sendCommonMetric("FeedsUpdateJobMetric.Processed feeds", result[3], new Tag("status","postponed"));
+			MonitoringUtils.sendCommonMetric("FeedsUpdateJobMetric.JobsWork", 0, new Tag("job", "FeedsUpdateJob"));
 
 		} catch (NoSuchAlgorithmException e) {
 			log.error("NoSuchAlgorithmException", e);

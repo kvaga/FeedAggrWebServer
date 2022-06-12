@@ -44,9 +44,9 @@ public class CompositeFeedsUpdateJob implements Runnable {
 //				User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
 				int result[] = CompositeUserFeed.updateItemsInCompositeRSSFilesOfUser(userFile.getName().replace(".xml", ""));
 				log.debug("Processed composite feeds: all ["+result[0]+"], successful ["+result[1]+"], failed ["+result[2]+"]");
-				MonitoringUtils.sendCommonMetric("Processed composite feeds", result[0], new Tag("status","all"));
-				MonitoringUtils.sendCommonMetric("Processed composite feeds", result[1], new Tag("status","successful"));
-				MonitoringUtils.sendCommonMetric("Processed composite feeds", result[2], new Tag("status","failed"));
+				MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJobMetric.Processed composite feeds", result[0], new Tag("status","all"));
+				MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJobMetric.Processed composite feeds", result[1], new Tag("status","successful"));
+				MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJobMetric.Processed composite feeds", result[2], new Tag("status","failed"));
 
 			} catch (Exception e) {
 				log.error("CompositeFeedsUpdateJob Exception", e);
@@ -65,7 +65,7 @@ public class CompositeFeedsUpdateJob implements Runnable {
 
 		log.debug("CompositeFeedsUpdateJob finished for ["+(Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(new Date().getTime()-t1))+"]");
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
-		MonitoringUtils.sendCommonMetric("JobsWork", 0, new Tag("job", "CompositeFeedsUpdateJob"));
+		MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJobMetric.JobsWork", 0, new Tag("job", "CompositeFeedsUpdateJob"));
 		isWorkingNow=false;
 	}
 

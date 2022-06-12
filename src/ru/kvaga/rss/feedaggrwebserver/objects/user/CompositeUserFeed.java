@@ -66,11 +66,11 @@ public class CompositeUserFeed {
 		long t1 = new Date().getTime();
 		for(String s : feedIds) {
 			if(s.equals(compositeFeedId)) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 				return true;
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return false;
 	}
 	
@@ -211,7 +211,7 @@ public class CompositeUserFeed {
 		RSS compositeRSS = RSS.getRSSObjectByFeedId(compositeFeedId);
 		
 		if (compositeRSS.getChannel() == null) {
-			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+			//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 			throw new Exception(
 					"Unable to find channel in the compositeFeed ["+compositeFeedId+"]");
 		}
@@ -220,7 +220,7 @@ public class CompositeUserFeed {
 		/* TODO: implement checking each feed id belongs to user */
 
 		if (compositeFeedId == null) {
-			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+			//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 			throw new Exception("compositeFeedId can't be null");
 		}
 
@@ -231,7 +231,7 @@ public class CompositeUserFeed {
 			
 			// drop feedIds if user doesn't own them
 			if (!user.containsFeedId(feedId)) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 				throw new Exception("User [" + userName + "] doesn't have feed id [" + feedId + "]");
 			}
 			
@@ -288,6 +288,10 @@ public class CompositeUserFeed {
 		Set<CompositeUserFeed> compositeUserFeedSet = user.getCompositeUserFeeds();
 		// Iterate over all user's composite feeds 
 		for (CompositeUserFeed compositeUserFeed : compositeUserFeedSet) {
+			if(ConfigMap.JOBS_PAUSED) {
+				log.warn("ConfigMap.JOBS_PAUSED set to True. Jobs were paused");
+				continue;
+			}
 			CacheElement cacheElement = cache.getItem(compositeUserFeed.getId());
 
 			int countOfDeletedOldItems=0;
@@ -306,7 +310,10 @@ public class CompositeUserFeed {
 			
 				// iterate over all feeds of specific compositeUserFeed
 				for (String feedId : compositeUserFeed.getFeedIds()) {
-
+					if(ConfigMap.JOBS_PAUSED) {
+						log.warn("ConfigMap.JOBS_PAUSED set to True. Jobs were paused");
+						continue;
+					}
 					RSS rss = RSS.getRSSObjectByFeedId(feedId);
 					log.debug("Got rss [" + rss + "] for feedId ["+feedId+"] with ["+ rss.getChannel().getItem().size() + "] items");
 					
@@ -379,7 +386,7 @@ public class CompositeUserFeed {
 			removeOldItems(compositeRSS, deleteItemsWhichOlderThanThisDate);
 			compositeRSS.saveXMLObjectToFile(compositeRSSFile);
 			successFeedsCount++;
-			MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJob.CountOfDeletedOldItems", countOfDeletedOldItems, new Tag("compositeFeedId",compositeUserFeed.getId()));
+			MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJob.CountOfDeletedOldItems", countOfDeletedOldItems, new Tag("compositeFeedTitle",compositeUserFeed.getCompositeUserFeedTitle()));
 		}
 		user.setCompositeUserFeeds(compositeUserFeedSet);
 		user.saveXMLObjectToFileByLogin();

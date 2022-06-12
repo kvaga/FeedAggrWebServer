@@ -64,26 +64,47 @@ public class MonitoringUtils {
 	
 	public static void sendCommonMetric(String metricName, int metricValue) {
 		if(!enabled) return;
-
-		Builder b = Point.measurement(metricName)
-							  .time(System.currentTimeMillis() - new Random().nextInt()%1000, TimeUnit.MILLISECONDS)
-							  .addField("value", metricValue);
-		Point point = b.build();
-		InfluxDB.getInstance().send(point);
+		if(InfluxDB.getInstance()!=null) {
+			Builder b = Point.measurement(metricName)
+								  .time(System.currentTimeMillis() - new Random().nextInt()%1000, TimeUnit.MILLISECONDS)
+								  .addField("value", metricValue);
+			Point point = b.build();
+			InfluxDB.getInstance().send(point);
+		}
+		
+		if(InfluxDB2.getInstance()!=null) {
+			com.influxdb.client.write.Point p = com.influxdb.client.write.Point.measurement(metricName)
+		                //.addTag("method",  className + "." + obj.getClass().getEnclosingMethod().getName())
+		                .addField("value", metricValue)
+		                .time(Instant.now().toEpochMilli(), WritePrecision.MS);
+			
+			InfluxDB2.getInstance().send(p, WritePrecision.MS);
+		}
 	} 
 	
 	public static void sendCommonMetric(String metricName, int metricValue, Tag ... tags) {
 		if(!enabled) return;
-
-		Builder b = Point.measurement(metricName)
-							  .time(System.currentTimeMillis() - new Random().nextInt()%1000, TimeUnit.MILLISECONDS)
-							  .addField("value", metricValue);
-		for(Tag tag: tags) {
-			b.tag(tag.getName(), tag.getValue());
-		}
-		 Point point = b.build();
-		 if(InfluxDB.getInstance()!=null) {
+		if(InfluxDB.getInstance()!=null) {
+			Builder b = Point.measurement(metricName)
+								  .time(System.currentTimeMillis() - new Random().nextInt()%1000, TimeUnit.MILLISECONDS)
+								  .addField("value", metricValue);
+			for(Tag tag: tags) {
+				b.tag(tag.getName(), tag.getValue());
+			}
+			 Point point = b.build();
+			 
 			 InfluxDB.getInstance().send(point);
 		 }
+		
+		if(InfluxDB2.getInstance()!=null) {
+			com.influxdb.client.write.Point point = com.influxdb.client.write.Point.measurement(metricName)
+		                //.addTag("method",  className + "." + obj.getClass().getEnclosingMethod().getName())
+		                .addField("value", metricValue)
+		                .time(Instant.now().toEpochMilli(), WritePrecision.MS);
+			for(Tag tag : tags) {
+				point.addTag(tag.getName(), tag.getValue());
+			}
+			InfluxDB2.getInstance().send(point, WritePrecision.MS);
+		}
 	} 
 }

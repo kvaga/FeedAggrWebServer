@@ -6,7 +6,9 @@ import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -69,13 +71,13 @@ public class RSS {
 	}
     public static RSS getRSSObjectFromXMLFile(String xmlFile) throws JAXBException {
     	long t1 = new Date().getTime();
-    	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+    	//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return getRSSObjectFromXMLFile(new File(xmlFile));
 	}
     
     public static RSS getRSSObjectByFeedId(String feedId) throws JAXBException {
     	long t1 = new Date().getTime();
-    	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+    	//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return getRSSObjectFromXMLFile(new File(ConfigMap.feedsPath + File.separator + feedId + ".xml"));
 	}
     
@@ -116,7 +118,30 @@ public class RSS {
     	return getRSSFileByFeedId(feedId).delete();
 	}
     
-    
+    /**
+	 * Allows to remove old items which already have been deleted from compose and don't present on the remote site
+	 * @param rss1
+	 * @param rss2
+	 * @param xDays
+	 * @return counter - how many items were removed
+	 */
+	public static int removeItemsFromFitstRSSIfTheseItemsDontExistInSecondRSSAndOlderThanXDaysFromNow(RSS rss1, RSS rss2, int xDays) {
+		int counter=0;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, -xDays);
+		Date dateBeforeXDays = cal.getTime();
+		Iterator<Item> it = rss1.getChannel().getItem().iterator();
+		while(it.hasNext()) {
+			Item item = (Item)it.next();
+			if(!rss2.getChannel().getItem().contains(item) && item.getPubDate().before(dateBeforeXDays)) {
+				it.remove();
+				log.debug("Item {} removed because it isn't present in the rssFromWeb and older than {} days", item, dateBeforeXDays);
+				counter++;
+			}
+		}
+		return counter;
+	}
     
     public String toString() {
     	return "RSS channel title ["+channel.getTitle()+"], link ["+channel.getLink()+"], lastBuildDate ["+channel.getLastBuildDate()+"], version ["+version+"]";
@@ -133,7 +158,7 @@ public class RSS {
     			newest=item.getPubDate();
     		}
     	}
-        MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+       // MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
     	return new Date[] {oldest, newest};
     }
    

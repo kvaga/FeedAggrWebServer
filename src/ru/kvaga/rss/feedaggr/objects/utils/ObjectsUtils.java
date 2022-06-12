@@ -67,7 +67,7 @@ public class ObjectsUtils {
 	    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 	    marshaller.marshal(object, writer);
 	    log.debug(writer.toString());
-	    MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+//	    MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
     }
     
 	// Read XML object from file, then print this object
@@ -94,13 +94,13 @@ public class ObjectsUtils {
 		    Marshaller marshaller = jc.createMarshaller();
 		    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		    marshaller.marshal(rss, writer);
-		    MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+//		    MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 		}
 		catch (JAXBException e) 
 		{
 		   log.error("Exception", e);
-		   MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+//		   MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		}
 		
 	}

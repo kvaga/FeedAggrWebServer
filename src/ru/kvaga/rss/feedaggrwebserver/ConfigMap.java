@@ -16,7 +16,7 @@ public class ConfigMap {
 	public static String prefixForlog4jJSP="ru.kvaga.feedaggrwebserver.jsps.";
 	public static String INFLUXDB_HOST,	INFLUXDB_DBNAME;
 	public static int INFLUXDB_PORT;
-	
+	public static boolean JOBS_PAUSED=false;
 	public static String INFLUXDB2_URL,	INFLUXDB2_TOKEN, INFLUXDB2_ORGID, INFLUXDB2_BUCKET;
 	
 	public static int INFLUXDB_THREAD_NUMBER;

@@ -134,7 +134,7 @@ public class User {
 		long t1 = new Date().getTime();
 		for (UserFeed userFeed : getUserFeeds()) {
 			if (userFeed.getId().equals(feedId)) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 				return true;
 			}
 		}
@@ -273,12 +273,11 @@ public class User {
 		long t1 = new Date().getTime();
 		for (CompositeUserFeed userFeed : getCompositeUserFeeds()) {
 			if (userFeed.getId().equals(compositeFeedId)) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-						new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},				new Date().getTime() - t1);
 				return true;
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return false;
 	}
 
@@ -286,11 +285,11 @@ public class User {
 		long t1 = new Date().getTime();
 		for (CompositeUserFeed compositeUserFeed : getCompositeUserFeeds()) {
 			if (compositeUserFeed.getId().equals(feedId)) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},	new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},	new Date().getTime() - t1);
 				return compositeUserFeed;
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		throw new Exception("User [" + getName() + "] doesn't have such compositeFeed [" + feedId + "]");
 	}
 
@@ -299,12 +298,11 @@ public class User {
 		for (Iterator<CompositeUserFeed> iterator = getCompositeUserFeeds().iterator(); iterator.hasNext();) {
 			if (iterator.next().getId().equals(feedId)) {
 				iterator.remove();
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-						new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},		new Date().getTime() - t1);
 				return true;
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return false;
 	}
 
@@ -349,7 +347,7 @@ public class User {
 		user.setUserFeeds(userFeedNew);
 		user.saveXMLObjectToFile(userConfigFile);
 		log.debug("File [" + userConfigFile + "] successfully updated. This feedId ["+feedId+"] wasn't located in any compsoiteFeedIds, beacuse deletedFeedIdFromAllComposites ["+deletedFeedIdFromAllComposites+"], deletedFeedId ["+deletedFeedId+"]");
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return deletedFeedId;
 	}
 	public static synchronized boolean deleteCompositeUserFeedByIdFromUser(String compositeFeedId, String userName) throws Exception {
@@ -372,7 +370,7 @@ public class User {
 		user.setCompositeUserFeeds(userFeedNew);
 		user.saveXMLObjectToFile(userConfigFile);
 		log.debug("File [" + userConfigFile + "] successfully updated");
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return deletedBol;
 	}
 
@@ -399,7 +397,7 @@ public class User {
 		deletedFile = feedFile.delete();
 		log.debug("File [" + feedFile.getAbsolutePath() + "] deleted? status ["+deletedFile+"], Feed id ["+feedId+"] deleted from user ["+userName+"]? status ["+deletedUserFeedBol+"]");
 
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return deletedFile || deletedUserFeedBol;
 	}
 	public boolean removeFeedFromCompositeUserFeed(String feedId, String compositeFeedId) {
@@ -407,13 +405,13 @@ public class User {
 		CompositeUserFeed cuf;
 		try {
 			cuf = getCompositeUserFeedById(compositeFeedId);
-			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+			//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 			return cuf.getFeedIds().remove(feedId);
 		} catch (Exception e) {
 			log.error("There is no such composite user feed ["+compositeFeedId+"]");
 		}
 		
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return false;
 	}
 	
@@ -424,7 +422,7 @@ public class User {
 			for(CompositeUserFeed cuf : getCompositeUserFeeds()) {
 				deleted = cuf.getFeedIds().remove(feedId);
 			}
-			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+			//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		
 		return deleted;
 	}
@@ -438,8 +436,7 @@ public class User {
 				return ursp;
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-				new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},		new Date().getTime() - t1);
 		return null;
 	}
 
@@ -447,13 +444,11 @@ public class User {
 		long t1 = new Date().getTime();
 		for (UserRepeatableSearchPattern ursp : getRepeatableSearchPatterns()) {
 			if (ursp.getDomain().equals(domain)) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-						new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},				new Date().getTime() - t1);
 				return ursp.getPattern();
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-				new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},			new Date().getTime() - t1);
 		return null;
 	}
 
@@ -461,13 +456,11 @@ public class User {
 		long t1 = new Date().getTime();
 		for (UserFeed uf : getUserFeeds()) {
 			if (uf.getId().equals(feedId)) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-						new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},		new Date().getTime() - t1);
 				return uf.getRepeatableSearchPattern();
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-				new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},		new Date().getTime() - t1);
 		return null;
 	}
 
@@ -485,12 +478,11 @@ public class User {
 		long t1 = new Date().getTime();
 		for (UserFeed uf : getUserFeeds()) {
 			if (uf.getId().equals(feedId)) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-						new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},		new Date().getTime() - t1);
 				return uf.getItemLinkTemplate();
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return null;
 	}
 
@@ -498,13 +490,11 @@ public class User {
 		long t1 = new Date().getTime();
 		for (UserFeed uf : getUserFeeds()) {
 			if (uf.getId().equals(feedId)) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-						new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},			new Date().getTime() - t1);
 				return uf.getItemContentTemplate();
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-				new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},				new Date().getTime() - t1);
 		return null;
 	}
 
@@ -512,12 +502,11 @@ public class User {
 		long t1 = new Date().getTime();
 		for (UserFeed uf : getUserFeeds()) {
 			if (uf.getId().equals(feedId)) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-						new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},		new Date().getTime() - t1);
 				return uf.getDurationInMillisForUpdate();
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return null;
 	}
 	
@@ -525,12 +514,11 @@ public class User {
 		long t1 = new Date().getTime();
 		for (UserFeed uf : getUserFeeds()) {
 			if (uf.getId().equals(feedId)) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-						new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},		new Date().getTime() - t1);
 				return uf.getSuspendStatus();
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return null;
 	}
 	
@@ -538,12 +526,11 @@ public class User {
 		long t1 = new Date().getTime();
 		for (UserFeed uf : getUserFeeds()) {
 			if (uf.getId().equals(feedId)) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-						new Date().getTime() - t1);
+			//	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},				new Date().getTime() - t1);
 				return uf.getFilterWords();
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+	//	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return null;
 	}
 	
@@ -553,11 +540,11 @@ public class User {
 		long t1 = new Date().getTime();
 		for (UserFeed uf : getUserFeeds()) {
 			if (uf.getId().equals(feedId)) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 				return uf;
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return null;
 	}
 
@@ -581,8 +568,7 @@ public class User {
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		User obj = (User) jaxbUnmarshaller.unmarshal(userFile);
 		obj.setName(login);
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-				new Date().getTime() - t1);
+		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},				new Date().getTime() - t1);
 		return obj;
 	}
 
@@ -592,8 +578,7 @@ public class User {
 		File oldXmlFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + oldFeedId + ".xml");
 		File newXmlFile = new File(ConfigMap.feedsPath.getAbsoluteFile() + "/" + newFeedId + ".xml");
 		if (newXmlFile.exists()) {
-			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-					new Date().getTime() - t1);
+			//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},					new Date().getTime() - t1);
 			throw new Exception("File with new feed id [" + newFeedId + "] already exists");
 		}
 
@@ -602,29 +587,27 @@ public class User {
 		user.saveXMLObjectToFileByLogin(login);
 
 		if (!oldXmlFile.renameTo(newXmlFile)) {
-			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-					new Date().getTime() - t1);
+			//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},					new Date().getTime() - t1);
 			throw new Exception("Couldn't rename old feed id file [" + oldXmlFile + "] to the new feed id file ["
 					+ newXmlFile + "]");
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},
-				new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},	new Date().getTime() - t1);
 	}
 
 	public synchronized void renameFeedWithoutSavingToFile(String oldFeedId, String newFeedId) throws Exception {
 		long t1 = new Date().getTime();
 		if (getUserFeedByFeedId(newFeedId) != null) {
-			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+			//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 			throw new Exception("Feed with newFeedId [" + newFeedId + "] already exists");
 		}
 		UserFeed oldUserFeed = getUserFeedByFeedId(oldFeedId);
 		if (oldUserFeed == null) {
-			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+			//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 			throw new Exception(
 					"Feed with oldFeedId [" + oldFeedId + "] doesn't exist for this user [" + this.name + "]");
 		}
 		oldUserFeed.setId(newFeedId);
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 	}
 
 	public synchronized void saveXMLObjectToFile(File file) throws JAXBException {
@@ -651,7 +634,7 @@ public class User {
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		m.marshal(this, userFile);
 		log.debug("Object user [" + getName() + "] successfully saved to the [" + userFile + "] file");
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return userFile;
 	}
 
@@ -684,7 +667,7 @@ public class User {
 				feedsOfAllUsersMap.put(compositeUserFeed.getId(), user.getName());
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return feedsOfAllUsersMap;
 	}
 
@@ -698,7 +681,7 @@ public class User {
 			}
 		}
 		log.debug("Found [" + al.size() + "] users files ");
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return al;
 	}
 

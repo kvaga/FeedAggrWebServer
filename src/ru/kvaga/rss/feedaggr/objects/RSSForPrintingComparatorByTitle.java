@@ -14,7 +14,7 @@ public class RSSForPrintingComparatorByTitle implements Comparator<RSS>{
 			return 1;
 		if(o2.getChannel().getTitle()==null)
 			return -1;
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+//		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return o1.getChannel().getTitle().compareTo(o2.getChannel().getTitle());
 	}
 

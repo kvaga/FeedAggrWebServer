@@ -114,10 +114,10 @@ public class GetItems implements Callable<LinkedList<Item>>{
 				log.debug("GetItems: Added item " + item.getContentForPrinting() + " to a list \n ");
 				ll.add(item);
 			} else {
-				log.error("-1==> temp_text_pattern: " + temp_text_pattern);
-				log.error("0==> repeatableSearch: "+repeatableSearchPattern);
-				log.error("1==> " + s);
-				log.error("2==> " + repeatableSearchPattern);
+//				log.error("-1==> temp_text_pattern: " + temp_text_pattern);
+//				log.error("0==> repeatableSearch: "+repeatableSearchPattern);
+//				log.error("1==> " + s);
+//				log.error("2==> " + repeatableSearchPattern);
 
 				log.warn("Couldn't find item in the piece ["+(s.length()>=repeatableSearchPattern.length()?s.substring(0,repeatableSearchPattern.length()-1):s)+"] of html content by regex expression ["+repeatableSearchPattern+"] and substringForHtmlBodySplit ["+substringForHtmlBodySplit+"]");
 				
@@ -142,10 +142,10 @@ public class GetItems implements Callable<LinkedList<Item>>{
 		log.debug("splitted html content items.length="+splittedItems.length);
 		log.debug("substringForHtmlBodySplit="+substringForHtmlBodySplit);
 		if(splittedItems.length<2) {
-			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+			//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 			throw new FeedAggrException.SplitHTMLContent(url, htmlBody,substringForHtmlBodySplit);			
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 		return splittedItems;
 	}

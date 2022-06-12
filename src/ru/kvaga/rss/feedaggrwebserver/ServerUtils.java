@@ -93,7 +93,7 @@ public class ServerUtils {
 			firstIteration=false;
 		}
 		log.debug("Session cleared from feed attributes: " + sb.toString());
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 	}
 	public static synchronized ArrayList<UserFeed> getUserFeedListByUser(String userName) throws Exception {
@@ -102,7 +102,7 @@ public class ServerUtils {
 		log.debug("Getting user configuration file");
 		File userConfigFile = new File(ConfigMap.usersPath.getAbsolutePath() + "/" + userName + ".xml");
 		if (!userConfigFile.exists()) {
-			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+			//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 			throw new Exception("Configuration file of user [" + userName + "] doesn't exist");
 		}
 		log.debug("Getting Feeds list from the file [" + userConfigFile.getAbsolutePath() + "]");
@@ -172,7 +172,7 @@ public class ServerUtils {
 		ArrayList<Feed> al = new ArrayList<Feed>();
 		log.debug("Searching Feed in the [" + dir + "] directory for commonFeeds ["+commonFeeds+"] and compositeFeeds ["+compositeFeeds+"]");
 		if (!dir.isDirectory()) {
-			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+			//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 			throw new FeedAggrException.GetFeedsListByUser(String.format(
 					"Couldn't find feeds [%s] directory because [path: %s, absolutePath: %s] is not a directory. Current directory: %s",
@@ -188,7 +188,7 @@ public class ServerUtils {
 				al.add(feed);
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return al;
 	}
 	
@@ -201,13 +201,13 @@ public class ServerUtils {
 			log.debug("f_id: " + feed.getId());
 			if (feed.getId().equals(feedId)) {
 				log.debug("Feed with id [" + feedId + "] successfully found");
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 				return feed;
 			}
 		}
 		log.warn("Feed id wasn't found");
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 		return null;
 	}
@@ -370,7 +370,7 @@ public class ServerUtils {
 				break;
 			}
 		}//Composite Feeds Export
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return sb.toString();
 	}
 
@@ -446,7 +446,7 @@ public class ServerUtils {
 			 sb.append(s);
 			 sb.append("\n");
 		 }
-		 MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		// MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		 return sb.toString();
 	}
 	
@@ -835,7 +835,7 @@ public class ServerUtils {
 			}
 			
 			//
-			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+			//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 			return currentSizeOfFeedItems - listAfterDeletion.size();
 		} catch (JAXBException e) {
 			log.error("An error was occured during deletion old feed items in feedId ["+feedId+"]", e);

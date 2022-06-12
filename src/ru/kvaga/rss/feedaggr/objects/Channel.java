@@ -99,11 +99,11 @@ public class Channel {
 		}
 		for (Item _i : getItem()) {
 			if (item.getGuid().getValue().equals(_i.getGuid().getValue())) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 				return true;
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return false;
 	}
 	
@@ -114,11 +114,11 @@ public class Channel {
 		}
 		for (Item _i : getItem()) {
 			if (item.getGuid().getValue().equals(_i.getGuid().getValue())) {
-				MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+				//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 				return true;
 			}
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+//		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return false;
 	}
 
@@ -163,7 +163,7 @@ public class Channel {
 			items.add(_item);
 		}
 		setItem(items);
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 	}
 	

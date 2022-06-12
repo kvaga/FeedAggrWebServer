@@ -479,11 +479,11 @@ public class Exec {
 		Matcher m = getNumberFromItemLinkPattern.matcher(itemLink);
 		if(m.matches()) {
 			log.debug("Found number ["+m.group(1)+"] in the item link ["+itemLink+"]");
-			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+			//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 			return Integer.parseInt(m.group(1));
 		}
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		throw new Exception("Can't find number in the item link ["+itemLink+"]");
 	}
 
@@ -509,13 +509,13 @@ public static synchronized String checkItemURLForFullness(String feedURL, String
 	if(matcher.find()) {
 		leftPathOfFeedURL = matcher.group();
 	}else {
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		throw new FeedAggrException.CommonException("checkItemURLForFullness: Can't find left path in the URL ["+feedURL+"] by the regex pattern ["+leftPathPatternText+"]");
 	}
 	finalURL=leftPathOfFeedURL+itemURL;
 	log.debug("Now Item URL ["+itemURL+"] converted to ["+leftPathOfFeedURL+itemURL+"]");
 	log.debug("checkItemURLForFullness feedURL=["+feedURL+"] itemURL=["+itemURL+"] t=["+(new Date().getTime()-t1)+"]");
-	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+	//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
 	return leftPathOfFeedURL+itemURL;
 }
@@ -553,12 +553,12 @@ public static synchronized String getYoutubeChannelId(String youtubeVideosUrl) t
 	log.debug("getYoutubeChannelId: try to get yutubeUrlContentExternalId for the url {}", youtubeVideosUrl);
 	Matcher m = yutubeUrlContentExternalId.matcher(Exec.getURLContent(youtubeVideosUrl));
 	if(m.find()) {
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		log.debug("getYoutubeChannelId: found yutubeUrlContentExternalId {}", m.group(1));
 		return m.group(1);
 	}
 	log.error("getYoutubeChannelId: coundn't find youtubeChannelId and yutubeUrlContentExternalId for the url {}", youtubeVideosUrl);
-	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+	//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 	return null;
 }
 
@@ -569,10 +569,10 @@ public static synchronized String getYoutubeFeedURL(String url) throws Exception
 	String channelId = getYoutubeChannelId(url);
 	if(channelId!=null) {
 		log.debug("getYoutubeFeedURL: Determined youtube's url {} for the url {}", String.format(youtubeChannelPattern, channelId), url);	
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return String.format(youtubeChannelPattern, channelId);
 	}
-	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+	//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 	log.error("getYoutubeFeedURL: Couldn't find youtube's feed url for the url {}", url);	
 	return null;
 }
@@ -635,7 +635,7 @@ public synchronized static String getDomainFromURL(String url){
 		return m.group("url");
 	}
 	log.error("Didn't find domain in the url ["+url+"]");
-	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+	//MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 	return null;
 }
 
@@ -672,16 +672,16 @@ public static synchronized String getHabrFeedURL(String url) throws Exception {
 	String prefix = "https://habr.com/%srss/";
 	Matcher m = habrPattern.matcher(url);
 	if(m.find()) {
-		System.out.println("url: " + url);
-		System.out.println("lang: " + m.group("lang"));
-		System.out.println("other: " + m.group("other"));
+//		System.out.println("url: " + url);
+//		System.out.println("lang: " + m.group("lang"));
+//		System.out.println("other: " + m.group("other"));
 
 		habrUrl = String.format(prefix, m.group("lang")==null?"":m.group("lang")) + m.group("other");
-		System.out.println("finalUrl: " + habrUrl);
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
+		//System.out.println("finalUrl: " + habrUrl);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
 		return habrUrl;
 	}else {
-		MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
 		throw new Exception("Can't convert url ["+url+"] to the habr rss pattern url");
 	}
 }

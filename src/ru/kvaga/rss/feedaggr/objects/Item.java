@@ -53,6 +53,7 @@ public class Item{
 	
 	public boolean equals(Object obj) {
 		Item i = (Item) obj;
+		//System.err.println("guid.getValue(): " + guid.getValue() + " vs obj.getGuid().getValue(): " + i.getGuid().getValue());
 		if(i.getGuid().getValue().equals(guid.getValue())) {
 			return true;
 		}else {
