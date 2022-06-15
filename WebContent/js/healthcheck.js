@@ -28,21 +28,6 @@ function createTableForCheckZombiFeedsInCompositeFeeds(objData, id){
 	//document.getElementById(id).innerHTML=obj;
 }
 
-function createTableHeaderRow(){
-	const rowHeader = document.createElement("tr");
-	for(let i=0;i<arguments.length;i++){
-		let anyCell = document.createElement("th");
-		anyCell.appendChild(document.createTextNode(arguments[i]));
-		rowHeader.appendChild(anyCell);
-	}
-	return rowHeader;
-}
-
-function createCell(text){
-	const cellC = document.createElement("td");
-	cellC.appendChild(document.createTextNode(text));
-	return cellC;
-}
 
 function createTableForCheckDuplicateFeeds(objData, id){
 	let div = document.getElementById(id);

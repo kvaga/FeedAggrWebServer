@@ -7,13 +7,20 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
+import ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed;
 import ru.kvaga.rss.feedaggrwebserver.servlets.ServletError;
+import ru.kvaga.rss.feedaggrwebserver.servlets.ServletOK;
 
 public class ServletUtils {
+	final private static Logger log = LogManager.getLogger(ServletUtils.class);
+
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	private static final Pattern p = Pattern.compile(".*/(?<source>.*)");
@@ -26,6 +33,7 @@ public class ServletUtils {
 		}else {
 			referer = "/";
 		}
+		log.debug("getSource: {}", referer);
 		return referer;
 	}
 	  
@@ -35,6 +43,7 @@ public class ServletUtils {
 	
 	
 	public static void responseJSONError(String textNonJSON, HttpServletResponse response) throws JsonProcessingException, IOException {
+		log.error("responseJSONError: {}", textNonJSON);
 		response.getWriter().print(new Gson().toJson(new ServletError(textNonJSON)));
 
 		/* 
@@ -51,10 +60,16 @@ public class ServletUtils {
 				*/
 	}
 	 
+	public static void responseJSON(String str, HttpServletResponse response) throws JsonProcessingException, IOException {
+		//response.getWriter().write(OBJECT_MAPPER.writeValueAsString(object));
+		log.debug("responseJSON: {}", str);
+		response.getWriter().print(new Gson().toJson(new ServletOK(str)));
+
+	}
 	public static void responseJSON(Object object, HttpServletResponse response) throws JsonProcessingException, IOException {
 		//response.getWriter().write(OBJECT_MAPPER.writeValueAsString(object));
+		log.debug("responseJSON: {}", object);
 		response.getWriter().print(new Gson().toJson(object));
-
 	}
 	
 //	public static void responseJSON(String str, HttpServletResponse response) throws JsonProcessingException, IOException {

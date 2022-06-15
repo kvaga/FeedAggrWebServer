@@ -1,3 +1,66 @@
+function createLink(url, label, onClick){
+	const link = document.createElement("a");
+	link.setAttribute('href', url);
+	if(onClick){
+		link.setAttribute('onClick', onClick);
+	}
+	link.append(label);
+	return link;
+}
+
+function createTableHeaderRow(){
+	const rowHeader = document.createElement("tr");
+	for(let i=0;i<arguments.length;i++){
+		let anyCell = document.createElement("th");
+		anyCell.appendChild(document.createTextNode(arguments[i]));
+		rowHeader.appendChild(anyCell);
+	}
+	return rowHeader;
+}
+
+function createForm(action, method, id){
+	const form = document.createElement("form");
+	form.action=action;
+	form.method=method;
+	if(id){
+		form.id=id;
+	}
+	return form;
+}
+
+function createInput(type, name, value){
+	const input = document.createElement("input");
+	input.type=type;
+	input.name=name;
+	input.value=value;
+	return input;
+}
+
+function createTextArea(name, value){
+	let textArea = document.createElement("textarea");
+	textArea.name=name;
+	textArea.value=value;
+	return textArea;
+}
+
+function createCell(text){
+	const cellC = document.createElement("td");
+	if(text){
+		if(typeof text === 'string' || text instanceof String){
+			cellC.appendChild(document.createTextNode(text));	
+		}else{
+			cellC.append(text);
+		}
+	}
+	//if(text.nodeName=="TEXTAREA"){
+	//	cellC.append(text);
+	//}else{
+	//	cellC.appendChild(document.createTextNode(text));	
+	//}
+	return cellC;
+}
+
+
 function ReadError(message, cause) {
   this.message = message;
   this.cause = cause;
@@ -9,15 +72,31 @@ function onErr(error){
 	exception(error.error);
 }
 
-function getGetJSONContentFromURL(url, onErr, onSuccess){
+function createButton(name, value, id){
+	const button = document.createElement("button");
+	button.innerHTML=name;
+	button.value=value;
+	if(id)
+		button.id=id;
+	return button;
+}
+function getGetJSONContentFromURL(url, onErr, onSuccess, postContent){
 	try{
 	    var xhr1 = new XMLHttpRequest();
+	    //Передаёт правильный заголовок в запросе
+	    //if(postContent){
+			//xhr1.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			//postContent = new FormData(document.forms.person);
+		//}
+		
+		
+		
 	    xhr1.onreadystatechange = function() {
 	        if (xhr1.readyState == 4) {
 				obj = JSON.parse(xhr1.responseText);
 				//console.log('getGetJSONContentFromURL obj: ' + typeof obj);
 				if(! ('error' in obj)){
-					console.log('getGetJSONContentFromURL: Received object: ', obj); 
+					//console.log('getGetJSONContentFromURL: Received object: ', obj); 
 					//console.log('getGetJSONContentFromURL: Received object type: ', typeof obj); 
 					//Object.entries(obj).map(item => {
 					//  console.log(item)
@@ -28,8 +107,26 @@ function getGetJSONContentFromURL(url, onErr, onSuccess){
 				}
 	        }
 	    }
-	    xhr1.open('GET', url, true);
-	    xhr1.send(null);
+	    if(postContent){
+			console.log('postContent: ' + postContent);
+		}
+	    xhr1.open(postContent?'POST':'GET', url, true);
+	    if(postContent /*instanceof FormData*/){
+			xhr1.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			/*
+			for(let pair of postContent.entries()) {
+   				console.log(pair[0]+ ', '+ pair[1]);
+   				postContent.set(pair[0], encodeURIComponent(pair[1]));
+			}*/
+		}
+
+	    xhr1.send(postContent?postContent:null);
+	    // xhr.send("foo=bar&lorem=ipsum");
+		// xhr.send('string');
+		// xhr.send(new Blob());
+		// xhr.send(new Int8Array());
+		// xhr.send({ form: 'data' });
+		// xhr.send(document);
 	}catch(err){
 		exception(err.name);
 	}

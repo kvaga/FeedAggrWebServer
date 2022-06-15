@@ -630,7 +630,7 @@ public synchronized static String getDomainFromURL(String url){
 	long t1 = new Date().getTime();
 	Matcher m = getDomainFromURLPattern.matcher(url);
 	if(m.find()) {
-		log.debug("Found domain ["+m.group("url")+"] in the url ["+url+"]");
+		//log.debug("Found domain ["+m.group("url")+"] in the url ["+url+"]");
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return m.group("url");
 	}
