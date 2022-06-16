@@ -125,19 +125,19 @@ public class FeedsUpdateJob implements Runnable {
 						
 						// check userFeed has suspend status. By default all userFeeds have suspendStatus = false 
 						// that means all userFeeds are active by default
-						if(user.getUserFeedByFeedId(feedId).getSuspendStatus()==null) {
-							user.getUserFeedByFeedId(feedId).setSuspendStatus(false);
-						}
+//						if(user.getUserFeedByFeedId(feedId).getSuspendStatus()==null) {
+//							user.getUserFeedByFeedId(feedId).setSuspendStatus(false);
+//						}// marked
 						
 						if(user.getUserFeedByFeedId(feedId).getSuspendStatus()) {
 							log.debug(user.getUserFeedByFeedId(feedId) + " is not active. Suspend status is true. Continue to the next userFeed");
 							continue;
-						}
+						}//marked
 						
-						if(userFeed.getDurationInMillisForUpdate()==null) {
-							log.debug("DurationInMillisForUpdate parameter in the ["+userFeed.getId()+"] is null. We set default value ["+ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE+"]");
-							userFeed.setDurationInMillisForUpdate(ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE);
-						}
+//						if(userFeed.getDurationInMillisForUpdate()==null) {
+//							log.debug("DurationInMillisForUpdate parameter in the ["+userFeed.getId()+"] is null. We set default value ["+ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE+"]");
+//							userFeed.setDurationInMillisForUpdate(ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE);
+//						}//marked
 						
 						RSS rssFromFile = null;
 //						cacheElement
@@ -281,7 +281,7 @@ public class FeedsUpdateJob implements Runnable {
 						MonitoringUtils.sendCommonMetric("FeedsUpdateJobMetric.ExceptionOnFeed", 1, new Tag("feedId",userFeed.getId()));
 					}
 				}
-				user.saveXMLObjectToFile(userFile);
+				//user.saveXMLObjectToFile(userFile);
 				log.debug("User's file " +userFile+ " successfully saved");
 			}
 		} catch (JAXBException e) {
