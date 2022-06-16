@@ -66,6 +66,7 @@ public class MonitoringUtils {
 			                .time(Instant.now().toEpochMilli(), WritePrecision.MS);
 				InfluxDB2.getInstance().send(point, WritePrecision.MS);
 			}
+			log.debug("response_time, method="+className + "." + obj.getClass().getEnclosingMethod().getName()+" value="+responseTime);
 		}catch(Exception e) {
 			try {
 				log.error("Error on sending metric: obj ["+obj+"], responseTime=["+responseTime+"]", e);
@@ -92,6 +93,7 @@ public class MonitoringUtils {
 				
 				InfluxDB2.getInstance().send(p, WritePrecision.MS);
 			}
+			log.debug(metricName+" value="+metricValue);
 		}catch(Exception e) {
 			try {
 				log.error("Error on sending metric: metricName ["+metricName+"], metricValue=["+metricValue+"]", e);
@@ -124,6 +126,7 @@ public class MonitoringUtils {
 				}
 				InfluxDB2.getInstance().send(point, WritePrecision.MS);
 			}
+			log.debug(metricName+" value="+metricValue);
 		}catch(Exception e) {
 			try {
 				StringBuilder sb = new StringBuilder();
