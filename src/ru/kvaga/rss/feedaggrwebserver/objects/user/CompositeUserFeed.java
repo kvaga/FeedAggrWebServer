@@ -389,7 +389,7 @@ public class CompositeUserFeed {
 			MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJob.CountOfDeletedOldItems", countOfDeletedOldItems, new Tag("compositeFeedTitle",compositeUserFeed.getCompositeUserFeedTitle()));
 		}
 		//user.setCompositeUserFeeds(compositeUserFeedSet);
-		user.saveXMLObjectToFileByLogin();
+		//user.saveXMLObjectToFileByLogin();
 		//InfluxDB.getInstance().send("response_time,method=ServerUtils.updateCompositeRSSFilesOfUser", new Date().getTime() - t1);
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
 		return new int[] {allFeedsCount, successFeedsCount, allFeedsCount-successFeedsCount, countOfDeletedOldItemsTotal};
