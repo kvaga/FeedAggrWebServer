@@ -303,10 +303,10 @@ public class CompositeUserFeed {
 				compositeRSS = RSS.getRSSObjectFromXMLFile(compositeRSSFile);
 				ArrayList<Item> oldCompositeFeedItemsForDeletionFromCurrentCompositeFeed = new ArrayList<Item>();
 				// check compositeUserFeed title for null value
-				if(compositeUserFeed.getCompositeUserFeedTitle()==null) {
-					compositeUserFeed.setCompositeUserFeedTitle(compositeRSS.getChannel().getTitle());
-					log.debug("User's ["+user.getName()+"] compositeUserFeed [feedId: "+compositeUserFeed.getId()+"] title was null hence the title became ["+compositeRSS.getChannel().getTitle()+"] from the RSS file. These changes will take effect after saving of a user's file");
-				}
+//				if(compositeUserFeed.getCompositeUserFeedTitle()==null) {
+//					compositeUserFeed.setCompositeUserFeedTitle(compositeRSS.getChannel().getTitle());
+//					log.debug("User's ["+user.getName()+"] compositeUserFeed [feedId: "+compositeUserFeed.getId()+"] title was null hence the title became ["+compositeRSS.getChannel().getTitle()+"] from the RSS file. These changes will take effect after saving of a user's file");
+//				}
 			
 				// iterate over all feeds of specific compositeUserFeed
 				for (String feedId : compositeUserFeed.getFeedIds()) {
@@ -388,7 +388,7 @@ public class CompositeUserFeed {
 			successFeedsCount++;
 			MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJob.CountOfDeletedOldItems", countOfDeletedOldItems, new Tag("compositeFeedTitle",compositeUserFeed.getCompositeUserFeedTitle()));
 		}
-		user.setCompositeUserFeeds(compositeUserFeedSet);
+		//user.setCompositeUserFeeds(compositeUserFeedSet);
 		user.saveXMLObjectToFileByLogin();
 		//InfluxDB.getInstance().send("response_time,method=ServerUtils.updateCompositeRSSFilesOfUser", new Date().getTime() - t1);
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
