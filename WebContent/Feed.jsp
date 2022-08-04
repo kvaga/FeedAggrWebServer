@@ -236,6 +236,14 @@ String url= (String)request.getSession().getAttribute("url");
 			if (url==null){
 				throw new Exception("Can't find feed channel url");
 			}
+			
+			// Check for url already exists
+			File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + request.getSession().getAttribute("login") + ".xml");
+			User user = User.getXMLObjectFromXMLFile(userFile);									
+			if(user.containsFeedIdByUrl(url)!=null){
+				out.print("<font color=red>User already has this URL ["+url+"]");
+			}
+
 			// responseHtmlBody = Exec.getURLContent(url);
 			responseHtmlBody = ServerUtilsConcurrent.getInstance().getURLContent(url);
 		}catch(Exception e){
