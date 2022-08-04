@@ -198,7 +198,8 @@ public class Exec {
 		Matcher matcher = getTitleFromHtmlBodyPattern.matcher(responseHtmlBody);
 		if(matcher.find()) {
 			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
-			return matcher.group("title");
+			System.err.println("Filed: " + matcher.group("title").replaceAll("<!\\[CDATA\\[", "").replaceAll(" Channel\\]\\]>", ""));
+			return matcher.group("title").replaceAll("<!\\[CDATA\\[", "").replaceAll(" Channel]]>", "");
 		}else {
 			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 
@@ -683,6 +684,35 @@ public static synchronized String getHabrFeedURL(String url) throws Exception {
 	}else {
 		//MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
 		throw new Exception("Can't convert url ["+url+"] to the habr rss pattern url");
+	}
+}
+
+private static Pattern telegramPattern = Pattern.compile(
+		//"^https?:\\/\\/habr(ahabr)?[.](com|ru)?(?<lang>en\\/|ru\\/)?(?<other>.*)"
+		"^https?:\\/\\/t[.]me\\/(?<channel>.*)"
+		);
+public static synchronized String getTelegramURL(String url) throws Exception {
+	long t1 = new Date().getTime();
+	if(	url.startsWith("https://rsshub.app/telegram/channel/")) {
+		return url;
+	}
+	String telegramURL;
+	String prefix = "https://rsshub.app/telegram/channel/%s";
+	Matcher m = telegramPattern.matcher(url);
+	if(m.find()) {
+//		System.out.println("url: " + url);
+//		System.out.println("lang: " + m.group("lang"));
+//		System.out.println("other: " + m.group("other"));
+		if(m.group("channel")==null) {
+			throw new Exception("Could't find channel nam from the url ["+url+"]");
+		}
+		telegramURL = String.format(prefix, m.group("channel"));
+		//System.out.println("finalUrl: " + habrUrl);
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
+		return telegramURL;
+	}else {
+		//MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
+		throw new Exception("Can't convert url ["+url+"] to the telegram pattern url ["+telegramPattern+"]");
 	}
 }
 }
