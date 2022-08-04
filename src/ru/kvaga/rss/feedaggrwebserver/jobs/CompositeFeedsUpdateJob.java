@@ -63,6 +63,7 @@ public class CompositeFeedsUpdateJob implements Runnable {
 //				ServerUtils.mergeRSS(null, "kvaga", al, new File("C:\\eclipseWorkspace\\FeedAggrWebServer\\data\\feeds\\composite_1613763817102.xml"));
 		}
 
+		isWorkingNow=false;
 		log.debug("CompositeFeedsUpdateJob finished for ["+(Exec.getHumanReadableHoursMinutesSecondsFromMilliseconds(new Date().getTime()-t1))+"]");
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJobMetric.JobsWork", 0, new Tag("job", "CompositeFeedsUpdateJob"));

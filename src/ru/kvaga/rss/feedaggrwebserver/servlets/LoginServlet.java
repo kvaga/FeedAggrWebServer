@@ -87,7 +87,7 @@ public class LoginServlet extends HttpServlet {
 		
 		String userID = ConfigMap.adminLogin;
 		String password = ConfigMap.adminPassword;
-		log.debug("Received credentials: User="+user+"::password="+pwd);
+		log.debug("Received credentials: User="+user+"::password=***");
 		
 		if(userID.equals(user) && password.equals(pwd)) {
 			HttpSession session = request.getSession();
