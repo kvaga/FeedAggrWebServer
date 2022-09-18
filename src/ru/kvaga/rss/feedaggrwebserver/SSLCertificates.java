@@ -6,6 +6,9 @@ import java.net.URL;
 
 import java.security.*;
 import java.security.cert.*;
+import java.util.Enumeration;
+import java.util.Iterator;
+
 import org.apache.tomcat.util.net.AbstractEndpoint;
 import org.apache.tomcat.util.net.AbstractJsseEndpoint;
 import javax.net.ssl.*;
@@ -34,8 +37,8 @@ public class SSLCertificates {
 //		sslCertificates.downloadAndApplyCertificates(url, port, keyStoreFilePath, passphrase);
 	}
 	
-	public void downloadAndApplyCertificates(URL url, int port, String keyStoreFilePath,String passphrase) throws Exception {
-		downloadAndApplyCertificates(url.toString().replaceAll("https://", "").replaceAll("/.*", ""), port, keyStoreFilePath, passphrase.toCharArray()); 
+	public SSLContext downloadAndApplyCertificates(URL url, int port, String keyStoreFilePath,String passphrase) throws Exception {
+		return downloadAndApplyCertificates(url.toString().replaceAll("https://", "").replaceAll("/.*", ""), port, keyStoreFilePath, passphrase.toCharArray()); 
 	}
 
 	/**
@@ -46,7 +49,7 @@ public class SSLCertificates {
 	 * @param passphrase
 	 * @throws Exception
 	 */
-	public void downloadAndApplyCertificates(String host, int port, String keyStoreFilePath, char[] passphrase) throws Exception {
+	public SSLContext downloadAndApplyCertificates(String host, int port, String keyStoreFilePath, char[] passphrase) throws Exception {
 		File file = new File(keyStoreFilePath); 
 		log.info("Let's download certificate for the host ["+host+"]");
 		log.debug("Loading KeyStore " + file + "...");
@@ -78,7 +81,7 @@ public class SSLCertificates {
 		X509Certificate[] chain = tm.chain;
 		if (chain == null) {
 			log.debug("Could not obtain server certificate chain");
-			return;
+			return null;
 		}
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -104,7 +107,7 @@ public class SSLCertificates {
 			log.info("Added certificate to keystore '"+file+"' using alias '" + alias + "'");
 		}
 		// Fore Tomcat to reread truststore
-		ReloadProtocol rp = new ReloadProtocol();
+		return buildSslSocketContext(keyStoreFilePath,passphrase);
 	}
 	private static final char[] HEXDIGITS = "0123456789abcdef".toCharArray();
 
@@ -126,10 +129,12 @@ public class SSLCertificates {
 
 		SavingTrustManager(X509TrustManager tm) {
 			this.tm = tm;
+			this.chain=tm.getAcceptedIssuers();
 		}
 
 		public X509Certificate[] getAcceptedIssuers() {
-			throw new UnsupportedOperationException();
+			return chain.clone();
+//			throw new UnsupportedOperationException();
 		}
 
 		public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
@@ -142,11 +147,72 @@ public class SSLCertificates {
 		}
 	}
 
+	private SSLContext buildSslSocketContext(String keyStoreFilePath, char[] passphrase) {
+
+        log.debug("Started checking for certificates and if it finds the certificates will be loaded…..");
+
+
+        SSLContext context = null;
+        
+        try {
+            // Create a KeyStore containing our trusted CAs
+            KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+            InputStream in = null;
+
+            try {
+                in = new FileInputStream(keyStoreFilePath);
+                keystore.load(in,passphrase);
+            }catch(Exception e) {
+                log.error("Unable to load keystore "+e.getMessage());
+            }finally {
+                if(in != null) {
+                    in.close(); 
+                }               
+            }
+
+            // Create a TrustManager that trusts the CAs in our KeyStore
+    		TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(keystore);
+
+            // Create an SSLContext that uses our TrustManager
+            context = SSLContext.getInstance("TLS");
+            context.init(null, tmf.getTrustManagers(), new java.security.SecureRandom());
+            log.info("Completed loading of certificates.");
+            // ------------------
+            X509TrustManager defaultTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
+            
+            Enumeration<String> en = keystore.aliases();
+//            String s;
+            while(en.hasMoreElements()) {
+            	log.debug("keystore: " + en.nextElement());;
+            }
+            
+            SavingTrustManager savingTrustManager = new SavingTrustManager(defaultTrustManager);
+            
+            for(X509Certificate c : savingTrustManager.chain) {
+            	log.debug("Accepted issuer: " + c.getIssuerDN());
+            }
+            
+        } catch (Exception e) {
+            log.error("unable to create ssl context "+e.getMessage(),e);
+        }
+        return context;
+    } 
+
+   
+        
+}
+	/*
 	// Force Tomcat to reread truststore
+//	Connector in server.xml should mention this as the protocol:
+//
+//		<Connector protocol="com.myown.connector.ReloadProtocol"
+//		 ..........
 	private static class ReloadProtocol extends Http11NioProtocol {
 
         public ReloadProtocol() {
             super();
+            System.err.println("this.getEndpoint(): " + this.getEndpoint());
             RefreshSslConfigThread refresher = new 
                   RefreshSslConfigThread(this.getEndpoint(), this);
             refresher.run();
@@ -195,4 +261,6 @@ public class SSLCertificates {
             }
        }
 }
-}
+
+*/
+
