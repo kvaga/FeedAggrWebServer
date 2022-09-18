@@ -188,7 +188,6 @@ class GetURLContentTask implements Callable<String>{
 					}catch(Exception e1) {
 						e1.printStackTrace();
 					}
-					System.out.println("javax.net.ssl.trustStore: " + System.getProperty("javax.net.ssl.trustStore"));
 					con.getInputStream();
 //					Thread.sleep(20000);
 				}else {
