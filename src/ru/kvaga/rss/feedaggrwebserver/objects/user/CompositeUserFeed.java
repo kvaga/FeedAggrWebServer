@@ -386,6 +386,7 @@ public class CompositeUserFeed {
 			removeOldItems(compositeRSS, deleteItemsWhichOlderThanThisDate);
 			compositeRSS.saveXMLObjectToFile(compositeRSSFile);
 			successFeedsCount++;
+			MonitoringUtils.sendCommonMetric("countOfItems", compositeRSS.getChannel().getItem().size(), new Tag("UserFeedType","CompositeUserFeed"), new Tag("title",compositeRSS.getChannel().getTitle()), new Tag("feedId", compositeUserFeed.getId()));
 			MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJob.CountOfDeletedOldItems", countOfDeletedOldItems, new Tag("compositeFeedTitle",compositeUserFeed.getCompositeUserFeedTitle()));
 		}
 		//user.setCompositeUserFeeds(compositeUserFeedSet);

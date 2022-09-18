@@ -74,13 +74,24 @@ try{
 			<a href="CompositeFeedsList.jsp">Composite Feeds List</a>
 			-->
 		</td>
-		<td><a href="addFeedsByList.jsp">Add feeds by URL list</a>
-			<br/><a href="Jobs.jsp">Jobs</a>
-			<br/><a href="UsersFiles.jsp">User Files</a>
+		<td>
+			<a href="addFeedsByList.jsp">Add feeds by URL list</a><br/>
+			<a href="Jobs.jsp">Jobs</a><br/>
+			<a href="UsersFiles.jsp">User Files</a>
 		</td>
-		<td><a href="HealthCheckNew.jsp">HealthCheckNew</a><br/><a href="HealthCheck.jsp">Health Check page</a></td>
-		<td><a href="addFeedId2CompositeFeed.jsp">addFeedId2CompositeFeed</a><br/><a href="DeleteOldFeedItems.jsp">DeleteOldFeedItems.jsp</a></td>
-		<td><a href="deleteFeedsFeedsByList.jsp">deleteFeedsFeedsByList</a></td>
+		<td>
+			<a href="HealthCheckNew.jsp">HealthCheckNew</a><br/>
+			<a href="HealthCheck.jsp">Health Check page</a><br/>
+			<a href="MonitoringExceptions?redirectTo=/HealthCheckException.jsp">Monitoring Exceptions</a>
+		</td>
+		<td>
+			<a href="addFeedId2CompositeFeed.jsp">addFeedId2CompositeFeed</a><br/>
+			<a href="DeleteOldFeedItems.jsp">DeleteOldFeedItems.jsp</a>
+		</td>
+		<td>
+			<a href="deleteFeedsFeedsByList.jsp">deleteFeedsFeedsByList</a><br/>
+			<a href="FixLostRSSURLsAndTitlesFromUserFile.jsp">FixLostRSSURLsAndTitles</a>
+		</td>
 		<td>
 			<a href="CompositeFeedsExport.jsp">Composite Feeds Export</a><br/>
 			<a href="CompositeFeedsImport.jsp">Composite Feeds Import</a><br/>
@@ -103,7 +114,6 @@ try{
 		 </td>
 		 -->
 	</tr>
-	
 </table>
 
   

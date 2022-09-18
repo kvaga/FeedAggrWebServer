@@ -15,14 +15,15 @@ import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
 @XmlRootElement
 public class Channel {
 	private static Logger log = LogManager.getLogger(Channel.class);
+
+	private ArrayList<Item> item = new ArrayList<Item>();
 	private String title;
 	private String link;
 	private String description;
 	private Date lastBuildDate;
 	private String generator="Feed Aggr Web Server Generator";
 	private int ttl=360;
-	private ArrayList<Item> item = new ArrayList<Item>();
-
+	
 	public Channel() {
 	}
 

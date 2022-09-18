@@ -43,6 +43,8 @@ public class MonitoringUtils {
 	public static void sendResponseTime2InfluxDB(Object obj, long responseTime) {
 		if(!enabled) return;
 		try {
+			// TODO: temporarily disabled sendResponseTime2InfluxDB due to load impact
+			if(true) return;
 			String className=obj.getClass().getName();
 			int ind=-1;
 			if((ind = className.indexOf('$'))!=-1) {

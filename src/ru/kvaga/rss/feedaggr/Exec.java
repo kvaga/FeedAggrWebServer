@@ -198,7 +198,7 @@ public class Exec {
 		Matcher matcher = getTitleFromHtmlBodyPattern.matcher(responseHtmlBody);
 		if(matcher.find()) {
 			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
-			System.err.println("Filed: " + matcher.group("title").replaceAll("<!\\[CDATA\\[", "").replaceAll(" Channel\\]\\]>", ""));
+//			System.err.println("Filed: " + matcher.group("title").replaceAll("<!\\[CDATA\\[", "").replaceAll(" Channel\\]\\]>", ""));
 			return matcher.group("title").replaceAll("<!\\[CDATA\\[", "").replaceAll(" Channel]]>", "");
 		}else {
 			MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
@@ -260,25 +260,25 @@ public class Exec {
 		String body = null;
 		String charset; // You should determine it based on response header.
 		
-		/* Start of Fix SSL Checks */
-        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() { return null; }
-            public void checkClientTrusted(X509Certificate[] certs, String authType) { }
-            public void checkServerTrusted(X509Certificate[] certs, String authType) { }
-
-        } };
-
-        SSLContext sc = SSLContext.getInstance("SSL");
-        sc.init(null, trustAllCerts, new java.security.SecureRandom());
-        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-
-        // Create all-trusting host name verifier
-        HostnameVerifier allHostsValid = new HostnameVerifier() {
-            public boolean verify(String hostname, SSLSession session) { return true; }
-        };
-        // Install the all-trusting host verifier
-        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-        /* End of the fix*/
+//		/* Start of Fix SSL Checks */
+//        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+//            public java.security.cert.X509Certificate[] getAcceptedIssuers() { return null; }
+//            public void checkClientTrusted(X509Certificate[] certs, String authType) { }
+//            public void checkServerTrusted(X509Certificate[] certs, String authType) { }
+//
+//        } };
+//
+//        SSLContext sc = SSLContext.getInstance("SSL");
+//        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+//        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+//
+//        // Create all-trusting host name verifier
+//        HostnameVerifier allHostsValid = new HostnameVerifier() {
+//            public boolean verify(String hostname, SSLSession session) { return true; }
+//        };
+//        // Install the all-trusting host verifier
+//        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+//        /* End of the fix*/
         
 //		HttpsURLConnection con=null;
         HttpURLConnection con=null;

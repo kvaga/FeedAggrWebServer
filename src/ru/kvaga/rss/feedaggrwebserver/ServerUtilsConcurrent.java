@@ -108,27 +108,28 @@ class GetURLContentTask implements Callable<String>{
 		HttpURLConnection con=null;
 
 		try {
-			/* Start of Fix SSL Checks */
-	        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-	            public java.security.cert.X509Certificate[] getAcceptedIssuers() { return null; }
-	            public void checkClientTrusted(X509Certificate[] certs, String authType) { }
-	            public void checkServerTrusted(X509Certificate[] certs, String authType) { }
-
-	        } };
-
-	        SSLContext sc = SSLContext.getInstance("SSL");
-	        sc.init(null, trustAllCerts, new java.security.SecureRandom());
-	        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-
-	        // Create all-trusting host name verifier
-	        HostnameVerifier allHostsValid = new HostnameVerifier() {
-	            public boolean verify(String hostname, SSLSession session) { return true; }
-	        };
-	        // Install the all-trusting host verifier
-	        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-	        /* End of the fix*/
+//			/* Start of Fix SSL Checks */
+//	        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+//	            public java.security.cert.X509Certificate[] getAcceptedIssuers() { return null; }
+//	            public void checkClientTrusted(X509Certificate[] certs, String authType) { }
+//	            public void checkServerTrusted(X509Certificate[] certs, String authType) { }
+//
+//	        } };
+//
+//	        SSLContext sc = SSLContext.getInstance("SSL");
+//	        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+//	        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+//
+//	        // Create all-trusting host name verifier
+//	        HostnameVerifier allHostsValid = new HostnameVerifier() {
+//	            public boolean verify(String hostname, SSLSession session) { return true; }
+//	        };
+//	        // Install the all-trusting host verifier
+//	        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+//	        /* End of the fix*/
 	        urlText = Exec.encodeURLString(urlText);
 			URL url = new URL(urlText);
+			
 			con = (HttpURLConnection) url.openConnection();
 			con.setConnectTimeout(httpConnectionConnectTimeoutInMillis); 
 			con.setReadTimeout(httpConnectionConnectTimeoutInMillis); 
@@ -152,7 +153,8 @@ class GetURLContentTask implements Callable<String>{
 			con.setRequestProperty("user-agent",
 					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36");
 
-			log.debug("url ["+urlText+"], connection response code [" + con.getResponseCode()+"], contentType  ["+ con.getContentType()+"]");
+			
+//			log.debug("url ["+urlText+"], connection response code [" + con.getResponseCode()+"], contentType  ["+ con.getContentType()+"]");
 
 
 			
@@ -171,7 +173,31 @@ class GetURLContentTask implements Callable<String>{
 //						String.format("Received unsupported contentType: %s. ", con.getContentType()));
 //			}
 			charset = "UTF-8";
-			String encoding=con.getContentEncoding();
+			String encoding=null;
+			try{
+				encoding = con.getContentEncoding();
+				con.getInputStream();
+			}catch(Exception e) {
+//				System.err.println("QQQQ: "+e.getCause());
+//				Thread.sleep(20000);
+				if(e.getCause().toString().contains("unable to find valid certification path to requested target")) {
+					SSLCertificates sslCertificates = new SSLCertificates();
+					int port=443;
+					try {
+						sslCertificates.downloadAndApplyCertificates(url, port, ConfigMap.trustStore, ConfigMap.trustStorePassword);
+					}catch(Exception e1) {
+						e1.printStackTrace();
+					}
+					System.out.println("javax.net.ssl.trustStore: " + System.getProperty("javax.net.ssl.trustStore"));
+					con.getInputStream();
+//					Thread.sleep(20000);
+				}else {
+					e.printStackTrace();
+					throw new Exception(e);
+				}
+				
+			}
+			
 			if (encoding!=null && encoding.equals("gzip")) {
 				try (InputStream gzippedResponse = con.getInputStream();
 						InputStream ungzippedResponse = new GZIPInputStream(gzippedResponse);
@@ -204,7 +230,7 @@ class GetURLContentTask implements Callable<String>{
 				con.disconnect();
 			}
 			MonitoringUtils.sendResponseTime2InfluxDB(new Object(){}, new Date().getTime() - t1);
-			throw new FeedAggrException.GetURLContentException(e.getMessage(),urlText);
+			throw new FeedAggrException.GetURLContentException("Message: " + e.getMessage() + ". Cause: " + e.getCause()+"", urlText, e);
 		}
 		MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
 		return body;

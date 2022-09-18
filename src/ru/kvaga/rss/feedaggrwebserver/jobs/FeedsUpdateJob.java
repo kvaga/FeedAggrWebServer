@@ -194,6 +194,7 @@ public class FeedsUpdateJob implements Runnable {
 								//Exec.getURLContent(url)
 								ServerUtilsConcurrent.getInstance().getURLContent(url);
 								;
+						
 //				repeatableSearchPattern="<h2 class=\"title\">{*}<a href=\"{%}\" title=\"{%}\" rel=\"bookmark\">{%}</a>{*}</h2>\r\n";
 						log.debug("The content of the [" + url + "] was downloaded");
 						itemTitleTemplate = userFeed.getItemTitleTemplate();
@@ -257,10 +258,14 @@ public class FeedsUpdateJob implements Runnable {
 						.setOldestPubDate(oldestNewest[0])
 						.setSizeMb(new File(rssXmlFile).length()/1024/1024);
 						//
+						MonitoringUtils.sendCommonMetric("countOfItems", rssFromFile.getChannel().getItem().size(), new Tag("UserFeedType","UserFeed"), new Tag("title",userFeed.getUserFeedTitle()), new Tag("feedId",userFeed.getId()));
+
 						MonitoringUtils.sendCommonMetric("FeedsUpdateJobMetric.CountOfNewlyAddedItemsToTheCurrentFeedId", countOfNewlyAddedItemsToTheCurrentFeedId, new Tag("feedId", feedId));
 						successFeedsCount++;
 
 					} catch (Exception e) {
+						MetricURLContentExceptions.getInstance().add(e,url);
+						
 						log.error("Exception on feedId [" + userFeed.getId() + "]", e);
 						if(cacheElement!=null) {
 							StringBuilder sb = new StringBuilder();
