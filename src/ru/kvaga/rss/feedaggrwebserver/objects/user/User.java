@@ -41,6 +41,15 @@ public class User {
 	private Set<UserRssItemPropertiesPatterns> rssItemPropertiesPatterns = ConcurrentHashMap.newKeySet();
 //		new UserRssItemPropertiesPatternsSet()
 	;
+	private Set<URLTranslation> urlTranslations = new HashSet<URLTranslation>();
+
+	public Set<URLTranslation> getUrlTranslations() {
+		return urlTranslations;
+	}
+
+	public void setUrlTranslations(Set<URLTranslation> urlTranslations) {
+		this.urlTranslations = urlTranslations;
+	}
 
 	public User() {
 	}

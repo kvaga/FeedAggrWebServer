@@ -21,6 +21,7 @@ import ru.kvaga.monitoring.influxdb.InfluxDB;
 import ru.kvaga.monitoring.influxdb.InfluxDB2;
 import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.MonitoringUtils;
+import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -224,6 +225,7 @@ public class StartStopListener implements ServletContextListener{
 				log.error("Incorrect format of update_composite_rss_files.days_count_for_deletion parameter ["+props.getProperty("update_composite_rss_files.days_count_for_deletion")+"]. Use default value ["+ConfigMap.UPDATE_COMPOSITE_RSS_FILES_DAYS_COUNT_FOR_DELETION+"]");
 			}
 			
+		
 			
 		} catch (IOException e) {
 			log.error("Can't get configuration parameters of servlet", e);
