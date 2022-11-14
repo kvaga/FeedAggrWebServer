@@ -21,6 +21,7 @@ import ru.kvaga.rss.feedaggrwebserver.DurationMillisecondsForUpdatingFeeds;
 import ru.kvaga.rss.feedaggrwebserver.ResponseForAddRSSFeedByURLAutomaticlyMethod;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtils;
 import ru.kvaga.rss.feedaggrwebserver.ServerUtilsConcurrent;
+import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 
 /**
  * Servlet implementation class AddFeedsByUrlsListServlet
@@ -130,9 +131,10 @@ public class AddFeedsByUrlsListServlet extends HttpServlet {
 						url=Exec.getHabrFeedURL(url);
 					}
 					
-					if(url.startsWith("https://t.me")){
-						url=Exec.getTelegramURL(url);
-					}
+					url = URLTranslationServlet.translateURL(url, User.getXMLObjectFromXMLFileByUserName(userName));
+//					if(url.startsWith("https://t.me")){
+//						url=Exec.getTelegramURL(url);
+//					}
 					 
 				//url = (url.contains("youtube.com") && !url.contains("youtube.com/feeds/videos.xml")) ? Exec.getYoutubeFeedURL(url): url;
 				//url = (url.startsWith("https://habr.com/ru/rss") || url.startsWith("https://habr.com/rss") || url.startsWith("https://habrahabr.com/rss")|| url.startsWith("https://habrahabr.ru/rss")) ? Exec.getHabrFeedURL(url) : url;

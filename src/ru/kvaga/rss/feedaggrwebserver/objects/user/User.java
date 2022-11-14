@@ -41,13 +41,13 @@ public class User {
 	private Set<UserRssItemPropertiesPatterns> rssItemPropertiesPatterns = ConcurrentHashMap.newKeySet();
 //		new UserRssItemPropertiesPatternsSet()
 	;
-	private Set<URLTranslation> urlTranslations = new HashSet<URLTranslation>();
+	private HashMap<String, URLTranslation> urlTranslations = new HashMap<String, URLTranslation>();
 
-	public Set<URLTranslation> getUrlTranslations() {
+	public HashMap<String, URLTranslation> getUrlTranslations() {
 		return urlTranslations;
 	}
 
-	public void setUrlTranslations(Set<URLTranslation> urlTranslations) {
+	public void setUrlTranslations(HashMap<String, URLTranslation> urlTranslations) {
 		this.urlTranslations = urlTranslations;
 	}
 

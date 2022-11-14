@@ -97,7 +97,7 @@ try{
 			<a href="CompositeFeedsImport.jsp">Composite Feeds Import</a><br/>
 			<a href="UserFileExport.jsp">User File Export</a> <br/>
 			<a href="UserFileImport.jsp">User File Import</a> <br/>
-			<a href="URLTranslation.jsp">URL Translation</a> <br/>			
+			<a href="URLTranslationServlet?command=list&redirectTo=/URLTranslation.jsp">URL Translation</a> <br/>			
 		</td>
 		<td>
 			<div id="FeedsUpdateJobStatus"></div>FeedsUpdateJob Status<br/>

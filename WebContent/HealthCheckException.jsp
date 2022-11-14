@@ -16,7 +16,7 @@
 <tr><th>Exception</th><th></th>Size</th><th>URLs</th></tr>
 	<c:forEach items="${requestScope.ExceptionsList}" var="item">
         <tr>
-          <td>${item.key}</td><td>${item.value.size()}<td>${item.value}</td>
+          <td>${item.key}</td><td>${item.value.size()}</td><td>${item.value}</td>
         </tr>
       </c:forEach>
 </table>

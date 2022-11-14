@@ -31,6 +31,14 @@ public class URLTranslation {
 		this.templateOutUrlText = templateOutUrlText;
 	}
 	
+	public String toString() {
+		return "domain: " + domain + ", regexInURLPattern: " + regexInURLPatternText + ", templateOutUrl: " + templateOutUrlText;
+	}
+	
+	public int hashCode() {
+	    return (int) domain.hashCode();
+	}
+	
 	public boolean equals(Object obj) {
 	    if (this == obj) return true;
 	    if (obj == null || getClass() != obj.getClass()) return false;

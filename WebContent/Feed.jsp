@@ -1,3 +1,5 @@
+<%@page import="ru.kvaga.rss.feedaggrwebserver.servlets.URLTranslationServlet"%>
+<%@page import="ru.kvaga.rss.feedaggrwebserver.objects.user.URLTranslation"%>
 <%@page import="ru.kvaga.rss.feedaggr.FeedAggrException.GetSubstringForHtmlBodySplitException"%>
 <%@page import="ru.kvaga.rss.feedaggrwebserver.ServerUtilsConcurrent"%>
 <%@page import="java.util.Enumeration"%>
@@ -227,19 +229,19 @@ String url= (String)request.getSession().getAttribute("url");
 	<%if (url != null) {	
 		try{
 			//responseHtmlBody = ServerUtils.convertStringToUTF8(Exec.getURLContent(url));
+			File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + request.getSession().getAttribute("login") + ".xml");
+			User user = User.getXMLObjectFromXMLFile(userFile);									
 			
 			url = (url.contains("youtube.com") && !url.contains("youtube.com/feeds/videos.xml")) ? Exec.getYoutubeFeedURL(url): url;
 			url = (url.startsWith("https://habr.com/ru/rss") || url.startsWith("https://habr.com/rss") || url.startsWith("https://habrahabr.com/rss")|| url.startsWith("https://habrahabr.ru/rss")) ? Exec.getHabrFeedURL(url) : url;
-			url = url.startsWith("https://t.me/") ? Exec.getTelegramURL(url) : url;
-
+			//url = url.startsWith("https://t.me/") ? Exec.getTelegramURL(url) : url;
+			url = URLTranslationServlet.translateURL(url, user);
 			request.getSession().setAttribute("url",url);
 			if (url==null){
 				throw new Exception("Can't find feed channel url");
 			}
 			
 			// Check for url already exists
-			File userFile = new File(ConfigMap.usersPath.getAbsoluteFile() + "/" + request.getSession().getAttribute("login") + ".xml");
-			User user = User.getXMLObjectFromXMLFile(userFile);									
 			if(user.containsFeedIdByUrl(url)!=null){
 				out.print("<font color=red>User already has this URL ["+url+"]");
 			}
