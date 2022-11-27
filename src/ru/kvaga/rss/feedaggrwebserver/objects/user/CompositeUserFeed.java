@@ -27,7 +27,7 @@ import ru.kvaga.rss.feedaggrwebserver.monitoring.*;
 @XmlRootElement
 public class CompositeUserFeed {
 	final private static Logger log = LogManager.getLogger(CompositeUserFeed.class);
- 
+
 	private String id;
 	private String compositeUserFeedTitle;
 	//private ArrayList<String> feedIds = new ArrayList<String>();
@@ -302,6 +302,9 @@ public class CompositeUserFeed {
 				compositeRSSFile = ServerUtils.getRssFeedFileByFeedId(compositeUserFeed.getId());
 				compositeRSS = RSS.getRSSObjectFromXMLFile(compositeRSSFile);
 				ArrayList<Item> oldCompositeFeedItemsForDeletionFromCurrentCompositeFeed = new ArrayList<Item>();
+				
+				int monitoringPrevSize=compositeRSS.getChannel().getItem().size();
+
 				// check compositeUserFeed title for null value
 //				if(compositeUserFeed.getCompositeUserFeedTitle()==null) {
 //					compositeUserFeed.setCompositeUserFeedTitle(compositeRSS.getChannel().getTitle());
@@ -316,7 +319,6 @@ public class CompositeUserFeed {
 					}
 					RSS rss = RSS.getRSSObjectByFeedId(feedId);
 					log.debug("Got rss [" + rss + "] for feedId ["+feedId+"] with ["+ rss.getChannel().getItem().size() + "] items");
-					
 					//Iterator<Item> iteratorFromRSSItemsForSpecificFeedId = rss.getChannel().getItem().iterator();
 					// Iterate over all Items in of specific RSS
 					for (Item itemFromRSSFileForSpecificFeedId : rss.getChannel().getItem()) {
@@ -351,6 +353,9 @@ public class CompositeUserFeed {
 				if(cacheElement != null) {
 					cacheElement.setLastUpdateStatus(CacheElement.LAST_UPDATE_STATUS_OK);
 				}
+				MonitoringUtils.sendCommonMetric("CompositeUserFeedJob",compositeRSS.getChannel().getItem().size()-monitoringPrevSize, new Tag("operation", "CountAddedNewItems"), new Tag("title", compositeRSS.getChannel().getTitle()));
+				MonitoringUtils.sendCommonMetric("CompositeUserFeedJob",countOfDeletedOldItems, new Tag("operation", "CountOfDeletedOldItems"), new Tag("title", compositeRSS.getChannel().getTitle()));
+			
 			} catch (Exception e) {
 				log.error("updateCompositeRSSFilesOfUser Exception in the composite feed id ["+compositeUserFeed.getId()+"]", e);
 				if(cacheElement!=null) {
@@ -386,8 +391,8 @@ public class CompositeUserFeed {
 			removeOldItems(compositeRSS, deleteItemsWhichOlderThanThisDate);
 			compositeRSS.saveXMLObjectToFile(compositeRSSFile);
 			successFeedsCount++;
-			MonitoringUtils.sendCommonMetric("countOfItems", compositeRSS.getChannel().getItem().size(), new Tag("UserFeedType","CompositeUserFeed"), new Tag("title",compositeRSS.getChannel().getTitle()), new Tag("feedId", compositeUserFeed.getId()));
-			MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJob.CountOfDeletedOldItems", countOfDeletedOldItems, new Tag("compositeFeedTitle",compositeUserFeed.getCompositeUserFeedTitle()));
+			MonitoringUtils.sendCommonMetric("CompositeUserFeedJobCountOfItems", compositeRSS.getChannel().getItem().size(), new Tag("UserFeedType","CompositeUserFeed"), new Tag("title",compositeRSS.getChannel().getTitle()), new Tag("feedId", compositeUserFeed.getId()));
+			MonitoringUtils.sendCommonMetric("CompositeUserFeedJobProcessingDeletedOldItems", countOfDeletedOldItems, new Tag("compositeFeedTitle",compositeUserFeed.getCompositeUserFeedTitle()));
 		}
 		//user.setCompositeUserFeeds(compositeUserFeedSet);
 		//user.saveXMLObjectToFileByLogin();

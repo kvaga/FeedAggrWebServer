@@ -258,9 +258,11 @@ public class FeedsUpdateJob implements Runnable {
 						.setOldestPubDate(oldestNewest[0])
 						.setSizeMb(new File(rssXmlFile).length()/1024/1024);
 						//
-						MonitoringUtils.sendCommonMetric("countOfItems", rssFromFile.getChannel().getItem().size(), new Tag("UserFeedType","UserFeed"), new Tag("title",userFeed.getUserFeedTitle()), new Tag("feedId",userFeed.getId()));
-
-						MonitoringUtils.sendCommonMetric("FeedsUpdateJobMetric.CountOfNewlyAddedItemsToTheCurrentFeedId", countOfNewlyAddedItemsToTheCurrentFeedId, new Tag("feedId", feedId));
+						MonitoringUtils.sendCommonMetric("UserFeedUpdateJobCountOfItems", rssFromFile.getChannel().getItem().size(), new Tag("title",userFeed.getUserFeedTitle()), new Tag("feedId",userFeed.getId()));
+						MonitoringUtils.sendCommonMetric("UserFeedUpdateJobCountOfNewlyAddedItemsToTheCurrentFeedId", countOfNewlyAddedItemsToTheCurrentFeedId, new Tag("title",userFeed.getUserFeedTitle()), new Tag("feedId", feedId));
+//						MonitoringUtils.sendCommonMetric("CompositeUserFeedJobCountOfItems", compositeRSS.getChannel().getItem().size(), new Tag("UserFeedType","CompositeUserFeed"), new Tag("title",compositeRSS.getChannel().getTitle()), new Tag("feedId", compositeUserFeed.getId()));
+//						MonitoringUtils.sendCommonMetric("CompositeUserFeedJobProcessingDeletedOldItems", countOfDeletedOldItems, new Tag("compositeFeedTitle",compositeUserFeed.getCompositeUserFeedTitle()));
+					
 						successFeedsCount++;
 
 					} catch (Exception e) {
@@ -283,7 +285,8 @@ public class FeedsUpdateJob implements Runnable {
 							}
 							cacheElement.setLastUpdateStatus(sb.toString());
 						}
-						MonitoringUtils.sendCommonMetric("FeedsUpdateJobMetric.ExceptionOnFeed", 1, new Tag("feedId",userFeed.getId()));
+						
+						MonitoringUtils.sendCommonMetric("UserFeedUpdateJobExceptionOnFeed", 1, new Tag("feedId",userFeed.getId()),new Tag("title",userFeed.getUserFeedTitle()));
 					}
 				}
 				//user.saveXMLObjectToFile(userFile);

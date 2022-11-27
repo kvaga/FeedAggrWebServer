@@ -21,6 +21,7 @@ public class CompositeFeedsUpdateJob implements Runnable {
 	public static boolean isWorkingNow=false;
 	private static Logger log = LogManager.getLogger(CompositeFeedsUpdateJob.class);
 
+
 	private File compositeRSSFile = null;
 	private String userName = null;
 
@@ -44,9 +45,12 @@ public class CompositeFeedsUpdateJob implements Runnable {
 //				User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
 				int result[] = CompositeUserFeed.updateItemsInCompositeRSSFilesOfUser(userFile.getName().replace(".xml", ""));
 				log.debug("Processed composite feeds: all ["+result[0]+"], successful ["+result[1]+"], failed ["+result[2]+"]");
-				MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJobMetric.Processed composite feeds", result[0], new Tag("status","all"));
-				MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJobMetric.Processed composite feeds", result[1], new Tag("status","successful"));
-				MonitoringUtils.sendCommonMetric("CompositeFeedsUpdateJobMetric.Processed composite feeds", result[2], new Tag("status","failed"));
+				MonitoringUtils.sendCommonMetric("CompositeUserFeedJob", result[0], new Tag("type","all"), new Tag("operation", "Processing"));
+				MonitoringUtils.sendCommonMetric("CompositeUserFeedJob", result[1], new Tag("type","successful"), new Tag("operation", "Processing"));
+				MonitoringUtils.sendCommonMetric("CompositeUserFeedJob", result[2], new Tag("type","failed"), new Tag("operation", "Processing"));
+//				logMonitoring.info(String.format("CompositeFeedsUpdateJobMetricStatusAll %d",result[0]));
+//				logMonitoring.info(String.format("CompositeFeedsUpdateJobMetricStatusSuccessful %d",result[1]));;
+//				logMonitoring.info(String.format("CompositeFeedsUpdateJobMetricStatusFailed %d",result[2]));;
 
 			} catch (Exception e) {
 				log.error("CompositeFeedsUpdateJob Exception", e);
