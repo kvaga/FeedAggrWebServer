@@ -1,3 +1,4 @@
+# You have to donaload a plugin for telegraf from: https://github.com/influxdata/telegraf/tree/release-1.24/plugins/inputs/tail and place it into the /etc/telegraf/telegraf.d
 # PLace this file to the: /etc/telegraf/telegraf.d/
 # Start of telegraf by command: /usr/bin/telegraf -config /etc/telegraf/telegraf.conf -config-directory /etc/telegraf/telegraf.d
 

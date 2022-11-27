@@ -11,7 +11,7 @@
 					<SizeBasedTriggeringPolicy size="5 MB" />
 					<TimeBasedTriggeringPolicy />
             </Policies>
-        </RollingRandomAccessFile>
+        </RollingRandomAccessFile>  
     <!--   
     <File name="MyFile" fileName="${catalina.base}/logs/FeedAggrWebServer1.log">
       <PatternLayout>
