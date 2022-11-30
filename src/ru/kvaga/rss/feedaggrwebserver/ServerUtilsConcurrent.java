@@ -44,7 +44,7 @@ public final class ServerUtilsConcurrent {
 	private static ServerUtilsConcurrent instance;
 	private int threadNumber = 10;
 	private ExecutorService executor = null;
-	private int defaultHttpConnectionConnectTimeoutInMillis = 5000;
+	private int defaultHttpConnectionConnectTimeoutInMillis = 10000;
 
 	private ServerUtilsConcurrent() {
 		executor = Executors.newFixedThreadPool(threadNumber);
