@@ -4,7 +4,15 @@
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36}:%L - %msg%n"/>
     </Console>
-    <RollingRandomAccessFile name="Monitoring" fileName="${sys:catalina.base}/logs/Monitoring.log" filePattern="$${sys:catalina.base}/logs/Monitoring.log.%d{yyyy-MM-dd-HH}">
+    <RollingRandomAccessFile 
+    			name="Monitoring" 
+    			fileName="${sys:catalina.base}/logs/Monitoring.log" 
+    			filePattern="$${sys:catalina.base}/logs/Monitoring.log.%d{yyyy-MM-dd-HH}"
+    			fileOwner="tomcat"
+             	fileGroup="tomcat"
+             	filePermissions="rw-r--r--"
+             	>
+    			
             <PatternLayout pattern="%msg%n"/>
             <Policies>
 					<OnStartupTriggeringPolicy />

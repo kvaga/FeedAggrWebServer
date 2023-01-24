@@ -1,29 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="DEBUG">
+<Configuration status="WARN">
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36}:%L - %msg%n"/>
     </Console>
- <RollingRandomAccessFile name="LogB" fileName="${sys:catalina.base}/logs/FeedAggrWebServer.log" filePattern="$${sys:catalina.base}/logs/FeedAggrWebServer.log.%d{yyyy-MM-dd-HH}">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36}:%L - %msg%n"/>
-			                   
+    <RollingRandomAccessFile 
+    			name="Monitoring" 
+    			fileName="${sys:catalina.base}/logs/Monitoring.log" 
+    			filePattern="$${sys:catalina.base}/logs/Monitoring.log.%d{yyyy-MM-dd-HH}"
+    			fileOwner="tomcat"
+             	fileGroup="tomcat"
+             	filePermissions="rw-r--r--"
+             	>
+    			
+            <PatternLayout pattern="%msg%n"/>
+            <Policies>
+					<OnStartupTriggeringPolicy />
+					<SizeBasedTriggeringPolicy size="5 MB" />
+					<TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingRandomAccessFile>  
+    <!--   
+    <File name="MyFile" fileName="${catalina.base}/logs/FeedAggrWebServer1.log">
+      <PatternLayout>
+        <Pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36}:%L - %msg%n</Pattern>
+      </PatternLayout>
+    </File>
+    
+    -->
+    
+    <RollingRandomAccessFile name="LogB" fileName="${sys:catalina.base}/logs/FeedAggrWebServer.log" filePattern="$${sys:catalina.base}/logs/FeedAggrWebServer.log.%d{yyyy-MM-dd-HH}">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36}:%L - #%msg%n"/>
             <Policies>
 					<OnStartupTriggeringPolicy />
 					<SizeBasedTriggeringPolicy size="20 MB" />
-					<TimeBasedTriggeringPolicy interval="1"/>
+					<TimeBasedTriggeringPolicy />
             </Policies>
-  </RollingRandomAccessFile>
-</Appenders>
+        </RollingRandomAccessFile>
+  </Appenders>
   <Loggers>
     <Root level="ERROR">
       <AppenderRef ref="Console"/>
     </Root>
-    <Logger name="ru.kvaga" level="debug" additivity="false">
-      <!--<AppenderRef ref="Console"/>-->
+    
+	<Logger name="ru.kvaga" level="debug" additivity="false">
+      <AppenderRef ref="Console"/>
       <AppenderRef ref="LogB"/>
     </Logger>
-     <Logger name="custom" level="debug" additivity="false">
+    <Logger name="monitoring" level="info" additivity="false">
+      <AppenderRef ref="Monitoring"/>
+    </Logger>
+    <Logger name="telegrambot" level="debug" additivity="false">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="LogB"/>
+    </Logger>
+   
+    <Logger name="custom" level="debug" additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
+    
   </Loggers>
 </Configuration>
