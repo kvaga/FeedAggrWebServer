@@ -48,6 +48,8 @@ public class AuthenticationFilter implements Filter {
 		context.log("Requested Resource:" + uri);
 		log.debug("Requested Resource:" + uri);
 		HttpSession session = req.getSession(false);
+		System.out.println("request.getRemoteUser(): "+req.getRemoteUser());
+		session.setAttribute("login", req.getRemoteUser());
 		if(session==null && !(
 				uri.endsWith("ProxySite") 
 				|| uri.endsWith("html") 

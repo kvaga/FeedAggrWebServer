@@ -6,7 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -82,30 +85,35 @@ public class LoginServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		String user = request.getParameter("user");
+
+		String user = request.getRemoteUser(); //request.getParameter("user");
 		String pwd = request.getParameter("pwd");
 		
 		String userID = ConfigMap.adminLogin;
 		String password = ConfigMap.adminPassword;
 		log.debug("Received credentials: User="+user+"::password=***");
+		response.sendRedirect("LoginSuccess.jsp");
+
 		
-		if(userID.equals(user) && password.equals(pwd)) {
-			HttpSession session = request.getSession();
-			session.setAttribute("user", "Alex");
-			session.setAttribute("login", user);
-			session.setMaxInactiveInterval(30*60);
-			
-			Cookie userName = new Cookie("user", user);
-			response.addCookie(userName);
-			log.debug("Login success for user [" + user + "]");
-			response.sendRedirect("LoginSuccess.jsp");
-		}else {
-			log.error("Either user name or password is wrong.");
-			RequestDispatcher rd = getServletContext().getRequestDispatcher("/Login.html");
-			PrintWriter out = response.getWriter();
-			out.print("<font color=red>Either user name or password is wrong.</font>");
-			rd.include(request, response);
-		}
+
+//		if(userID.equals(user) /*&& password.equals(pwd)*/) {
+//			HttpSession session = request.getSession();
+//			session.setAttribute("user", "Alex");
+//			session.setAttribute("login", user);
+//			session.setMaxInactiveInterval(30*60);
+//			
+//			Cookie userName = new Cookie("user", user);
+//			response.addCookie(userName);
+//			log.debug("Login success for user [" + user + "]");
+//			response.sendRedirect("LoginSuccess.jsp");
+//		}else {
+//			log.error("Either user name or password is wrong.");
+//			RequestDispatcher rd = getServletContext().getRequestDispatcher("/Login.html");
+//			PrintWriter out = response.getWriter();
+//			out.print("<font color=red>Either user name or password is wrong.</font>");
+//			rd.include(request, response);
+//		}
+//		
 //		doGet(request, response);
 	}
 

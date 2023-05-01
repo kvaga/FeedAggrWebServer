@@ -1,5 +1,31 @@
 
 # Installation
+* Authentication - this application uses tomcat's authentication process
+	* In the tomcat-users.xml file set role and username/password
+```
+		  <role rolename="feedaggrwebserver"/>
+		  <user username="your-user" password="your-user-password" roles="feedaggrwebserver"/>
+```
+	* In the web.xml file set constructions
+```
+	<security-constraint>
+	    <!-- OMIT auth-constraint for showFeed-->
+	    <web-resource-collection>
+	        <web-resource-name>showFeed</web-resource-name>
+	        <url-pattern>/showFeed</url-pattern>
+	    </web-resource-collection>
+	</security-constraint>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Wildcard means whole app requires authentication</web-resource-name>
+			<url-pattern>/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>feedaggrwebserver</role-name>
+		</auth-constraint>
+```
 * Logging
 Add this row to the bin/setenv.sh
 ```bash
@@ -29,3 +55,4 @@ Please pay attention that you have to specify the location of the trustStore. If
 export CATALINA_OPTS="$CATALINA_OPTS -Djavax.net.ssl.trustStore=conf/keystore.jks"
 export CATALINA_OPTS="$CATALINA_OPTS -Djavax.net.ssl.trustStorePassword=******"
 ```
+* Test mode: you cat set java parameter -DTEST_MODE for the test mode
