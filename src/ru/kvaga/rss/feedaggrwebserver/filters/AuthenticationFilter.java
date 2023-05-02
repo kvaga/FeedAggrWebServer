@@ -49,8 +49,8 @@ public class AuthenticationFilter implements Filter {
 		log.debug("Requested Resource:" + uri);
 		HttpSession session = req.getSession(false);
 		System.out.println("request.getRemoteUser(): "+req.getRemoteUser());
-		session.setAttribute("login", req.getRemoteUser());
-		if(session==null && !(
+		if(session!=null) session.setAttribute("login", req.getRemoteUser());
+		if(req.getRemoteUser()==null/*session==null */ && !(
 				uri.endsWith("ProxySite") 
 				|| uri.endsWith("html") 
 				|| uri.endsWith("LoginServlet")
@@ -59,6 +59,7 @@ public class AuthenticationFilter implements Filter {
 				|| uri.endsWith("Test")
 				)) {
 			context.log("Unauthorized access request");
+			System.out.println("Unauthorized access request");
 			res.sendRedirect("Login.html");
 		}else {
 			chain.doFilter(request, response);
