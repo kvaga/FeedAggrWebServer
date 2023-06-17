@@ -47,6 +47,8 @@ if(request.getParameter("action")!=null && request.getParameter("action").equals
 		request.getSession().setAttribute("itemLinkTemplate", user.getItemLinkTemplateByFeedId((String)request.getSession().getAttribute("feedId")));
 		request.getSession().setAttribute("itemContentTemplate", user.getItemContentTemplateByFeedId((String)request.getSession().getAttribute("feedId")));
 		request.getSession().setAttribute("filterWords", user.getFilterWordsByFeedId((String)request.getSession().getAttribute("feedId")));
+		request.getSession().setAttribute("skipWords", user.getSkipWordsByFeedId((String)request.getSession().getAttribute("feedId")));
+
 		request.getSession().setAttribute("durationUpdate", user.getDurationInMillisForUpdateByFeedId((String)request.getSession().getAttribute("feedId")));
 		request.getSession().setAttribute("suspendingStatus", user.getSuspendStatusByFeedId((String)request.getSession().getAttribute("feedId")));
 		request.getSession().setAttribute("feedDescription", rss.getChannel().getDescription());
@@ -102,6 +104,10 @@ if(request.getParameter("feedTitle")!=null){
 
 if(request.getParameter("filterWords") != null){
 	request.getSession().setAttribute("filterWords", request.getParameter("filterWords"));
+}
+
+if(request.getParameter("skipWords") != null){
+	request.getSession().setAttribute("skipWords", request.getParameter("skipWords"));
 }
 
 if(request.getParameter("durationUpdate") != null){

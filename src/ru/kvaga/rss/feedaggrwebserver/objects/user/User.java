@@ -543,7 +543,17 @@ public class User {
 		return null;
 	}
 	
-	
+	public String getSkipWordsByFeedId(String feedId) {
+		long t1 = new Date().getTime();
+		for (UserFeed uf : getUserFeeds()) {
+			if (uf.getId().equals(feedId)) {
+			//	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {},				new Date().getTime() - t1);
+				return uf.getSkipWords();
+			}
+		}
+	//	MonitoringUtils.sendResponseTime2InfluxDB(new Object() {}, new Date().getTime() - t1);
+		return null;
+	}
 
 	public UserFeed getUserFeedByFeedId(String feedId) {
 		long t1 = new Date().getTime();

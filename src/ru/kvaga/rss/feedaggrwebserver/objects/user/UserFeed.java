@@ -11,6 +11,7 @@ public class UserFeed {
 	private String itemContentTemplate;
 	private String repeatableSearchPattern;
 	private String filterWords;
+	private String skipWords;
 	private Long durationInMillisForUpdate;
 	// by deafult all userFeeds are active. Therefore they have suspendStatus is false
 	private Boolean suspendStatus;
@@ -20,7 +21,7 @@ public class UserFeed {
 	}
 
 	public UserFeed(String id, String itemTitleTemplate, String itemLinkTemplate, String itemContentTemplate,
-			String repeatableSearchPattern, String filterWords, long durationInMillisForUpdate, String userFeedTitle, String userFeedUrl) {
+			String repeatableSearchPattern, String filterWords, String skipWords, long durationInMillisForUpdate, String userFeedTitle, String userFeedUrl) {
 		this();
 		this.id = id;
 		this.userFeedTitle=userFeedTitle;
@@ -30,6 +31,7 @@ public class UserFeed {
 		this.itemContentTemplate = itemContentTemplate;
 		this.repeatableSearchPattern = repeatableSearchPattern;
 		this.filterWords = filterWords;
+		this.skipWords = skipWords;
 		this.durationInMillisForUpdate = durationInMillisForUpdate;
 	}
 
@@ -92,7 +94,16 @@ public class UserFeed {
 	public String getFilterWords() {
 		return filterWords;
 	}
-
+	
+	
+	public void setSkipWords(String skipWords) {
+		this.skipWords = skipWords;
+	}
+	public String getSkipWords() {
+		return skipWords;
+	}
+	
+	
 	public void setFilterWords(String filterWords) {
 		this.filterWords = filterWords;
 	}

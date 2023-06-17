@@ -167,7 +167,12 @@ User user = User.getXMLObjectFromXMLFile(userFile);
 							href="javascript:help('item_title')">?</a><br>
 							<input name="filterWords" id="filterWords" class="text" size="64" maxlength="150" value="<%= request.getSession().getAttribute("filterWords")!=null ? request.getSession().getAttribute("filterWords") : "" %>"/>
 					</p>
-						
+					<p>
+						Skip words (divided by '|')<span class="bullet">*</span>: <a
+							class="small help" title="Help on this option"
+							href="javascript:help('item_title')">?</a><br>
+							<input name="skipWords" id="skipWords" class="text" size="64" maxlength="150" value="<%= request.getSession().getAttribute("skipWords")!=null ? request.getSession().getAttribute("skipWords") : "" %>"/>
+					</p>
 					<p>
 						Duration for Feed Update<span class="bullet">*</span>: <a
 							class="small help" title="Help on this option"

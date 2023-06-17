@@ -180,6 +180,7 @@ class ExtendedUserFeed extends UserFeed {
 				userFeed.getItemContentTemplate(),
 				userFeed.getRepeatableSearchPattern(),
 				userFeed.getFilterWords(),
+				userFeed.getSkipWords(),
 				userFeed.getDurationInMillisForUpdate(),
 				userFeed.getUserFeedTitle(),
 				userFeed.getUserFeedUrl()		

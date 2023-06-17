@@ -396,7 +396,8 @@ public class Exec {
 									String itemTitleTemplate,
 									String itemLinkTemplate,
 									String itemContentTemplate,
-									String filterWords
+									String filterWords,
+									String skipWords
 	) throws Exception {
 		long t1 = new Date().getTime();
 		log.debug("===== getRSSFromWeb ===== ");
@@ -417,7 +418,7 @@ public class Exec {
         // ������ ���������� �� html body ���������
         long t2 = new Date().getTime();
 //		LinkedList<Item> itemsFromHtmlBody = Exec.getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,countOfPercentItemsInSearchPattern, filterWords);					
-		LinkedList<Item> itemsFromHtmlBody = ServerUtilsConcurrent.getInstance().getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,countOfPercentItemsInSearchPattern, filterWords);					
+		LinkedList<Item> itemsFromHtmlBody = ServerUtilsConcurrent.getInstance().getItems(responseHtmlBody, substringForHtmlBodySplit, repeatableSearchPattern,countOfPercentItemsInSearchPattern, filterWords, skipWords);					
 
 		log.debug("getRSSFromWeb: Exec.getItems url=["+url+"] t=["+ (new Date().getTime()-t1)+"]");
 		String itemTitle=null;

@@ -21,6 +21,9 @@ public class GetItems implements Callable<LinkedList<Item>>{
 	private String repeatableSearchPattern=null;
 	private int countOfPercentItemsInSearchPattern=-1;
 	private String filterWords=null;
+	private String skipWords=null;
+
+	
 	
 	public GetItems(String responseHtmlBody, 
 			String substringForHtmlBodySplit, 
@@ -35,12 +38,14 @@ public class GetItems implements Callable<LinkedList<Item>>{
 			String substringForHtmlBodySplit, 
 			String repeatableSearchPattern,
 			int countOfPercentItemsInSearchPattern,
-			String filterWords) {
+			String filterWords,
+			String skipWords) {
 		this.responseHtmlBody=responseHtmlBody; 
 		this.substringForHtmlBodySplit=substringForHtmlBodySplit; 
 		this.repeatableSearchPattern=repeatableSearchPattern;
 		this.countOfPercentItemsInSearchPattern=countOfPercentItemsInSearchPattern;
 		this.filterWords=filterWords;
+		this.skipWords=skipWords;
 	}
 	
 	
@@ -48,7 +53,7 @@ public class GetItems implements Callable<LinkedList<Item>>{
 		
 		long t1 = new Date().getTime();
 		int i = 0;
-		log.debug("Filter words were set ["+filterWords+"]");
+		log.debug("Filter words were set ["+filterWords+"], Skip words are set ["+skipWords+"]");
 
 		repeatableSearchPattern = repeatableSearchPattern
 				.replaceAll("\\{\\*}", ".*")
@@ -84,6 +89,24 @@ public class GetItems implements Callable<LinkedList<Item>>{
 					continue;
 				}
 			}
+			
+			// Check a presence of skip words in the item if filter set 
+						if(skipWords!=null && !skipWords.equals("")) {
+							boolean contains = false;
+							for(String word : skipWords.split("\\|")) {
+								log.debug("Searching skip word ["+word+"] in the string ["+s+"]");
+								if(s.toLowerCase().contains(word.toLowerCase())) {
+									log.debug("Found skip word ["+word+"] in item therefore skip item ["+s+"]");
+									contains=true;
+									break;
+									
+								}
+							}
+							if(contains) {
+								log.debug("Didn't find skip words in item. Therefore save this item ["+s+"]");
+								continue;
+							}
+						}
 //			System.err.println("=============" + ++i + "==========");
 //			System.err.println(repeatableSearchPattern);
 //			System.err.println(s);

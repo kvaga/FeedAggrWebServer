@@ -86,10 +86,10 @@ public final class ServerUtilsConcurrent {
 	}
 
 	public LinkedList<Item> getItems(String responseHtmlBody, String substringForHtmlBodySplit,
-			String repeatableSearchPattern, int countOfPercentItemsInSearchPattern, String filterWords)
+			String repeatableSearchPattern, int countOfPercentItemsInSearchPattern, String filterWords, String skipWords)
 			throws InterruptedException, ExecutionException {
 		Future<LinkedList<Item>> futureCall = executor.submit(new GetItems(responseHtmlBody, substringForHtmlBodySplit,
-				repeatableSearchPattern, countOfPercentItemsInSearchPattern, filterWords));
+				repeatableSearchPattern, countOfPercentItemsInSearchPattern, filterWords,skipWords));
 		return futureCall.get();
 	}
 

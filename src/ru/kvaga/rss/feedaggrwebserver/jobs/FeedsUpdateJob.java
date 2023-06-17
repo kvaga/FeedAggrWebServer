@@ -78,6 +78,7 @@ public class FeedsUpdateJob implements Runnable {
 		String itemLinkTemplate = null; // get from config
 		String itemContentTemplate = null; // get from config
 		String filterWords = null;
+		String skipWords = null;
 		Long durationInMillisForUpdate=null;
 		
 		int allFeedsCount=0, successFeedsCount=0, postponedCount=0;
@@ -202,19 +203,20 @@ public class FeedsUpdateJob implements Runnable {
 						itemContentTemplate = userFeed.getItemContentTemplate();
 						repeatableSearchPattern = userFeed.getRepeatableSearchPattern();
 						filterWords = userFeed.getFilterWords();
+						skipWords = userFeed.getSkipWords();
 						durationInMillisForUpdate = userFeed.getDurationInMillisForUpdate();
 						
 						log.debug(String.format(
-								"Got parameters for feed [feedId='%s', itemTitleTemplate='%s', itemLinkTemplate='%s', itemContentTemplate='%s', repeatableSearchPattern='%s', filterWords='%s', durationInMillisForUpdate='%d']",
+								"Got parameters for feed [feedId='%s', itemTitleTemplate='%s', itemLinkTemplate='%s', itemContentTemplate='%s', repeatableSearchPattern='%s', filterWords='%s', skipWords='%s', durationInMillisForUpdate='%d']",
 								feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate,
-								repeatableSearchPattern, filterWords, durationInMillisForUpdate));
+								repeatableSearchPattern, filterWords, skipWords, durationInMillisForUpdate));
 
 						substringForHtmlBodySplit = Exec.getSubstringForHtmlBodySplit(repeatableSearchPattern);
 
 						// �������� feed (RSS) ������ �� Web
 						RSS rssFromWeb = Exec.getRSSFromWeb(url, responseHtmlBody, substringForHtmlBodySplit,
 								repeatableSearchPattern, itemTitleTemplate, itemLinkTemplate, itemContentTemplate,
-								filterWords);
+								filterWords, skipWords);
 //					ObjectsUtils.printXMLObject(rssFromWeb);
 
 						// ������������ ������ item �� Web � �����

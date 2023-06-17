@@ -122,7 +122,7 @@
 								LinkedList<Item> itemsFromHtmlBody = ServerUtilsConcurrent.getInstance().getItems(
 										(String) request.getSession().getAttribute("responseHtmlBody"), substringForHtmlBodySplit,
 										(String) request.getSession().getAttribute("repeatableSearchPattern"),
-										countOfPercentItemsInSearchPattern, (String) request.getSession().getAttribute("filterWords"));
+										countOfPercentItemsInSearchPattern, (String) request.getSession().getAttribute("filterWords"), (String) request.getSession().getAttribute("skipWords"));
 
 								/*
 								String itemTitle = null;
@@ -224,6 +224,8 @@
 								if (user.containsFeedId((String) request.getSession().getAttribute("feedId"))) {
 									UserFeed uf = user.getUserFeedByFeedId((String) request.getSession().getAttribute("feedId"));
 									uf.setFilterWords((String) request.getSession().getAttribute("filterWords"));
+									uf.setFilterWords((String) request.getSession().getAttribute("skipWords"));
+
 									uf.setItemTitleTemplate((String) request.getSession().getAttribute("itemTitleTemplate"));
 									uf.setItemLinkTemplate((String) request.getSession().getAttribute("itemLinkTemplate"));
 									uf.setItemContentTemplate((String) request.getSession().getAttribute("itemContentTemplate"));
@@ -241,6 +243,8 @@
 													(String) request.getSession().getAttribute("itemContentTemplate"),
 													(String) request.getSession().getAttribute("repeatableSearchPattern"),
 													(String) request.getSession().getAttribute("filterWords"),
+													(String) request.getSession().getAttribute("skipWords"),
+
 													Long.parseLong((String) request.getSession().getAttribute("durationUpdate")),
 													(String) request.getSession().getAttribute("feedTitle"),
 													(String) request.getSession().getAttribute("url")
@@ -279,6 +283,21 @@
 
 								//log.debug("Object user [" + user.getName() + "] successfully saved to the [" + userFile + "] file");
 							%>
+							
+							<% 
+								// Printing RSS on a page
+								StringBuilder sb = new StringBuilder();
+								for(ru.kvaga.rss.feedaggr.objects.Item item : rss.getChannel().getItem()){
+									sb.append(item.getTitle());
+									sb.append("</br>");
+									sb.append(item.getLink());
+									sb.append("</br>");
+									sb.append("..."/*item.getDescription()*/);
+									sb.append("</br>---------------------------------------</br>");
+								}
+							%>
+							<%=sb.toString()%>
+							
 						</div>
 					</td>
 				</tr>
@@ -583,6 +602,3 @@
 
 </body>
 </html>
-<%
-	//ServerUtils.clearSessionFromFeedAttributes(request);
-%>

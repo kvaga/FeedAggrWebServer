@@ -80,6 +80,7 @@ public class ServerUtils {
 			"itemLinkTemplate",
 			"itemContentTemplate",
 			"filterWords",
+			"skipWords",
 			"durationUpdate",
 			"suspendingStatus"
 		};
@@ -745,9 +746,9 @@ public class ServerUtils {
 			uf.setRepeatableSearchPattern(repeatableSearchPattern);
 		}else{
 			if(durationMillisecondsForUpdatingFeeds==null) {
-				user.getUserFeeds().add(new UserFeed(feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern, "", ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE, feedTitle, url));
+				user.getUserFeeds().add(new UserFeed(feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern, "", "", ConfigMap.DEFAULT_DURATION_IN_MILLIS_FOR_FEED_UPDATE, feedTitle, url));
 			}else {
-				user.getUserFeeds().add(new UserFeed(feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern, "", durationMillisecondsForUpdatingFeeds, feedTitle, url));
+				user.getUserFeeds().add(new UserFeed(feedId, itemTitleTemplate, itemLinkTemplate, itemContentTemplate, repeatableSearchPattern, "", "", durationMillisecondsForUpdatingFeeds, feedTitle, url));
 			}
 		}
 		// save repeatable search patterns
