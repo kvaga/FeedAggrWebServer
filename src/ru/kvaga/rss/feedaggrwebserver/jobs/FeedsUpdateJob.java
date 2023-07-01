@@ -266,7 +266,7 @@ public class FeedsUpdateJob implements Runnable {
 //						MonitoringUtils.sendCommonMetric("CompositeUserFeedJobProcessingDeletedOldItems", countOfDeletedOldItems, new Tag("compositeFeedTitle",compositeUserFeed.getCompositeUserFeedTitle()));
 					
 						successFeedsCount++;
-
+						cacheElement.setLastUpdateStatus(null);
 					} catch (Exception e) {
 						MetricURLContentExceptions.getInstance().add(e,url);
 						

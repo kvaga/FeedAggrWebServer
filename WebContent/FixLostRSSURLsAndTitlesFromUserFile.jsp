@@ -11,19 +11,24 @@
 <title>FixLostRSSURLsAndTitlesFromUserFile</title>
 </head>
 <body>
-<table border="1">
-<tr><th>Title</th></tr>
-
-<c:forEach items="${requestScope.FixedList}" var="fixedItem">
-        <tr>
-          <td>${fixedItem}</td>
-        </tr>
-      </c:forEach>
-</table>
+<h3>Copy title and URL of RSS files feeds to user's file corresponding feeds)</h3>
+	<table border="1">
+		<tr>
+			<th>Title</th>
+		</tr>
+	
+		<c:forEach items="${requestScope.FixedList}" var="fixedItem">
+	        <tr>
+	          <td>${fixedItem}</td>
+	        </tr>
+	    </c:forEach>
+	</table>
+	
 	<form action="FixLostRSSURLsAndTitlesFromUserFile">
-		<input type="hidden" name="redirectTo" value="FixLostRSSURLsAndTitlesFromUserFile.jsp"></input>
-		<input type="hidden" name="userName" value="<%= request.getSession().getAttribute("login") %>"></input>
-		<input type="submit" name="Fix" value="Fix"/>
+			<input type="hidden" name="redirectTo" value="FixLostRSSURLsAndTitlesFromUserFile.jsp"></input>
+			<input type="hidden" name="userName" value="<%= request.getSession().getAttribute("login") %>"></input>
+			<input type="submit" name="Fix" value="Fix"/>
 	</form>
+
 </body>
 </html>

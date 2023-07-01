@@ -17,3 +17,5 @@ junit/*
 _lib*
 _lib/*
 /FeedAggrWebServer_20220130.war
+jssecacerts
+
