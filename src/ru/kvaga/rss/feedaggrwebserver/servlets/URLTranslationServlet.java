@@ -79,7 +79,8 @@ public class URLTranslationServlet extends HttpServlet {
 				user.saveXMLObjectToFileByLogin();
 				request.setAttribute("Info", new String("Item ["+urlTranslation+"] removed"));
 			}else if(command.toLowerCase().equals("test")){
-				request.setAttribute("Info", new String("Получится URL: " + URLTranslationServlet.translateURL(testUrl, user)));
+				String resultUrl = URLTranslationServlet.translateURL(testUrl, user);
+				request.setAttribute("Info", new String("Получится URL: <a href=\"" +resultUrl+ "\">"+resultUrl+"</a>"));
 			}else {
 				request.setAttribute("Exception", new String("Unknown command: " + command));
 			}
@@ -103,6 +104,7 @@ public class URLTranslationServlet extends HttpServlet {
     			for(int i=1; i<=m.groupCount();i++) {
     				result=result.replace("{%"+i+"}", m.group(i));
     			}
+    			System.err.println(result);
     			return result;
     		}
     	}

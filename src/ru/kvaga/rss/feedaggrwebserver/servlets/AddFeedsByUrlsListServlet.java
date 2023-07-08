@@ -42,24 +42,27 @@ public class AddFeedsByUrlsListServlet extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
+  
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String redirectTo = request.getParameter("redirectTo");
 		String source = request.getParameter("source");
 		String userName = request.getParameter("userName");
-		String urlList[] = request.getParameterValues("listUrls");
+		String urlListAsSingleString = request.getParameter("listUrls");
 		
-		log.debug("Got parameters "+ServerUtils.listOfParametersToString("userName", userName, "urlList", urlList.toString(), "redirectTo", redirectTo, "source", source));
+		log.debug("Got parameters "+ServerUtils.listOfParametersToString("userName", userName, "urlList", urlListAsSingleString.toString(), "redirectTo", redirectTo, "source", source));
 		String urlListFinal[]=null;
 		try {
 			// check if listUrls parameter is not a list but String separated by '\r\n' or '\n''
-			if(urlList.length==1) {
-				if(urlList[0].contains("\r\n")) {
-					urlListFinal = urlList[0].split("\r\n");
-				}else if(urlList[0].contains("\n")) {
-					urlListFinal = urlList[0].split("\n");
-				}
-			}
-			urlListFinal = urlList;
+			urlListFinal = ("http" + urlListAsSingleString.replaceAll("^http", "").replaceAll("http", ",http")).split(","); 
+
+//			if(urlListSplitted.length==1) {
+//				if(urlListSplitted[0].contains("\r")) {
+//					urlListFinal = urlListSplitted[0].split("\r\n");
+//				}else if(urlList[0].contains("\n")) {
+//					urlListFinal = urlList[0].split("\n");
+//				}
+//			}
+			//urlListFinal = urlList;
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(OBJECT_MAPPER.writeValueAsString(addFeedsByUrlsList(userName, urlListFinal).toArray()));

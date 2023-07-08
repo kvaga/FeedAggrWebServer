@@ -963,7 +963,7 @@ public class ServerUtils {
 						sb.append(", ");
 					}
 					sb.append(parameter);
-					sb.append(" ");
+					sb.append("");
 					if(i%2==0) {
 						sb.append("]");
 					}
@@ -974,6 +974,7 @@ public class ServerUtils {
 		}
 		return null;
 	}
+	
 }
 
 
