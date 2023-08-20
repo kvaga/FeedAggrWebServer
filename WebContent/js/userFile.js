@@ -115,6 +115,8 @@ function createRepeatableSearchPatternsByDomainsTable(objData, divId){
 
 	div.appendChild(mTable);	
 }
+
+
 function createRSSItemContentTemplateByDomainsTable(objData, divId){
 	let counterId=0;
 	let div = document.getElementById(divId);
@@ -159,3 +161,4 @@ function createRSSItemContentTemplateByDomainsTable(objData, divId){
 
 	div.appendChild(mTable);	
 }
+

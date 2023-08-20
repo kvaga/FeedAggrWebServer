@@ -5,6 +5,7 @@ import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -32,7 +33,8 @@ public class CompositeUserFeed {
 	private String compositeUserFeedTitle;
 	//private ArrayList<String> feedIds = new ArrayList<String>();
 	private HashSet<String> feedIds = new HashSet<String>();
-
+	private HashMap<String, String> settings;
+	
 	public String toString() {
 		return "CompositeFeedTitle: " + compositeUserFeedTitle + ", id: " + id;
 	}
@@ -48,6 +50,32 @@ public class CompositeUserFeed {
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+	// Settings
+	// Settings of Specific Common User Settings
+	public static String COMPOSITE_USER_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE="FILTER_WORDS_DELIMETERED_BY_PIPE";
+	public static String COMPOSITE_USER_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE = "SKIP_WORDS_DELIMETERED_BY_PIPE";
+	private static HashMap<String,String> DEFAULT_SPECIFIC_COMPOSITE_USER_FEED_SETTINGS = new HashMap<String,String>(){{
+		put(COMPOSITE_USER_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE, "");
+		put(COMPOSITE_USER_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE, "");
+	}};
+		
+	public HashMap<String, String> getSettings() {
+		if(settings==null) {
+			settings=(HashMap<String,String>)DEFAULT_SPECIFIC_COMPOSITE_USER_FEED_SETTINGS.clone();
+		}
+		return settings;
+	}
+	public HashMap<String,String> setSettings(HashMap<String, String> settings) {
+		this.settings = settings;
+		return settings;
+	}
+	public HashMap<String,String> resetSettings() {
+		this.settings = (HashMap<String,String>)DEFAULT_SPECIFIC_COMPOSITE_USER_FEED_SETTINGS.clone();
+		return this.settings;
+	}
+	
+	//
 	public String getCompositeUserFeedTitle() {
 		return compositeUserFeedTitle;
 	}
@@ -317,24 +345,67 @@ public class CompositeUserFeed {
 						log.warn("ConfigMap.JOBS_PAUSED set to True. Jobs were paused");
 						continue;
 					}
+					// Settings of specific composite user feed
+					HashMap<String,String> settingsOfSpecificCompositeUSerFeed = user.getCompositeUserFeedById(feedId).getSettings();
+					String settingSkipWords  =settingsOfSpecificCompositeUSerFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE);
+					String settingFilterWords=settingsOfSpecificCompositeUSerFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE);
+					// Check for correctness of settings  Else recreate settings with default settings
+					if(settingSkipWords==null || settingFilterWords==null) {
+						settingsOfSpecificCompositeUSerFeed = user.getCompositeUserFeedById(feedId).resetSettings();
+						settingSkipWords  =settingsOfSpecificCompositeUSerFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE);
+						settingFilterWords=settingsOfSpecificCompositeUSerFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE);
+					}
+					
 					RSS rss = RSS.getRSSObjectByFeedId(feedId);
 					log.debug("Got rss [" + rss + "] for feedId ["+feedId+"] with ["+ rss.getChannel().getItem().size() + "] items");
 					//Iterator<Item> iteratorFromRSSItemsForSpecificFeedId = rss.getChannel().getItem().iterator();
 					// Iterate over all Items in of specific RSS
 					for (Item itemFromRSSFileForSpecificFeedId : rss.getChannel().getItem()) {
 						
+						if(compositeRSS.getChannel().getItem().size()>=Integer.parseInt(user.getCompositeUserFeedCommonSettings().get(User.COMPOSITE_USER_SETTING_MAX_COUNT_OF_ITEMS))) {
+							log.debug("Current size of ["+compositeRSS.getChannel().getTitle()+"] is greater than setting COMPOSITE_USER_SETTING_MAX_COUNT_OF_ITEMS ["+User.COMPOSITE_USER_SETTING_MAX_COUNT_OF_ITEMS+"]. Therefore pause proccessing");
+							break;
+						}
+						
 						//Item itemFromRSSFileForSpecificFeedId = iteratorFromRSSItemsForSpecificFeedId.next();
 						//itemFromRSSFileForSpecificFeedId.setTitle("["+rss.getChannel().getTitle()+"] "+itemFromRSSFileForSpecificFeedId.getTitle());
 						// Check if compositeFeed already has this item anf check it age (if old then delete it)
 						if (!compositeRSS.getChannel().containsItem(itemFromRSSFileForSpecificFeedId)) {
 							
-							// this branch is for Items which compositeFeed doesn't contain then add these items
-							// to the compositeFeed with new current pubDate and title with prefix of parent
-							itemFromRSSFileForSpecificFeedId.setPubDate(new Date());
-							itemFromRSSFileForSpecificFeedId.setTitle("["+rss.getChannel().getTitle()+"] "+itemFromRSSFileForSpecificFeedId.getTitle());
+							// Check for settings
+//							arraylist.stream().map(s -> s.toLowerCase()).collect(Collectors.toList()) 
 
-							compositeRSS.getChannel().getItem().add(itemFromRSSFileForSpecificFeedId);   
-							log.debug("Added new item ["+itemFromRSSFileForSpecificFeedId+"] to the compositeUserFeed ["+compositeUserFeed+"]");
+							String lowerCaseTitle = itemFromRSSFileForSpecificFeedId.getTitle().toLowerCase();
+							String lowerCaseDescription = itemFromRSSFileForSpecificFeedId!=null?itemFromRSSFileForSpecificFeedId.getTitle().toLowerCase():"";
+
+							if(settingFilterWords!=null) {
+								for(String item: settingFilterWords.split("|")) {
+									if(lowerCaseTitle.contains(item.toLowerCase()) || lowerCaseDescription.contains(item.toLowerCase()) ){
+										;//It's OK
+									}else {
+										continue;
+									}
+								}
+							}
+							
+							if(settingSkipWords!=null) {
+								for(String item: settingSkipWords.split("|")) {
+									if(lowerCaseTitle.contains(item.toLowerCase()) || lowerCaseDescription.contains(item.toLowerCase()) ){
+										continue;
+									}else {
+										;//It's OK
+									}
+								}
+							}
+							//
+								// this branch is for Items which compositeFeed doesn't contain then add these items
+								// to the compositeFeed with new current pubDate and title with prefix of parent
+								itemFromRSSFileForSpecificFeedId.setPubDate(new Date());
+								itemFromRSSFileForSpecificFeedId.setTitle("["+rss.getChannel().getTitle()+"] "+itemFromRSSFileForSpecificFeedId.getTitle());
+	
+								compositeRSS.getChannel().getItem().add(itemFromRSSFileForSpecificFeedId);   
+								log.debug("Added new item ["+itemFromRSSFileForSpecificFeedId+"] to the compositeUserFeed ["+compositeUserFeed+"]");
+							
 						}
 //						else { 
 //							// this branch is for items which compositeFeed has already them

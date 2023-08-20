@@ -82,7 +82,9 @@ try{
 		<td>
 			<a href="HealthCheckNew.jsp">HealthCheckNew</a><br/>
 			<a href="HealthCheck.jsp">Health Check page</a><br/>
-			<a href="MonitoringExceptions?redirectTo=/HealthCheckException.jsp">Monitoring Exceptions</a>
+			<a href="MonitoringExceptions?redirectTo=/HealthCheckException.jsp">Monitoring Exceptions</a><br/>
+			<a href="UserSettingsServlet?redirectTo=/UserSettings.jsp&command=getcompositeuserfeedsettings&redirectTo=/UserSettings.jsp">User Settings</a>
+			
 		</td>
 		<td>
 			<a href="addFeedId2CompositeFeed.jsp">addFeedId2CompositeFeed</a><br/>
@@ -90,7 +92,9 @@ try{
 		</td>
 		<td>
 			<a href="deleteFeedsFeedsByList.jsp">deleteFeedsFeedsByList</a><br/>
-			<a href="FixLostRSSURLsAndTitlesFromUserFile.jsp">FixLostRSSURLsAndTitles</a>
+			<a href="FixLostRSSURLsAndTitlesFromUserFile.jsp">FixLostRSSURLsAndTitles</a><br/>
+			<a href="SettingsOfSpecificCompositeUserFeedServlet?redirectTo=/SettingsOfSpecificCompositeUserFeed.jsp&command=GetSettingsOfCompositeUserFeed&feedId=composite_1614007522388">Settings Of Specific Composite User Feed</a>
+			
 		</td>
 		<td>
 			<a href="CompositeFeedsExport.jsp">Composite Feeds Export</a><br/>

@@ -107,9 +107,9 @@ function fulfillTableCompouseUserFeedShort(dataObj){
 	 	//console.log(dataObj[i]);
 	 	var tr = document.createElement('tr');
 		tr.innerHTML = 
-			'<td>' + '<a href="${pageContext.request.contextPath}/showFeed?feedId='+dataObj[i].feedId+'">' + dataObj[i].name + '</a>' + '</td>' +
-	    	'<td>' + '<a href="${pageContext.request.contextPath}/deleteFeed?redirectTo=/CompositeFeedsListShort.jsp&feedId='+dataObj[i].feedId+'">Delete' + '</a>'+'</td>' +
 	    	'<td>' + '<a href="${pageContext.request.contextPath}/mergeRSS.jsp?feedTitle='+fixedEncodeURIComponent(dataObj[i].name)+'&feedId='+dataObj[i].feedId+'"">Edit' + '</a>'+'</td>' +
+	    	'<td>' + '<a href="${pageContext.request.contextPath}/SettingsOfSpecificCompositeUserFeedServlet?redirectTo=/SettingsOfSpecificCompositeUserFeed.jsp&command=GetSettingsOfCompositeUserFeed&feedId='+dataObj[i].feedId+'"">Props' + '</a>'+'</td>' +
+			'<td>' + '<a href="${pageContext.request.contextPath}/showFeed?feedId='+dataObj[i].feedId+'">' + dataObj[i].name + '</a>' + '</td>' +
 	    	'<td>' + '<a href="${pageContext.request.contextPath}/moveFeedsFromOneCompositeToAnother.jsp?compositeFeedTitle='+fixedEncodeURIComponent(dataObj[i].name)+'&compositeFeedId='+dataObj[i].feedId+'"">Move' + '</a>'+'</td>' +		
 	    	'<td>' + dataObj[i].feedIds.length + '</td>'+
 	    	
@@ -120,8 +120,9 @@ function fulfillTableCompouseUserFeedShort(dataObj){
 	    	'<td>' + dataObj[i].oldestPubDate + '</td>' +
 	    	
 	    	'<td>' + dataObj[i].lastUpdated + '</td>' +
-	    	'<td>' + dataObj[i].lastUpdateStatus + '</td>' 
-	    	
+	    	'<td>' + dataObj[i].lastUpdateStatus + '</td>' +
+	    	'<td>' + '<a href="${pageContext.request.contextPath}/deleteFeed?redirectTo=/CompositeFeedsListShort.jsp&feedId='+dataObj[i].feedId+'">Delete' + '</a>'+'</td>' 
+
 	    	
 	    	;
 	    	table.appendChild(tr);
@@ -168,9 +169,10 @@ function fulfillTableCompouseUserFeedShort(dataObj){
  -->
 <table id="table">
 	<tr>
+	                <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspEdit</th>
+	                <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspProps</th>
+	
                 <th onclick="sortTable(1)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspName</th>
-                <th onclick="sortTable(2)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspDelete</th>
-                <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspEdit</th>
                 <th onclick="sortTable(4)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspMove</th>
                 <th onclick="sortTable(5, true)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspCount of Feeds</th>
                 <th onclick="sortTable(6)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspCountOfItems</th>
@@ -180,6 +182,8 @@ function fulfillTableCompouseUserFeedShort(dataObj){
 	    	
 	    	<th onclick="sortTable(10)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLastUpdated</th>
 	    	<th onclick="sortTable(11)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLastUpdateStatus</th>
+	     <th onclick="sortTable(2)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspDelete</th>
+	    	
 	    	
     </tr>
 </table>

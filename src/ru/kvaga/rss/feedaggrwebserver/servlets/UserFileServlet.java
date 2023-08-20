@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
@@ -123,6 +124,7 @@ public class UserFileServlet extends HttpServlet {
 					}
 					ServletUtils.responseJSON(applyToAllCorrespondingDomainsRepeatableSearchPatternsByDomainsTable(request.getParameter("domain"),request.getParameter("repeatableSearchPatternByDomain"), userName), response);
 					break;
+				
 				default:
 					throw new Exception("Unknown command ["+command+"]. Possible values are ['getrssitempropertiespatternsbydomains','changerssetempropertiespatternsfordomain','applyToAllCorrespondingDomainsRssItemPropertiesPatternsByDomainsTable', 'getrssrepeatablesearchpatterns']");
 			}
@@ -137,6 +139,7 @@ public class UserFileServlet extends HttpServlet {
 		}	 
 	}
 
+   
     private ArrayList<String> applyToAllCorrespondingDomainsRepeatableSearchPatternsByDomainsTable(String domain, String pattern, String userName) throws Exception {
     	User user = User.getXMLObjectFromXMLFileByUserName(userName);
     	ArrayList<String> all = new ArrayList<String>();

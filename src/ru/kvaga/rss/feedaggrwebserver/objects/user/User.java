@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,8 +42,45 @@ public class User {
 	private Set<UserRssItemPropertiesPatterns> rssItemPropertiesPatterns = ConcurrentHashMap.newKeySet();
 //		new UserRssItemPropertiesPatternsSet()
 	;
+	
 	private HashMap<String, URLTranslation> urlTranslations = new HashMap<String, URLTranslation>();
+	
+	// Composite user feed settings
+	private HashMap<String,String> compositeUserFeedCommonSettings = new HashMap<String,String>();
+	public static String COMPOSITE_USER_SETTING_MAX_COUNT_OF_ITEMS = "compositeuserfeed.maxcountofitems";
+	private static final HashMap<String, String> DEFUALT_COMPOSITE_USER_SETTINGS= new HashMap<String,String>(){{
+		put(COMPOSITE_USER_SETTING_MAX_COUNT_OF_ITEMS, "10000");
+	}};
 
+	
+	public HashMap<String,String> getCompositeUserFeedCommonSettings(){
+		if(compositeUserFeedCommonSettings==null) {
+			this.compositeUserFeedCommonSettings=(HashMap<String,String>) DEFUALT_COMPOSITE_USER_SETTINGS.clone();
+		}
+		
+		return this.compositeUserFeedCommonSettings;
+	}
+	
+	public synchronized void resetToDefaultCompositeUserFeedCommonSettings(){
+		this.compositeUserFeedCommonSettings= null;
+	} 
+	
+	public synchronized void setCompositeUserFeedCommonSettings(HashMap<String,String> props){
+		this.compositeUserFeedCommonSettings= props;
+	}
+	
+	// Settings Of Specific Composite User Feed
+//	public HashMap<String,String> getSettingsOfCompositeUserFeedByFeedId(String feedId) throws Exception{
+//		return getCompositeUserFeedById(feedId).getSettings();
+//	}
+//	public void setSettingsOfCompositeUserFeedByFeedId(String feedId, HashMap<String,String> settings) throws Exception{
+//		getCompositeUserFeedById(feedId).setSettings(settings);
+//	}
+//	public HashMap<String,String> resetToDefaultSettingsOfCompositeUserFeedByFeedId(String feedId) throws Exception{
+//		return getCompositeUserFeedById(feedId).setSettings(null);
+//	}
+	
+	// URL Translation
 	public HashMap<String, URLTranslation> getUrlTranslations() {
 		return urlTranslations;
 	}

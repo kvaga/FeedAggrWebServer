@@ -18,8 +18,9 @@
 </style>
 </head>
 <body>
-<h2>Domains</h3>
 <div id="response"></div>
+
+<h2>Domains</h3>
 <h3>Repeatable Search Items</h3>
 <script>
 	const urlGetRepeatableSearchPatterns='${pageContext.request.contextPath}/UserFile?command=getrssrepeatablesearchpatterns&userName=<%= request.getSession().getAttribute("login")%>';
