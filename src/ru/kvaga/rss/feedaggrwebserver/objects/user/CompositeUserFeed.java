@@ -346,12 +346,12 @@ public class CompositeUserFeed {
 						continue;
 					}
 					// Settings of specific composite user feed
-					HashMap<String,String> settingsOfSpecificCompositeUSerFeed = user.getCompositeUserFeedById(feedId).getSettings();
+					HashMap<String,String> settingsOfSpecificCompositeUSerFeed = compositeUserFeed.getSettings();
 					String settingSkipWords  =settingsOfSpecificCompositeUSerFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE);
 					String settingFilterWords=settingsOfSpecificCompositeUSerFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE);
 					// Check for correctness of settings  Else recreate settings with default settings
 					if(settingSkipWords==null || settingFilterWords==null) {
-						settingsOfSpecificCompositeUSerFeed = user.getCompositeUserFeedById(feedId).resetSettings();
+						settingsOfSpecificCompositeUSerFeed = compositeUserFeed.resetSettings();
 						settingSkipWords  =settingsOfSpecificCompositeUSerFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE);
 						settingFilterWords=settingsOfSpecificCompositeUSerFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE);
 					}
