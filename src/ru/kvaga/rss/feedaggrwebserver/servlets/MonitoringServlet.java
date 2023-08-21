@@ -61,6 +61,7 @@ public class MonitoringServlet extends HttpServlet {
 			MonitoringInfo monitoringInfo = new MonitoringInfo();
 			monitoringInfo.setCompositeFeedUpdateJobIsWorkingNow(CompositeFeedsUpdateJob.isWorkingNow);
 			monitoringInfo.setFeedsUpdateJobIsWorkingNow(FeedsUpdateJob.isWorkingNow);
+
 			if(responseType!=null && responseType.equals("json")) {
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");

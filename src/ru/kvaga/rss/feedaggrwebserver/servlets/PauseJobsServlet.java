@@ -49,8 +49,10 @@ public class PauseJobsServlet extends HttpServlet {
 		String command = request.getParameter("command");
 		
 		log.debug("Got parameters "+ServerUtils.listOfParametersToString("redirectTo", redirectTo, "source", source, "command", command));
-		
+		RequestDispatcher rd = redirectTo !=null? getServletContext().getRequestDispatcher(redirectTo) : (source!=null ? getServletContext().getRequestDispatcher(source) : getServletContext().getRequestDispatcher("/LoginSuccess.jsp"));
+
 		try {
+
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			switch(command) {
@@ -78,7 +80,9 @@ public class PauseJobsServlet extends HttpServlet {
 		}catch (Exception e) {
 			log.error("Exception on CompositeFeedsListServlet", e);
 			request.setAttribute("Exception", e);
-		}	
+		}	finally {
+			rd.forward(request, response);
+		}
 	}
 
 }

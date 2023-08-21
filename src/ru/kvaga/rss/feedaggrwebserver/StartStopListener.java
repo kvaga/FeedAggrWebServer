@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
 import java.util.Properties;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -14,6 +15,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebListener;
+import javax.xml.bind.JAXBException;
 
 import org.apache.logging.log4j.Logger;
 
@@ -21,6 +23,7 @@ import ru.kvaga.monitoring.influxdb.InfluxDB;
 import ru.kvaga.monitoring.influxdb.InfluxDB2;
 import ru.kvaga.rss.feedaggr.Exec;
 import ru.kvaga.rss.feedaggrwebserver.monitoring.MonitoringUtils;
+import ru.kvaga.rss.feedaggrwebserver.objects.user.CompositeUserFeed;
 import ru.kvaga.rss.feedaggrwebserver.objects.user.User;
 
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -225,11 +228,22 @@ public class StartStopListener implements ServletContextListener{
 				log.error("Incorrect format of update_composite_rss_files.days_count_for_deletion parameter ["+props.getProperty("update_composite_rss_files.days_count_for_deletion")+"]. Use default value ["+ConfigMap.UPDATE_COMPOSITE_RSS_FILES_DAYS_COUNT_FOR_DELETION+"]");
 			}
 			
-		
 			
-		} catch (IOException e) {
+			// Fix Structure of Settings after Restart
+			for (File userFile : User.getAllUserFiles()) {
+				if(!userFile.getName().endsWith(".xml")) {
+					continue;
+				}
+				String userName=userFile.getName().replace(".xml", "");
+				// Settings
+				CompositeUserFeed.fixSettingsAfterRestart(userName);		
+			}
+		} catch (IOException | JAXBException e) {
 			log.error("Can't get configuration parameters of servlet", e);
 			return;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	        log.info("FeedAggrWebServer initialized");
 	    }

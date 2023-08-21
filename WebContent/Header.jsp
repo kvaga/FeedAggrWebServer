@@ -45,12 +45,24 @@ try{
             if(data.feedsUpdateJobIsWorkingNow){
                 document.getElementById("FeedsUpdateJobStatus").innerHTML='<span>&#128308;</span>';
             }else{
-                document.getElementById("FeedsUpdateJobStatus").innerHTML='<span>&#128994;</span>';
+            	if(data.isJobsPaused){
+                    document.getElementById("FeedsUpdateJobStatus").innerHTML='<span>&#128996;</span>';
+                    document.getElementById("formPauseJobsButton").value='Start Jobs';
+                    document.getElementById("formPauseJobsCommand").value='enable';
+			  	}else{
+                    document.getElementById("FeedsUpdateJobStatus").innerHTML='<span>&#128994;</span>';
+                    document.getElementById("formPauseJobsButton").value='Pause Jobs'
+                    document.getElementById("formPauseJobsCommand").value='pause';
+            	}
             }
             if(data.compositeFeedUpdateJobIsWorkingNow){
                 document.getElementById("CompositeFeedsUpdateJobStatus").innerHTML='<span>&#128308;</span>';
             }else{
-                document.getElementById("CompositeFeedsUpdateJobStatus").innerHTML='<span>&#128994;</span>';
+            	if(data.isJobsPaused){
+                    document.getElementById("CompositeFeedsUpdateJobStatus").innerHTML='<span>&#128996;</span>';
+            	}else{
+                	document.getElementById("CompositeFeedsUpdateJobStatus").innerHTML='<span>&#128994;</span>';
+            	}
             }
         }
     }
@@ -106,6 +118,13 @@ try{
 		<td>
 			<div id="FeedsUpdateJobStatus"></div>FeedsUpdateJob Status<br/>
 			<div id="CompositeFeedsUpdateJobStatus"></div>CompositeFeedsUpdateJob Status<br/>
+			<div>
+				<form action="PauseJobs">
+					<input id="formPauseJobsButton" type="submit" name="button" value="" />
+					<input id="formPauseJobsCommand" type="hidden" name="command" value="" />
+					<input type="hidden" name="redirectTo" value="/LoginSuccess.jsp" />
+				</form>
+			</div>
 		</td>
 		<!--  
 		<td>

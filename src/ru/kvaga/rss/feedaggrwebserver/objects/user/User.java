@@ -48,8 +48,11 @@ public class User {
 	// Composite user feed settings
 	private HashMap<String,String> compositeUserFeedCommonSettings = new HashMap<String,String>();
 	public static String COMPOSITE_USER_SETTING_MAX_COUNT_OF_ITEMS = "compositeuserfeed.maxcountofitems";
-	private static final HashMap<String, String> DEFUALT_COMPOSITE_USER_SETTINGS= new HashMap<String,String>(){{
+	public static String SERVER_URL_OF_WEB_APP = "server.url-of-web-app";
+
+	public static final HashMap<String, String> DEFUALT_COMPOSITE_USER_SETTINGS= new HashMap<String,String>(){{
 		put(COMPOSITE_USER_SETTING_MAX_COUNT_OF_ITEMS, "10000");
+		put(SERVER_URL_OF_WEB_APP, "http://localhost:8080/FeedAggrWebServer");
 	}};
 
 	

@@ -52,24 +52,46 @@ public class CompositeUserFeed {
 	}
 	
 	// Settings
+	public static void fixSettingsAfterRestart(String userName) throws Exception {
+		User user = User.getXMLObjectFromXMLFileByUserName(userName);
+		HashMap<String,String> defaultSettings = (HashMap<String,String>)DEFAULT_SPECIFIC_COMPOSITE_USER_FEED_SETTINGS.clone();
+		for(CompositeUserFeed cuf : user.getCompositeUserFeeds()) {
+			for(String key: defaultSettings.keySet()) {
+				if(cuf.getSettings().get(key)==null) {
+					cuf.getSettings().put(key, defaultSettings.get(key));
+				}
+			}
+		}
+		user.saveXMLObjectToFileByLogin();
+	}
+	
+
 	// Settings of Specific Common User Settings
 	public static String COMPOSITE_USER_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE="FILTER_WORDS_DELIMETERED_BY_PIPE";
 	public static String COMPOSITE_USER_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE = "SKIP_WORDS_DELIMETERED_BY_PIPE";
+	public static String COMPOSITE_USER_SETTING_FOOTER_OF_DESCRIPTION = "FOOTER_OF_DESCRIPTION";
+
 	private static HashMap<String,String> DEFAULT_SPECIFIC_COMPOSITE_USER_FEED_SETTINGS = new HashMap<String,String>(){{
 		put(COMPOSITE_USER_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE, "");
 		put(COMPOSITE_USER_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE, "");
+		put(COMPOSITE_USER_SETTING_FOOTER_OF_DESCRIPTION, "<br><h1 align=\"center\" style=\"color:blue;font-size:40px;\"><a href=\"%SERVER_URL_OF_WEB_APP%/SettingsOfSpecificCompositeUserFeedServlet?redirectTo=/SettingsOfSpecificCompositeUserFeed.jsp&command=GetSettingsOfCompositeUserFeed&feedId=%COMPOSITE_FEED_ID%\">COMPOSITE FEED SETTINGS</a></h1>");
+
 	}};
 		
 	public HashMap<String, String> getSettings() {
 		if(settings==null) {
-			settings=(HashMap<String,String>)DEFAULT_SPECIFIC_COMPOSITE_USER_FEED_SETTINGS.clone();
+			settings=(HashMap<String,String>) DEFAULT_SPECIFIC_COMPOSITE_USER_FEED_SETTINGS.clone();
 		}
+		
+		
 		return settings;
 	}
+	
 	public HashMap<String,String> setSettings(HashMap<String, String> settings) {
 		this.settings = settings;
 		return settings;
 	}
+	
 	public HashMap<String,String> resetSettings() {
 		this.settings = (HashMap<String,String>)DEFAULT_SPECIFIC_COMPOSITE_USER_FEED_SETTINGS.clone();
 		return this.settings;
@@ -79,13 +101,16 @@ public class CompositeUserFeed {
 	public String getCompositeUserFeedTitle() {
 		return compositeUserFeedTitle;
 	}
+	
 	public CompositeUserFeed setCompositeUserFeedTitle(String compositeUserFeedTitle) {
 		this.compositeUserFeedTitle = compositeUserFeedTitle;
 		return this;
 	}
+	
 	public HashSet<String> getFeedIds() {
 		return feedIds;
 	}
+	
 	public void setFeedIds(HashSet<String> ids) {
 		this.feedIds = ids;
 	}
@@ -346,15 +371,20 @@ public class CompositeUserFeed {
 						continue;
 					}
 					// Settings of specific composite user feed
-					HashMap<String,String> settingsOfSpecificCompositeUSerFeed = compositeUserFeed.getSettings();
-					String settingSkipWords  =settingsOfSpecificCompositeUSerFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE);
-					String settingFilterWords=settingsOfSpecificCompositeUSerFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE);
+					HashMap<String,String> settingsOfSpecificCompositeUserFeed = compositeUserFeed.getSettings();
+					String settingSkipWords  =settingsOfSpecificCompositeUserFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE);
+					String settingFilterWords=settingsOfSpecificCompositeUserFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE);
+					String settingFooterOfDescriptionTemplateForSubstitutionWithCompositeFeedId=settingsOfSpecificCompositeUserFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FOOTER_OF_DESCRIPTION)
+							.replaceAll("%COMPOSITE_FEED_ID%", compositeUserFeed.getId()
+							.replaceAll("%SERVER_URL_OF_WEB_APP%", user.getCompositeUserFeedCommonSettings().get(User.SERVER_URL_OF_WEB_APP))
+							);
 					// Check for correctness of settings  Else recreate settings with default settings
 					if(settingSkipWords==null || settingFilterWords==null) {
-						settingsOfSpecificCompositeUSerFeed = compositeUserFeed.resetSettings();
-						settingSkipWords  =settingsOfSpecificCompositeUSerFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE);
-						settingFilterWords=settingsOfSpecificCompositeUSerFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE);
+						settingsOfSpecificCompositeUserFeed = compositeUserFeed.resetSettings();
+						settingSkipWords  =settingsOfSpecificCompositeUserFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE);
+						settingFilterWords=settingsOfSpecificCompositeUserFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE);
 					}
+					
 					
 					RSS rss = RSS.getRSSObjectByFeedId(feedId);
 					log.debug("Got rss [" + rss + "] for feedId ["+feedId+"] with ["+ rss.getChannel().getItem().size() + "] items");
@@ -402,7 +432,9 @@ public class CompositeUserFeed {
 								// to the compositeFeed with new current pubDate and title with prefix of parent
 								itemFromRSSFileForSpecificFeedId.setPubDate(new Date());
 								itemFromRSSFileForSpecificFeedId.setTitle("["+rss.getChannel().getTitle()+"] "+itemFromRSSFileForSpecificFeedId.getTitle());
-	
+								itemFromRSSFileForSpecificFeedId.setDescription(
+										itemFromRSSFileForSpecificFeedId.getDescription() + settingFooterOfDescriptionTemplateForSubstitutionWithCompositeFeedId);
+								
 								compositeRSS.getChannel().getItem().add(itemFromRSSFileForSpecificFeedId);   
 								log.debug("Added new item ["+itemFromRSSFileForSpecificFeedId+"] to the compositeUserFeed ["+compositeUserFeed+"]");
 							

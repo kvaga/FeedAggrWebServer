@@ -3,6 +3,7 @@ package ru.kvaga.rss.feedaggrwebserver.jobs;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.xml.bind.JAXBException;
 
@@ -26,7 +27,9 @@ public class CompositeFeedsUpdateJob implements Runnable {
 	private String userName = null;
 
 	public CompositeFeedsUpdateJob() {}
-
+//	private static boolean FIRST_TIME_AFTER_RESTART=true;
+	
+	
 	public void run() {
 		long t1 = new Date().getTime();
 		isWorkingNow=true;
@@ -41,9 +44,15 @@ public class CompositeFeedsUpdateJob implements Runnable {
 			if(!userFile.getName().endsWith(".xml")) {
 				continue;
 			}
+			String userName=userFile.getName().replace(".xml", "");
 			try {
+//				if(FIRST_TIME_AFTER_RESTART) {
+//					CompositeUserFeed.fixSettingsAfterRestart(userName);
+//					FIRST_TIME_AFTER_RESTART=false;
+//				}
+				
 //				User user = (User) ObjectsUtils.getXMLObjectFromXMLFile(userFile, new User());
-				int result[] = CompositeUserFeed.updateItemsInCompositeRSSFilesOfUser(userFile.getName().replace(".xml", ""));
+				int result[] = CompositeUserFeed.updateItemsInCompositeRSSFilesOfUser(userName);
 				log.debug("Processed composite feeds: all ["+result[0]+"], successful ["+result[1]+"], failed ["+result[2]+"]");
 				MonitoringUtils.sendCommonMetric("CompositeUserFeedJob", result[0], new Tag("type","all"), new Tag("operation", "Processing"));
 				MonitoringUtils.sendCommonMetric("CompositeUserFeedJob", result[1], new Tag("type","successful"), new Tag("operation", "Processing"));
@@ -55,6 +64,7 @@ public class CompositeFeedsUpdateJob implements Runnable {
 			} catch (Exception e) {
 				log.error("CompositeFeedsUpdateJob Exception", e);
 				continue;
+			}finally {
 			}
 //				for(CompositeUserFeed compositeUserFeed : user.getCompositeUserFeeds()) {
 //					ArrayList<String> al = new ArrayList<String>();
