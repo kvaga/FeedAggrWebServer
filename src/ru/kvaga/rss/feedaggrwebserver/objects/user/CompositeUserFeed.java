@@ -4,6 +4,7 @@ import java.io.File;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -402,32 +403,12 @@ public class CompositeUserFeed {
 						// Check if compositeFeed already has this item anf check it age (if old then delete it)
 						if (!compositeRSS.getChannel().containsItem(itemFromRSSFileForSpecificFeedId)) {
 							
-							// Check for settings
-//							arraylist.stream().map(s -> s.toLowerCase()).collect(Collectors.toList()) 
-
-							String lowerCaseTitle = itemFromRSSFileForSpecificFeedId.getTitle().toLowerCase();
-							String lowerCaseDescription = itemFromRSSFileForSpecificFeedId!=null?itemFromRSSFileForSpecificFeedId.getTitle().toLowerCase():"";
-
-							if(settingFilterWords!=null) {
-								for(String item: settingFilterWords.split("|")) {
-									if(lowerCaseTitle.contains(item.toLowerCase()) || lowerCaseDescription.contains(item.toLowerCase()) ){
-										;//It's OK
-									}else {
-										continue;
-									}
-								}
+							// Check for settings: Skip and Filter words
+							if(settingsOfCompositeUserFeedRequireDropItem(itemFromRSSFileForSpecificFeedId, compositeUserFeed)) {
+								continue;
 							}
 							
-							if(settingSkipWords!=null) {
-								for(String item: settingSkipWords.split("|")) {
-									if(lowerCaseTitle.contains(item.toLowerCase()) || lowerCaseDescription.contains(item.toLowerCase()) ){
-										continue;
-									}else {
-										;//It's OK
-									}
-								}
-							}
-							//
+							//#
 								// this branch is for Items which compositeFeed doesn't contain then add these items
 								// to the compositeFeed with new current pubDate and title with prefix of parent
 								itemFromRSSFileForSpecificFeedId.setPubDate(new Date());
@@ -504,6 +485,41 @@ public class CompositeUserFeed {
 		return new int[] {allFeedsCount, successFeedsCount, allFeedsCount-successFeedsCount, countOfDeletedOldItemsTotal};
 	}
 	
+	public static boolean settingsOfCompositeUserFeedRequireDropItem(Item itemFromRSSFileForSpecificFeedId, CompositeUserFeed compositeUserFeed) {
+		HashMap<String,String> settingsOfSpecificCompositeUserFeed = compositeUserFeed.getSettings();
+		String settingSkipWords  =settingsOfSpecificCompositeUserFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE);
+		String settingFilterWords=settingsOfSpecificCompositeUserFeed.get(CompositeUserFeed.COMPOSITE_USER_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE);
+	
+		String lowerCaseTitle = itemFromRSSFileForSpecificFeedId.getTitle().toLowerCase();
+		String lowerCaseDescription = itemFromRSSFileForSpecificFeedId!=null?itemFromRSSFileForSpecificFeedId.getDescription().toLowerCase():"";
+		String splitSymbol="\\|";
+		
+		if(settingFilterWords!=null && !settingFilterWords.equals("")) {
+			for(String item: settingFilterWords.split(splitSymbol)) {
+				if(lowerCaseTitle.contains(item.toLowerCase()) || lowerCaseDescription.contains(item.toLowerCase()) ){
+					return true;
+				}else {
+
+					;//It's OK
+
+				}
+			}
+		}
+				
+		if(settingSkipWords!=null && !settingSkipWords.equals("")) {
+			for(String item: settingSkipWords.split(splitSymbol)) {
+				if(lowerCaseTitle.contains(item.toLowerCase()) || lowerCaseDescription.contains(item.toLowerCase()) ){
+					return true;
+				}else {
+					;//It's OK
+				}
+			}
+		}
+//		System.out.println("-----------------");
+
+		return false;
+	}
+
 	private static synchronized int removeOldItems(RSS compositeRSS, Date deleteItemsWhichOlderThanThisDate) {
 		int countOfDeletedOldItemsTotal = 0;
 		ArrayList<Item> oldCompositeFeedItemsForDeletionFromCurrentCompositeFeed = new ArrayList<Item>();
