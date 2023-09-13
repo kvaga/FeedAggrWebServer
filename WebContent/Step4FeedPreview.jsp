@@ -119,6 +119,8 @@
 								//		(String) request.getSession().getAttribute("repeatableSearchPattern"),
 								//		countOfPercentItemsInSearchPattern, (String) request.getSession().getAttribute("filterWords"));
 
+								
+								
 								LinkedList<Item> itemsFromHtmlBody = ServerUtilsConcurrent.getInstance().getItems(
 										(String) request.getSession().getAttribute("responseHtmlBody"), substringForHtmlBodySplit,
 										(String) request.getSession().getAttribute("repeatableSearchPattern"),
@@ -222,9 +224,15 @@
 								//----------------------
 
 								if (user.containsFeedId((String) request.getSession().getAttribute("feedId"))) {
+									System.err.println("==============================");
+									System.err.println("filterWords: "+request.getSession().getAttribute("filterWords"));
+									System.err.println("skipWords: "+request.getSession().getAttribute("skipWords"));
+									System.err.println("durationUpdate: "+request.getSession().getAttribute("durationUpdate"));
+									System.err.println("==============================");
+
 									UserFeed uf = user.getUserFeedByFeedId((String) request.getSession().getAttribute("feedId"));
 									uf.setFilterWords((String) request.getSession().getAttribute("filterWords"));
-									uf.setFilterWords((String) request.getSession().getAttribute("skipWords"));
+									uf.setSkipWords((String) request.getSession().getAttribute("skipWords"));
 
 									uf.setItemTitleTemplate((String) request.getSession().getAttribute("itemTitleTemplate"));
 									uf.setItemLinkTemplate((String) request.getSession().getAttribute("itemLinkTemplate"));
@@ -235,8 +243,17 @@
 									uf.setUserFeedUrl((String) request.getSession().getAttribute("url"));
 									uf.setSuspendStatus(Boolean.parseBoolean((String) request.getSession().getAttribute("suspendingStatus")));
 								} else {
+									System.err.println("++++++++++++++++++++++++++++++");
+									System.err.println("filterWords: "+request.getSession().getAttribute("filterWords"));
+									System.err.println("skipWords: "+request.getSession().getAttribute("skipWords"));
+									System.err.println("durationUpdate: "+request.getSession().getAttribute("durationUpdate"));
+									System.err.println("++++++++++++++++++++++++++++++");
 									user.getUserFeeds()
 											.add(new UserFeed(
+													
+													
+													
+													
 													(String) request.getSession().getAttribute("feedId"),
 													(String) request.getSession().getAttribute("itemTitleTemplate"),
 													(String) request.getSession().getAttribute("itemLinkTemplate"),
@@ -280,7 +297,16 @@
 								//----------------------
 								//ObjectsUtils.saveXMLObjectToFile(user, user.getClass(), userFile);
 								user.saveXMLObjectToFileByLogin((String) request.getSession().getAttribute("login"));
+								
+								//---
+								User user1 = User.getXMLObjectFromXMLFileByUserName((String) request.getSession().getAttribute("login"));
+								UserFeed uf = user.getUserFeedByFeedId((String) request.getSession().getAttribute("feedId"));
+								System.err.println("getFilterWords: " + uf.getFilterWords());
+								System.err.println("getSkipWords: " + uf.getSkipWords());
+								System.err.println("durationUpdate: " + uf.getDurationInMillisForUpdate());
 
+
+								//---
 								//log.debug("Object user [" + user.getName() + "] successfully saved to the [" + userFile + "] file");
 							%>
 							

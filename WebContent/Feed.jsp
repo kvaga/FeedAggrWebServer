@@ -148,6 +148,9 @@ String feedDescription=(String)request.getSession().getAttribute("feedDescriptio
 String itemTitleTemplate	=(String)request.getSession().getAttribute("itemTitleTemplate");
 String itemLinkTemplate		=(String)request.getSession().getAttribute("itemLinkTemplate");
 String itemContentTemplate	=(String)request.getSession().getAttribute("itemContentTemplate");
+String filterWords	=(String)request.getSession().getAttribute("filterWords");
+String skipWords	=(String)request.getSession().getAttribute("skipWords");
+
 
 if(request.getParameter("action")!=null && request.getParameter("action").equals("new")){
 	feedId=ServerUtils.getNewFeedId();
@@ -324,6 +327,11 @@ String url= (String)request.getSession().getAttribute("url");
 		           	<jsp:param name="feedTitle" value="<%=feedTitle %>" />
 		           	<jsp:param name="feedDescription" value="<%= feedDescription %>" />
 		           	<jsp:param name="url" value="<%=url %>" />
+		           			           	<jsp:param name="filterWords" value="<%=filterWords %>" />
+		           			           	<jsp:param name="skipWords" value="<%=skipWords %>" />
+		           	
+		           			           	
+		           	
 		  	   	</jsp:include>
 		<%} %>
 		

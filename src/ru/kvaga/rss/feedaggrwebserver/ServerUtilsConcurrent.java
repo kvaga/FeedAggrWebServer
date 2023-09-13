@@ -93,6 +93,7 @@ public final class ServerUtilsConcurrent {
 		return futureCall.get();
 	}
 
+	
 	public LinkedList<Item> getItems(String responseHtmlBody, String substringForHtmlBodySplit,
 			String repeatableSearchPattern, int countOfPercentItemsInSearchPattern)
 			throws InterruptedException, ExecutionException {
@@ -100,6 +101,7 @@ public final class ServerUtilsConcurrent {
 				repeatableSearchPattern, countOfPercentItemsInSearchPattern));
 		return futureCall.get();
 	}
+	
 
 }
 
