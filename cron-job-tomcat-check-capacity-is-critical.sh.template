@@ -1,0 +1,12 @@
+#!/bin/bash
+
+threshold=90
+res=$(df -h | grep /dev/mmcblk0p1 | awk '{print $5}' | sed 's/%//g');
+echo Current capacity used: $res%, threshold: $threshold
+
+if (( $res>=$threshold ))
+        then
+                echo YES
+                /home/tomcat/apache-tomcat-*/bin/shutdown.sh
+        else echo NO
+fi
