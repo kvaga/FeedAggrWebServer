@@ -232,7 +232,9 @@ public class FeedsUpdateJob implements Runnable {
 							if (!foundItemBol) {
 								log.debug("������ item [" + itemFromWeb.getTitle() + "] � guid ["
 										+ itemFromWeb.getGuid().getValue() + "] ��� � �����");
-								itemFromWeb.setDescription(itemFromWeb.getDescription());
+								itemFromWeb.setDescription(itemFromWeb.getDescription()+
+								"<br><h3 align=\"center\" style=\"color:blue;font-size:40px;\"><a href=\""+user.getCompositeUserFeedCommonSettings().get(User.SERVER_URL_OF_WEB_APP).replaceAll("SettingsOfSpecificCompositeUserFeed", "SettingsOfSpecificUserFeed").replaceAll("GetSettingsOfCompositeUserFeed", "GetSettingsOfUserFeed")+""+feedId+"\">FEED SETTINGS</a></h3><br>");
+								
 								log.debug("Added title to the end of itemFromWeb because thiw item is a new one");
 								rssFromFile.getChannel().getItem().add(itemFromWeb);
 								log.debug("itemFromWeb [" + itemFromWeb.getTitle() + "] � guid ["

@@ -105,8 +105,8 @@ try{
 		<td>
 			<a href="deleteFeedsFeedsByList.jsp">deleteFeedsFeedsByList</a><br/>
 			<a href="FixLostRSSURLsAndTitlesFromUserFile.jsp">FixLostRSSURLsAndTitles</a><br/>
-			<a href="SettingsOfSpecificCompositeUserFeedServlet?redirectTo=/SettingsOfSpecificCompositeUserFeed.jsp&command=GetSettingsOfCompositeUserFeed&feedId=composite_1614007522388">Settings Of Specific Composite User Feed</a>
-			
+			<a href="SettingsOfSpecificCompositeUserFeedServlet?redirectTo=/SettingsOfSpecificCompositeUserFeed.jsp&command=GetSettingsOfCompositeUserFeed&feedId=">Settings Of Specific Composite User Feed</a><br>
+			<a href="SettingsOfSpecificUserFeedServlet?redirectTo=/SettingsOfSpecificUserFeed.jsp&command=GetSettingsOfUserFeed&feedId=">Settings Of Specific User Feed</a>
 		</td>
 		<td>
 			<a href="CompositeFeedsExport.jsp">Composite Feeds Export</a><br/>

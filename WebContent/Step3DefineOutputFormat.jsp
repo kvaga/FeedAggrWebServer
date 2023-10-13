@@ -145,9 +145,14 @@ User user = User.getXMLObjectFromXMLFile(userFile);
 										}else{
 											//out.print("{%3}&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============ Link ============&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;&lt;center&gt;&lt;font size=\"36\"&gt;&lt;a href=\"{%1}\"&gt;============================&lt;/a&gt;&lt;/font&gt;&lt;/center&gt;&lt;br&gt;");
 											out.print("{%3}&lt;br&gt;&lt;h1 style=\"color:blue;font-size:40px;\"&gt;&lt;a href=\"{%2}\"&gt;LINK&lt;/a&gt;&lt;/h1&gt;");
-											//out.print("&lt;br&gt;&lt;h1 style=\"color:blue;font-size:40px;\"&gt;&lt;a href=\"/Feed.jsp?action=edit&feedId="+(String)request.getSession().getAttribute("feedId")+"\"&gt;Edit Feed&lt;/a&gt;&lt;/h1&gt;");
+
+											//"<br><h1 align=\"center\" style=\"color:blue;font-size:40px;\"><a href=\""+User.SERVER_URL_OF_WEB_APP+"/SettingsOfSpecificUserFeedServlet?redirectTo=/SettingsOfSpecificUserFeed.jsp&command=GetSettingsOfUserFeed&feedId="+feedId+"\">FEED SETTINGS</a></h1>");
+
+											//out.print("&lt;br&gt;&lt;h1 style=\"color:blue;font-size:40px;\"&gt;&lt;a href=\"/Feed.jsp?action=edit&feedId="+(String)request.getSession().getAttribute("feedId")+"\"&gt;Edit Feed&lt;/a&gt;&lt;/h1&gt;"); 
 
 										}
+								out.print("&lt;br&gt;&lt;h3 style=\"color:blue;font-size:40px;\"&gt;&lt;a href=\""+user.getCompositeUserFeedCommonSettings().get(User.SERVER_URL_OF_WEB_APP).replaceAll("SettingsOfSpecificCompositeUserFeed", "SettingsOfSpecificUserFeed").replaceAll("GetSettingsOfCompositeUserFeed", "GetSettingsOfUserFeed")+""+(String)request.getSession().getAttribute("feedId")+"\"&gt;FEED SETTINGS&lt;/a&gt;&lt;/h3&gt;");
+
 %></textarea>
 </td>
 								<td style="padding-left: 5px">

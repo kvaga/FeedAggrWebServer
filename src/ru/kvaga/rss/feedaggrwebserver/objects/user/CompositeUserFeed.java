@@ -75,7 +75,8 @@ public class CompositeUserFeed {
 	private static HashMap<String,String> DEFAULT_SPECIFIC_COMPOSITE_USER_FEED_SETTINGS = new HashMap<String,String>(){{
 		put(COMPOSITE_USER_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE, "");
 		put(COMPOSITE_USER_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE, "");
-		put(COMPOSITE_USER_SETTING_FOOTER_OF_DESCRIPTION, "<br><h1 align=\"center\" style=\"color:blue;font-size:40px;\"><a href=\"%SERVER_URL_OF_WEB_APP%/SettingsOfSpecificCompositeUserFeedServlet?redirectTo=/SettingsOfSpecificCompositeUserFeed.jsp&command=GetSettingsOfCompositeUserFeed&feedId=%COMPOSITE_FEED_ID%\">COMPOSITE FEED SETTINGS</a></h1>");
+			put(COMPOSITE_USER_SETTING_FOOTER_OF_DESCRIPTION,
+					"<br><h3 align=\"center\" style=\"color:blue;font-size:40px;\"><a href=\"%SERVER_URL_OF_WEB_APP%/SettingsOfSpecificCompositeUserFeedServlet?redirectTo=/SettingsOfSpecificCompositeUserFeed.jsp&command=GetSettingsOfCompositeUserFeed&feedId=%COMPOSITE_FEED_ID%\">COMPOSITE FEED SETTINGS</a></h3>");
 
 	}};
 		

@@ -1,6 +1,7 @@
 package ru.kvaga.rss.feedaggrwebserver.objects.user;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 
 public class UserFeed {
 	private String id;
@@ -130,6 +131,35 @@ public class UserFeed {
 		}
 	}
 
+	
+	// Settings of Specific Common User Settings
+//	private HashMap<String, String> settings;
+//	public static String USER_FEED_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE="FILTER_WORDS_DELIMETERED_BY_PIPE";
+//	public static String USER_FEED_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE = "SKIP_WORDS_DELIMETERED_BY_PIPE";
+//	public static String USER_FEED_SETTING_FOOTER_OF_DESCRIPTION = "FOOTER_OF_DESCRIPTION";
+//	private static HashMap<String,String> DEFAULT_SPECIFIC_USER_FEED_SETTINGS = new HashMap<String,String>(){{
+//		put(USER_FEED_SETTING_FIELD_FILTER_WORDS_DELIMETERED_BY_PIPE, "");
+//		put(USER_FEED_SETTING_FIELD_SKIP_WORDS_DELIMETERED_BY_PIPE, "");
+//		put(USER_FEED_SETTING_FOOTER_OF_DESCRIPTION, "<br><h1 align=\"center\" style=\"color:blue;font-size:40px;\"><a href=\"%SERVER_URL_OF_WEB_APP%/SettingsOfSpecificUserFeedServlet?redirectTo=/SettingsOfSpecificUserFeed.jsp&command=GetSettingsOfUserFeed&feedId=%FEED_ID%\">USER FEED SETTINGS</a></h1>");
+//
+//	}};
+//	
+//	public HashMap<String, String> getSettings() {
+//		if(settings==null) {
+//			settings=(HashMap<String,String>) DEFAULT_SPECIFIC_USER_FEED_SETTINGS.clone();
+//		}
+//		return settings;
+//	}
+//	
+//	public HashMap<String,String> setSettings(HashMap<String, String> settings) {
+//		this.settings = settings;
+//		return settings;
+//	}
+//	public HashMap<String,String> resetSettings() {
+//		this.settings = (HashMap<String,String>)DEFAULT_SPECIFIC_USER_FEED_SETTINGS.clone();
+//		return this.settings;
+//	}
+	
 	public boolean equals(UserFeed object) {
 		return object.id.equals(this.getId());
 	}
