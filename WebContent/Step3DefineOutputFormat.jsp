@@ -151,7 +151,7 @@ User user = User.getXMLObjectFromXMLFile(userFile);
 											//out.print("&lt;br&gt;&lt;h1 style=\"color:blue;font-size:40px;\"&gt;&lt;a href=\"/Feed.jsp?action=edit&feedId="+(String)request.getSession().getAttribute("feedId")+"\"&gt;Edit Feed&lt;/a&gt;&lt;/h1&gt;"); 
 
 										}
-								out.print("&lt;br&gt;&lt;h3 style=\"color:blue;font-size:40px;\"&gt;&lt;a href=\""+user.getCompositeUserFeedCommonSettings().get(User.SERVER_URL_OF_WEB_APP).replaceAll("SettingsOfSpecificCompositeUserFeed", "SettingsOfSpecificUserFeed").replaceAll("GetSettingsOfCompositeUserFeed", "GetSettingsOfUserFeed")+""+(String)request.getSession().getAttribute("feedId")+"\"&gt;FEED SETTINGS&lt;/a&gt;&lt;/h3&gt;");
+								out.print("&lt;br&gt;&lt;h3 style=\"color:blue;font-size:40px;\"&gt;&lt;a href=\""+user.getCompositeUserFeedCommonSettings().get(User.SERVER_URL_OF_WEB_APP)+"/SettingsOfSpecificUserFeedServlet?redirectTo=/SettingsOfSpecificUserFeed.jsp&command=GetSettingsOfUserFeed&feedId="+(String)request.getSession().getAttribute("feedId")+"\"&gt;FEED SETTINGS&lt;/a&gt;&lt;/h3&gt;");
 
 %></textarea>
 </td>
