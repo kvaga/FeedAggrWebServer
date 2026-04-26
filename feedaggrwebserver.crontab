@@ -1,3 +1,4 @@
 * * * * * if ! ps -ef | grep apache-tomcat | grep -v grep >/dev/null; then /u02/tomcat/apache-tomcat-9.0.117/bin/startup.sh >/dev/null; fi
 * * * * * if ! curl localhost:8080 >/dev/null 2>&1; then ps -ef | grep tomcat | grep "Bootstrap start" | grep -v grep | awk '{print $2}' | while read pid; do kill -9 $pid; done; fi
 * * * * * curl -u '<user>:<password>' 'http://localhost:8080/FeedAggrWebServer/PauseJobs?button=Start+Jobs&command=enable&redirectTo=%2FLoginSuccess.jsp' >/dev/null 2>&1
+*/30 * * * * timeout 1800 /u02/tomcat/apache-tomcat-9.0.117/add-all-https-domains-from-user-file-into-jks.sh.crontab.job >/dev/null 2>&1
