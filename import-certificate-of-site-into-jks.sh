@@ -31,7 +31,7 @@ function import_certificate_from_site_into_jks(){
         fi
         # 1. Get the certificate from the URL and save to a temporary file
         echo "Fetching certificate from $url..."
-        openssl s_client -connect ${alias}:${PORT} -servername ${alias} </dev/null | \
+        timeout 5s openssl s_client -connect ${alias}:${PORT} -servername ${alias} </dev/null | \
         openssl x509 -outform PEM > temp_cert.pem
 
         # 2. Import the certificate into the JKS keystore
