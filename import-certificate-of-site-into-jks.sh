@@ -25,6 +25,10 @@ function import_certificate_from_site_into_jks(){
                 echo "[ERROR] Couldn't find a keystore password"
                 return 1
         fi
+        if keytool -list -keystore "$KEYSTORE" -alias "$alias" -storepass "$storepass" > /dev/null 2>&1; then
+                    echo "[ERROR] Alias '$alias' exists in the [$KEYSTORE] keystore."
+                    return 1
+        fi
         # 1. Get the certificate from the URL and save to a temporary file
         echo "Fetching certificate from $url..."
         openssl s_client -connect ${alias}:${PORT} -servername ${alias} </dev/null | \
