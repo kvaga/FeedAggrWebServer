@@ -1,0 +1,5 @@
+USER_FILE=/u02/tomcat/feedaggrwebserver-data/users/kvaga.xml
+HOME_FEED_AGGR=/u02/tomcat/apache-tomcat-9.0.117
+cat $USER_FILE | grep '</userFeedUrl' | grep https: | grep -v grep | sed 's/\s*<userFeedUrl>//g' | sed 's/<\/userFeedUrl.*//g' | while read url; do \
+        $HOME_FEED_AGGR/import-certificate-of-site-into-jks.sh $url
+done
